@@ -1,4 +1,4 @@
-package org.example.seed.web.api;
+package org.example.seed.rest.api;
 
 import org.example.seed.domain.Issue;
 import org.example.seed.group.MomentumGroup;
@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping(path = "/issues")
-public class IssueController {
+public class IssueRestController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
