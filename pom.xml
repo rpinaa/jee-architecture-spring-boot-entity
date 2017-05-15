@@ -16,25 +16,26 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.4.2.RELEASE</version>
+        <version>1.5.3.RELEASE</version>
     </parent>
 
     <properties>
+        <project.build.environment>local</project.build.environment>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.resourcesDirectory>${basedir}/src/main/resources</project.build.resourcesDirectory>
+        <project.build.testResourcesDirectory>${basedir}/src/test/resources</project.build.testResourcesDirectory>
+        <project.build.filterDirectory>${basedir}/src/main/filters</project.build.filterDirectory>
+
+        <start-class>org.example.seed.Application</start-class>
+
+        <lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
+        <properties.maven.plugin.version>1.0.0</properties.maven.plugin.version>
+
         <java.version>1.8</java.version>
-        <lombok.version>1.16.10</lombok.version>
     </properties>
 
     <dependencies>
-        <!-- Lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Spring Starter Web -->
+        <!-- Spring Boot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -46,35 +47,28 @@
             </exclusions>
         </dependency>
 
-        <!-- Spring Starter Jetty -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jetty</artifactId>
-        </dependency>
-
-        <!-- Spring Starter Data JPA -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <!-- Spring Starter Actuator -->
+        <!-- Spring Boot Actuator -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <!-- Spring Starter Security -->
+        <!-- Spring Boot Security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- MySQL Connector -->
+        <!-- Spring Boot Jetty -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jetty</artifactId>
+        </dependency>
+
+        <!-- Spring Boot Data JPA -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
         <!-- Spring Starter Test -->
@@ -83,13 +77,157 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- AspectJ -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
+
+        <!-- H2 -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- MySQL -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>local</id>
+
+            <properties>
+                <project.build.environment>local</project.build.environment>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <profile>
+            <id>development</id>
+
+            <properties>
+                <project.build.environment>development</project.build.environment>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>staging</id>
+
+            <properties>
+                <project.build.environment>staging</project.build.environment>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>production</id>
+
+            <properties>
+                <project.build.environment>production</project.build.environment>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>${lifecycle.mapping.version}</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.codehaus.mojo</groupId>
+                                        <artifactId>properties-maven-plugin</artifactId>
+                                        <versionRange>[${properties.maven.plugin.version},)</versionRange>
+                                        <goals>
+                                            <goal>read-project-properties</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+
+        <finalName>app</finalName>
+        <filters>
+            <filter>${project.build.filterDirectory}/${project.build.environment}.properties</filter>
+        </filters>
+        <resources>
+            <resource>
+                <directory>${project.build.resourcesDirectory}</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>${project.build.testResourcesDirectory}</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>**/*.p12</exclude>
+                </excludes>
+            </testResource>
+            <testResource>
+                <directory>${project.build.testResourcesDirectory}</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*.p12</include>
+                </includes>
+            </testResource>
+        </testResources>
+
         <plugins>
+            <!-- Defining the plugin stack -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>${properties.maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${project.build.filterDirectory}/${project.build.environment}.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                </configuration>
             </plugin>
         </plugins>
     </build>
