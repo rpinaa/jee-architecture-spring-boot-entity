@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@Entity(name = "TIC001_ISSUE")
+@Entity(name = "ISSUE")
 public class Issue extends Momentum {
 
     private static final long serialVersionUID = -3820079360849433869L;
