@@ -3,10 +3,9 @@ package org.example.seed.service.impl;
 import org.example.seed.catalog.IssuePriority;
 import org.example.seed.catalog.IssueStatus;
 import org.example.seed.domain.Issue;
+import org.example.seed.event.issue.*;
 import org.example.seed.repository.IssueRepository;
 import org.example.seed.service.IssueService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -25,8 +24,6 @@ import java.util.concurrent.Future;
 @Service
 public class IssueServiceImpl implements IssueService {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     private IssueRepository issueRepository;
 
@@ -34,85 +31,66 @@ public class IssueServiceImpl implements IssueService {
     @Async
     @Cacheable(value = "issues")
     @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-    public Future<Page<Issue>> findAll(int numberPage, int recordsPerPage) {
+    public Future<CatalogIssueEvent> requestAllIssues(final RequestAllIssueEvent requestAllIssueEvent) {
 
-        this.logger.info("> findAll");
+        final Pageable pageable = new PageRequest(requestAllIssueEvent.getNumberPage() - 1, requestAllIssueEvent.getRecordsPerPage(), Sort.Direction.DESC, "title");
+        final Page<Issue> issues = this.issueRepository.findAll(pageable);
 
-        final Pageable pageable = new PageRequest(numberPage, recordsPerPage, Sort.Direction.DESC, "title");
-
-        Page<Issue> issues = this.issueRepository.findAll(pageable);
-
-        this.logger.info("< findAll");
-
-        return new AsyncResult<>(issues);
+        return new AsyncResult<>(CatalogIssueEvent.builder().issues(issues.getContent()).total(issues.getTotalElements()).build());
     }
 
     @Override
+    @Async
     @CacheEvict(value = "issues", allEntries = true)
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public Issue create(final Issue issue) {
+    public Future<ResponseIssueEvent> createIssue(final CreateIssueEvent createIssueEvent) {
 
-        this.logger.info("> create");
+        createIssueEvent.getIssue().setStatus(IssueStatus.OPEN);
 
-        issue.setStatus(IssueStatus.OPEN);
-
-        if (issue.getPriority() == null) {
-            issue.setPriority(IssuePriority.MEDIUM);
+        if (createIssueEvent.getIssue().getPriority() == null) {
+            createIssueEvent.getIssue().setPriority(IssuePriority.MEDIUM);
         }
 
-        Issue persistedIssue = this.issueRepository.save(issue);
+        this.issueRepository.save(createIssueEvent.getIssue());
 
-        this.logger.info("< create");
-
-        return persistedIssue;
+        return new AsyncResult<>(null);
     }
 
     @Override
     @Async
     @Cacheable(value = "issues")
     @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-    public Future<Issue> find(final String id) {
+    public Future<ResponseIssueEvent> requestIssue(final RequestIssueEvent requestIssueEvent) {
 
-        this.logger.info("> find id:{}", id);
+        Issue issue = this.issueRepository.findOne(requestIssueEvent.getId());
 
-        Issue issue = this.issueRepository.findOne(id);
+        return new AsyncResult<>(ResponseIssueEvent.builder().issue(issue).build());
+    }
 
-        this.logger.info("< find id:[]", id);
+    @Override
+    @Async
+    @CacheEvict(value = "issues", allEntries = true)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public Future<ResponseIssueEvent> updateIssue(final UpdateIssueEvent updateIssueEvent) {
 
-        return new AsyncResult<>(issue);
+        final Issue currentIssue = this.issueRepository.findOne(updateIssueEvent.getIssue().getId());
+
+        currentIssue.setDescription(updateIssueEvent.getIssue().getDescription());
+        currentIssue.setTitle(updateIssueEvent.getIssue().getTitle());
+        currentIssue.setPriority(updateIssueEvent.getIssue().getPriority());
+        currentIssue.setStatus(updateIssueEvent.getIssue().getStatus());
+        currentIssue.setType(updateIssueEvent.getIssue().getType());
+
+        this.issueRepository.save(currentIssue);
+
+        return new AsyncResult<>(null);
     }
 
     @Override
     @CacheEvict(value = "issues", allEntries = true)
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public Issue update(final Issue issue) {
+    public void deleteIssue(final DeleteIssueEvent deleteIssueEvent) {
 
-        this.logger.info("> update");
-
-        final Issue currentIssue = this.issueRepository.findOne(issue.getId());
-
-        currentIssue.setDescription(issue.getDescription());
-        currentIssue.setTitle(issue.getTitle());
-        currentIssue.setPriority(issue.getPriority());
-        currentIssue.setStatus(issue.getStatus());
-        currentIssue.setType(issue.getType());
-
-        Issue updatedIssue = this.issueRepository.save(currentIssue);
-
-        this.logger.info("< update");
-
-        return updatedIssue;
-    }
-
-    @Override
-    @CacheEvict(value = "issues", allEntries = true)
-    @Transactional(isolation = Isolation.READ_COMMITTED)
-    public void delete(final String id) {
-
-        this.logger.info("> delete");
-
-        this.issueRepository.delete(id);
-
-        this.logger.info("< delete");
+        this.issueRepository.delete(deleteIssueEvent.getId());
     }
 }

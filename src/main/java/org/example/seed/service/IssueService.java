@@ -1,19 +1,18 @@
 package org.example.seed.service;
 
-import java.util.concurrent.Future;
+import org.example.seed.event.issue.*;
 
-import org.example.seed.domain.Issue;
-import org.springframework.data.domain.Page;
+import java.util.concurrent.Future;
 
 public interface IssueService {
 
-	Future<Page<Issue>> findAll(final int numberPage, final int recordsPerPage);
-	
-	Issue create(final Issue issue);
-	
-	Future<Issue> find(final String id);
-	
-	Issue update(final Issue issue);
-	
-	void delete(final String id);
+    Future<CatalogIssueEvent> requestAllIssues(final RequestAllIssueEvent requestAllIssueEvent);
+
+    Future<ResponseIssueEvent> createIssue(final CreateIssueEvent createIssueEvent);
+
+    Future<ResponseIssueEvent> requestIssue(final RequestIssueEvent requestIssueEvent);
+
+    Future<ResponseIssueEvent> updateIssue(final UpdateIssueEvent updateIssueEvent);
+
+    void deleteIssue(final DeleteIssueEvent deleteIssueEvent);
 }
