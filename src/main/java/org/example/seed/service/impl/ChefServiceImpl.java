@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -48,8 +47,7 @@ public class ChefServiceImpl implements ChefService {
     @Async
     @Cacheable(value = "chefs")
     @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-    public Future<CatalogChefEvent> requestChefs(final RequestAllChefEvent event)
-            throws ExecutionException, InterruptedException {
+    public Future<CatalogChefEvent> requestChefs(final RequestAllChefEvent event) {
 
         final Pageable pageable = new PageRequest(event.getPage() - 1, event.getLimit());
         final Page<ChefEntity> chefs = this.chefRepository.findAll(pageable);
