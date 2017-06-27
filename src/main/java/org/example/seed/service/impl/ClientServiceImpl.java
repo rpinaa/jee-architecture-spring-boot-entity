@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.concurrent.Future;
 
 /**
@@ -42,8 +43,7 @@ public class ClientServiceImpl implements ClientService {
         final Page<ClientEntity> clients = this.clientRepository.findAll(pageable);
 
         return new AsyncResult<>(CatalogClientEvent.builder()
-                .clients(this.clientMapper
-                        .mapListReverse(clients.getContent()))
+                .clients(this.clientMapper.mapListReverse(clients.getContent()))
                 .total(clients.getTotalElements())
                 .build());
     }
@@ -57,9 +57,7 @@ public class ClientServiceImpl implements ClientService {
         event.getClient().setStatus(ClientStatus.REGISTERED);
         event.getClient().setRating(0F);
 
-        this.clientRepository
-                .save(this.clientMapper
-                        .map(event.getClient()));
+        this.clientRepository.save(this.clientMapper.map(event.getClient()));
 
         return new AsyncResult<>(null);
     }
@@ -71,9 +69,7 @@ public class ClientServiceImpl implements ClientService {
     public Future<ResponseClientEvent> requestClient(final RequestClientEvent event) {
 
         return new AsyncResult<>(ResponseClientEvent.builder()
-                .client(this.clientMapper
-                        .map(this.clientRepository
-                                .findOne(event.getId())))
+                .client(this.clientMapper.map(this.clientRepository.findOne(event.getId())))
                 .build());
     }
 
@@ -83,14 +79,16 @@ public class ClientServiceImpl implements ClientService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public Future<ResponseClientEvent> updateClient(final UpdateClientEvent event) {
 
-        final ClientEntity clientEntity = this.clientRepository.findOne(event.getClient().getId());
+        Optional.of(this.clientRepository.findOne(event.getClient().getId()))
+                .ifPresent(clientEntity -> {
 
-        clientEntity.setFirstName(event.getClient().getFirstName());
-        clientEntity.setLastName(event.getClient().getLastName());
-        clientEntity.setRating(event.getClient().getRating());
-        clientEntity.setStatus(ClientStatus.REGISTERED);
+                    clientEntity.setFirstName(event.getClient().getFirstName());
+                    clientEntity.setLastName(event.getClient().getLastName());
+                    clientEntity.setRating(event.getClient().getRating());
+                    clientEntity.setStatus(ClientStatus.REGISTERED);
 
-        this.clientRepository.save(clientEntity);
+                    this.clientRepository.save(clientEntity);
+                });
 
         return new AsyncResult<>(null);
     }
