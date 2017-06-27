@@ -1,10 +1,10 @@
 package org.example.seed.entity;
 
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
 import org.example.seed.catalog.ChefStatus;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -26,12 +26,12 @@ public class ChefEntity extends DatesEntity {
     @Column(name = "id", length = 36, nullable = false, updatable = false)
     private String id;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_id_account")
     private AccountEntity account;
 
-    @Setter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "chef")
+    @OneToMany(mappedBy = "chef", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
     private List<TelephoneEntity> telephones;
 
     @Column(name = "curp", length = 18)

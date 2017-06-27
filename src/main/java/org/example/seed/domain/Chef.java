@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.example.seed.catalog.ChefStatus;
 import org.example.seed.constraint.Curp;
 import org.example.seed.constraint.Rfc;
+import org.example.seed.group.chef.ChefCreateGroup;
 import org.example.seed.group.chef.ChefUpdateGroup;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -27,20 +28,20 @@ public class Chef extends Dates {
         this.id = UUID.randomUUID().toString();
     }
 
-    @Size(min = 36, max = 36)
+    @Size(min = 36, max = 36, groups = {ChefUpdateGroup.class})
     @NotNull(groups = {ChefUpdateGroup.class})
     private String id;
 
-    @Rfc
+    @Rfc(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     @NotNull(groups = {ChefUpdateGroup.class})
     private String rfc;
 
-    @Curp
+    @Curp(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     @NotNull(groups = {ChefUpdateGroup.class})
     private String curp;
 
-    @Min(value = 0)
-    @Max(value = 5)
+    @Min(value = 0, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+    @Max(value = 5, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     @NotNull(groups = {ChefUpdateGroup.class})
     private Float rating;
 

@@ -25,25 +25,25 @@ public class Client extends Dates {
         this.id = UUID.randomUUID().toString();
     }
 
-    @Size(min = 36, max = 36)
+    @Size(min = 36, max = 36, groups = {ClientUpdateGroup.class})
     @NotNull(groups = {ClientUpdateGroup.class})
     private String id;
 
-    @Email
-    @Size(max = 45)
+    @Email(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+    @Size(max = 45, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
     @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
     private String email;
 
-    @Size(min = 2, max = 80)
+    @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
     @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
     private String firstName;
 
-    @Size(min = 2, max = 80)
+    @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
     @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
     private String lastName;
 
-    @Min(value = 0)
-    @Max(value = 5)
+    @Min(value = 0, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+    @Max(value = 5, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
     @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
     private Float rating;
 

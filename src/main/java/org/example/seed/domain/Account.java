@@ -21,16 +21,16 @@ public class Account {
 
     private String id;
 
-    @Size(min = 2, max = 80)
+    @Size(min = 2, max = 80, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     @NotNull(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     private String firstName;
 
-    @Size(min = 2, max = 80)
+    @Size(min = 2, max = 80, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     @NotNull(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     private String lastName;
 
-    @Email
-    @Size(max = 45)
+    @Email(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+    @Size(max = 45, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     @NotNull(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     private String email;
 }

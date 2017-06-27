@@ -2,7 +2,6 @@ package org.example.seed.service.impl;
 
 import org.example.seed.catalog.ChefStatus;
 import org.example.seed.entity.ChefEntity;
-import org.example.seed.entity.TelephoneEntity;
 import org.example.seed.event.chef.*;
 import org.example.seed.mapper.ChefMapper;
 import org.example.seed.mapper.TelephoneMapper;
@@ -21,10 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * Created by PINA on 25/06/2017.
@@ -52,11 +52,10 @@ public class ChefServiceImpl implements ChefService {
             throws ExecutionException, InterruptedException {
 
         final Pageable pageable = new PageRequest(event.getPage() - 1, event.getLimit());
-        final Page<ChefEntity> chefs = this.chefRepository.findAllWithTelephones(pageable).get();
+        final Page<ChefEntity> chefs = this.chefRepository.findAll(pageable);
 
         return new AsyncResult<>(CatalogChefEvent.builder()
-                .chefs(this.chefMapper
-                        .mapListReverse(chefs.getContent()))
+                .chefs(this.chefMapper.mapListReverse(chefs.getContent()))
                 .total(chefs.getTotalElements())
                 .build());
     }
@@ -69,10 +68,9 @@ public class ChefServiceImpl implements ChefService {
 
         event.getChef().setStatus(ChefStatus.PRE_REGISTERED);
         event.getChef().setRating(0F);
+        event.getChef().setTelephones(null);
 
-        this.chefRepository
-                .save(this.chefMapper
-                        .map(event.getChef()));
+        this.chefRepository.save(this.chefMapper.map(event.getChef()));
 
         return new AsyncResult<>(null);
     }
@@ -84,9 +82,7 @@ public class ChefServiceImpl implements ChefService {
     public Future<ResponseChefEvent> requestChef(final RequestChefEvent event) {
 
         return new AsyncResult<>(ResponseChefEvent.builder()
-                .chef(this.chefMapper
-                        .map(this.chefRepository
-                                .findOne(event.getId())))
+                .chef(this.chefMapper.map(this.chefRepository.findOne(event.getId())))
                 .build());
     }
 
@@ -99,20 +95,26 @@ public class ChefServiceImpl implements ChefService {
         Optional.of(this.chefRepository.findOne(event.getChef().getId()))
                 .ifPresent(chefEntity -> {
 
+                    this.telephoneRepository.deleteInBatch(chefEntity.getTelephones());
+
                     chefEntity.setRating(event.getChef().getRating());
                     chefEntity.setRfc(event.getChef().getRfc());
                     chefEntity.setCurp(event.getChef().getCurp());
+                    chefEntity.setStatus(ChefStatus.REGISTERED);
                     chefEntity.getAccount().setFirstName(event.getChef().getAccount().getFirstName());
                     chefEntity.getAccount().setLastName(event.getChef().getAccount().getLastName());
-                    chefEntity.setStatus(ChefStatus.REGISTERED);
+                    chefEntity.setTelephones(this.telephoneMapper
+                            .mapList(event.getChef().getTelephones())
+                            .parallelStream()
+                            .map(t -> {
+                                t.setId(UUID.randomUUID().toString());
+                                t.setChef(chefEntity);
 
-                    final List<TelephoneEntity> telephoneEntities = this.telephoneMapper
-                            .mapList(event.getChef().getTelephones());
-
-                    telephoneEntities.forEach(t -> t.setChef(chefEntity));
+                                return t;
+                            })
+                            .collect(Collectors.toList()));
 
                     this.chefRepository.save(chefEntity);
-                    this.telephoneRepository.save(telephoneEntities);
                 });
 
         return new AsyncResult<>(null);
