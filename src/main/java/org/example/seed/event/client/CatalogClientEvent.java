@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.seed.domain.Client;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 
@@ -17,6 +18,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@XmlRootElement
 public class CatalogClientEvent {
 
     private long total;
