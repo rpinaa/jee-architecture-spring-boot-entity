@@ -2,7 +2,6 @@ package org.example.seed.service;
 
 import org.example.seed.event.chef.*;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
@@ -10,7 +9,7 @@ import java.util.concurrent.Future;
  */
 public interface ChefService {
 
-    Future<CatalogChefEvent> requestChefs(final RequestAllChefEvent event) throws ExecutionException, InterruptedException;
+    Future<CatalogChefEvent> requestChefs(final RequestAllChefEvent event);
 
     Future<ResponseChefEvent> createChef(final CreateChefEvent event);
 
