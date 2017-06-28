@@ -14,6 +14,7 @@ JEE 7 non-blocking I/O Architecture, using Spring Boot and Entity Layer
 - Spring Boot Actuator 1.x
 - Spring Boot Jetty 1.x
 - Spring Boot Data 2.x
+- Spring Fox Swagger 2.x
 - AspectJ
 - Lombok
 
@@ -52,6 +53,14 @@ For production environment:
 ```sh
 $ mvn clean spring-boot:run -P production
 ```
+
+### Exploring
+
+Only for local environment:
+
+Go to http://localhost:8080/api/swagger-ui.html to see the Swagger Explorer
+
+![alt tag](https://raw.githubusercontent.com/rpinaa/jee-architecture-spring-boot-entity/master/swagger-api.png)
 
 ## License
 
