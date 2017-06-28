@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableJpaAuditing
 @Configuration
-public class DomainConfig {
+public class RepositoryConfig {
 
     @Bean
     public AuditingEntityListener createAuditingListener() {

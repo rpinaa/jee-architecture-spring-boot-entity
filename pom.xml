@@ -44,7 +44,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.3.RELEASE</version>
+        <version>1.5.4.RELEASE</version>
     </parent>
 
     <properties>
@@ -58,9 +58,10 @@
 
         <lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
         <properties.maven.plugin.version>1.0.0</properties.maven.plugin.version>
-        <org.mapstruct.version>1.2.0.Beta3</org.mapstruct.version>
 
         <java.version>1.8</java.version>
+        <swagger.version>2.2.2</swagger.version>
+        <org.mapstruct.version>1.2.0.Beta3</org.mapstruct.version>
     </properties>
 
     <dependencies>
@@ -129,25 +130,12 @@
             <artifactId>aspectjweaver</artifactId>
         </dependency>
 
-        <!-- H2 -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <!-- MySQL -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <optional>false</optional>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -161,6 +149,29 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+
+            <dependencies>
+                <!-- H2 -->
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <!-- Swagger and Swagger UI -->
+                <dependency>
+                    <groupId>io.springfox</groupId>
+                    <artifactId>springfox-swagger2</artifactId>
+                    <version>${swagger.version}</version>
+                    <scope>compile</scope>
+                </dependency>
+                <dependency>
+                    <groupId>io.springfox</groupId>
+                    <artifactId>springfox-swagger-ui</artifactId>
+                    <version>${swagger.version}</version>
+                    <scope>compile</scope>
+                </dependency>
+            </dependencies>
         </profile>
 
         <profile>
@@ -169,6 +180,15 @@
             <properties>
                 <project.build.environment>development</project.build.environment>
             </properties>
+
+            <dependencies>
+                <!-- H2 -->
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
         </profile>
 
         <profile>
@@ -177,6 +197,15 @@
             <properties>
                 <project.build.environment>staging</project.build.environment>
             </properties>
+
+            <dependencies>
+                <!-- H2 -->
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
         </profile>
 
         <profile>
@@ -185,6 +214,15 @@
             <properties>
                 <project.build.environment>production</project.build.environment>
             </properties>
+
+            <dependencies>
+                <!-- H2 -->
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
         </profile>
     </profiles>
 
@@ -272,6 +310,12 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <executable>true</executable>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
