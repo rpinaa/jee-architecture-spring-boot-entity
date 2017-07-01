@@ -3,6 +3,9 @@ package org.example.seed.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.seed.catalog.ClientStatus;
+import org.example.seed.constraint.Denomination;
+import org.example.seed.group.chef.ChefCreateGroup;
+import org.example.seed.group.chef.ChefUpdateGroup;
 import org.example.seed.group.client.ClientCreateGroup;
 import org.example.seed.group.client.ClientUpdateGroup;
 import org.hibernate.validator.constraints.Email;
@@ -34,10 +37,12 @@ public class Client extends Dates {
     @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
     private String email;
 
+    @Denomination(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
     @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
     private String firstName;
 
+    @Denomination(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
     @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
     private String lastName;

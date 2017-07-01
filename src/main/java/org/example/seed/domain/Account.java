@@ -1,6 +1,8 @@
 package org.example.seed.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.example.seed.constraint.Denomination;
 import org.example.seed.group.chef.ChefCreateGroup;
 import org.example.seed.group.chef.ChefUpdateGroup;
 import org.hibernate.validator.constraints.Email;
@@ -13,7 +15,8 @@ import java.util.UUID;
  * Created by PINA on 26/06/2017.
  */
 @Data
-public class Account {
+@EqualsAndHashCode(callSuper = true)
+public class Account extends Dates {
 
     public Account() {
         this.id = UUID.randomUUID().toString();
@@ -21,10 +24,12 @@ public class Account {
 
     private String id;
 
+    @Denomination(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     @Size(min = 2, max = 80, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     @NotNull(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     private String firstName;
 
+    @Denomination(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     @Size(min = 2, max = 80, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     @NotNull(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
     private String lastName;

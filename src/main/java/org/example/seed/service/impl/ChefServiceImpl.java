@@ -64,7 +64,7 @@ public class ChefServiceImpl implements ChefService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public Future<ResponseChefEvent> createChef(final CreateChefEvent event) {
 
-        event.getChef().setStatus(ChefStatus.PRE_REGISTERED);
+        event.getChef().setStatus(ChefStatus.REGISTERED);
         event.getChef().setRating(0F);
         event.getChef().setTelephones(null);
 
@@ -98,7 +98,7 @@ public class ChefServiceImpl implements ChefService {
                     chefEntity.setRating(event.getChef().getRating());
                     chefEntity.setRfc(event.getChef().getRfc());
                     chefEntity.setCurp(event.getChef().getCurp());
-                    chefEntity.setStatus(ChefStatus.REGISTERED);
+                    chefEntity.setStatus(ChefStatus.ACTIVATED);
                     chefEntity.getAccount().setFirstName(event.getChef().getAccount().getFirstName());
                     chefEntity.getAccount().setLastName(event.getChef().getAccount().getLastName());
                     chefEntity.setTelephones(this.telephoneMapper
