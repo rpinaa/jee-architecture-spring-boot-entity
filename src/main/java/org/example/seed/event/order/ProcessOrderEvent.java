@@ -1,0 +1,18 @@
+package org.example.seed.event.order;
+
+import lombok.*;
+import org.example.seed.domain.Order;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * Created by PINA on 30/06/2017.
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@XmlRootElement
+public class ProcessOrderEvent {
+    private Order order;
+}
