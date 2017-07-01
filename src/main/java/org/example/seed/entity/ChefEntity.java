@@ -1,7 +1,6 @@
 package org.example.seed.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import org.example.seed.catalog.ChefStatus;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -33,6 +32,11 @@ public class ChefEntity extends DatesEntity {
     @OneToMany(mappedBy = "chef", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private List<TelephoneEntity> telephones;
+
+    @OneToMany(mappedBy = "chef", cascade = {CascadeType.REMOVE})
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    private List<OrderEntity> orders;
 
     @Column(name = "curp", length = 18)
     private String curp;

@@ -1,12 +1,12 @@
 package org.example.seed.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import org.example.seed.catalog.ClientStatus;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by PINA on 28/05/2017.
@@ -26,6 +26,11 @@ public class ClientEntity extends DatesEntity {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_id_telephone")
     private TelephoneEntity telephone;
+
+    @OneToMany(mappedBy = "client", cascade = {CascadeType.REMOVE})
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    private List<OrderEntity> orders;
 
     @Column(name = "fist_name", length = 80)
     private String firstName;
