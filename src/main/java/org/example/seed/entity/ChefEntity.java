@@ -36,6 +36,11 @@ public class ChefEntity extends DatesEntity {
     @OneToMany(mappedBy = "chef", cascade = {CascadeType.REMOVE})
     @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.NONE)
+    private List<DishEntity> dishes;
+
+    @OneToMany(mappedBy = "chef", cascade = {CascadeType.REMOVE})
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
     private List<OrderEntity> orders;
 
     @Column(name = "curp", length = 18)
@@ -50,6 +55,9 @@ public class ChefEntity extends DatesEntity {
     @Column(name = "status", length = 20)
     @Enumerated(EnumType.STRING)
     private ChefStatus status;
+
+    @Column(name = "active")
+    private boolean active;
 
     @Column(name = "deleted")
     private boolean deleted;
