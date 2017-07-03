@@ -67,6 +67,7 @@ public class ChefServiceImpl implements ChefService {
         event.getChef().setStatus(ChefStatus.REGISTERED);
         event.getChef().setRating(0F);
         event.getChef().setTelephones(null);
+        event.getChef().setActive(false);
 
         this.chefRepository.save(this.chefMapper.map(event.getChef()));
 
