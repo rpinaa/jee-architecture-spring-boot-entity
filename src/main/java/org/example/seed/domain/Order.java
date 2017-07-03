@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -42,9 +42,6 @@ public class Order extends Dates {
     @NotEmpty(groups = {OrderCreateGroup.class})
     private String scheduledDate;
 
-    @NotNull(groups = {OrderCreateGroup.class})
-    private TimeZone timeZone;
-
     @NotNull(groups = {OrderRegisterGroup.class})
     private Float total;
 
@@ -57,4 +54,7 @@ public class Order extends Dates {
 
     @Valid
     private Address address;
+
+    @Valid
+    private List<Package> packages;
 }
