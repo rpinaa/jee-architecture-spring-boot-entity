@@ -48,6 +48,8 @@ public class Chef extends Dates {
     @NotNull(groups = {ChefUpdateGroup.class})
     private ChefStatus status;
 
+    private boolean active;
+
     @Valid
     private Account account;
 

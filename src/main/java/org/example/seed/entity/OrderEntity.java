@@ -5,11 +5,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.example.seed.catalog.OrderStatus;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -40,6 +43,10 @@ public class OrderEntity extends DatesEntity {
     @JoinColumn(name = "fk_id_client")
     @Getter(value = AccessLevel.NONE)
     private ClientEntity client;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = {CascadeType.ALL})
+    @Fetch(FetchMode.SELECT)
+    private List<PackageEntity> packages;
 
     @Column(name = "total")
     private Float total;
