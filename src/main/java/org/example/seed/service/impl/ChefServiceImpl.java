@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -49,11 +48,13 @@ public class ChefServiceImpl implements ChefService {
     @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public Future<CatalogChefEvent> requestChefs(final RequestAllChefEvent event) {
 
-        final Pageable pageable = new PageRequest(event.getPage() - 1, event.getLimit());
+        final Pageable pageable = PageRequest.of(event.getPage() - 1, event.getLimit());
         final Page<ChefEntity> chefs = this.chefRepository.findAll(pageable);
 
-        return new AsyncResult<>(CatalogChefEvent.builder()
-                .chefs(this.chefMapper.mapListReverse(chefs.getContent()))
+        return new AsyncResult<>(CatalogChefEvent
+                .builder()
+                .chefs(this.chefMapper
+                        .mapListReverse(chefs.getContent()))
                 .total(chefs.getTotalElements())
                 .build());
     }
@@ -69,7 +70,9 @@ public class ChefServiceImpl implements ChefService {
         event.getChef().setTelephones(null);
         event.getChef().setActive(false);
 
-        this.chefRepository.save(this.chefMapper.map(event.getChef()));
+        this.chefRepository
+                .save(this.chefMapper
+                        .map(event.getChef()));
 
         return new AsyncResult<>(null);
     }
@@ -79,9 +82,13 @@ public class ChefServiceImpl implements ChefService {
     @Cacheable(value = "chefs")
     @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public Future<ResponseChefEvent> requestChef(final RequestChefEvent event) {
-
-        return new AsyncResult<>(ResponseChefEvent.builder()
-                .chef(this.chefMapper.map(this.chefRepository.findOne(event.getId())))
+        return new AsyncResult<>(ResponseChefEvent
+                .builder()
+                .chef(this.chefMapper
+                        .map(this.chefRepository
+                                .findById(event.getId())
+                                .orElseGet(null))
+                )
                 .build());
     }
 
@@ -91,7 +98,7 @@ public class ChefServiceImpl implements ChefService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public Future<ResponseChefEvent> updateChef(final UpdateChefEvent event) {
 
-        Optional.of(this.chefRepository.findOne(event.getChef().getId()))
+        this.chefRepository.findById(event.getChef().getId())
                 .ifPresent(chefEntity -> {
 
                     this.telephoneRepository.deleteInBatch(chefEntity.getTelephones());
@@ -105,11 +112,10 @@ public class ChefServiceImpl implements ChefService {
                     chefEntity.setTelephones(this.telephoneMapper
                             .mapList(event.getChef().getTelephones())
                             .parallelStream()
-                            .map(t -> {
+                            .peek(t -> {
                                 t.setId(UUID.randomUUID().toString());
                                 t.setChef(chefEntity);
 
-                                return t;
                             })
                             .collect(Collectors.toList()));
 
@@ -125,7 +131,7 @@ public class ChefServiceImpl implements ChefService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public Future<ResponseChefEvent> deleteChef(final DeleteChefEvent event) {
 
-        this.chefRepository.delete(event.getId());
+        this.chefRepository.deleteById(event.getId());
 
         return new AsyncResult<>(null);
     }

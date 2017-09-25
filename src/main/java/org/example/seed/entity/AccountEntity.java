@@ -13,13 +13,13 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "account")
-@SQLDelete(sql = "UPDATE account SET deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE account SET deleted = 1 WHERE account_id = ?")
 @Where(clause = "deleted <> 1")
 @EqualsAndHashCode(callSuper = true)
 public class AccountEntity extends DatesEntity {
 
     @Id
-    @Column(name = "id", length = 36, nullable = false, updatable = false)
+    @Column(name = "account_id", length = 36, nullable = false, updatable = false)
     private String id;
 
     @Column(name = "fist_name", length = 80)

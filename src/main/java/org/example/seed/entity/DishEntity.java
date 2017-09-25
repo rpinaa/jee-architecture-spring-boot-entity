@@ -16,13 +16,13 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "dish")
-@SQLDelete(sql = "UPDATE dish SET deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE dish SET deleted = 1 WHERE dish_id = ?")
 @Where(clause = "deleted <> 1")
 @EqualsAndHashCode(callSuper = true)
 public class DishEntity extends DatesEntity {
 
     @Id
-    @Column(name = "id", length = 36, nullable = false, updatable = false)
+    @Column(name = "dish_id", length = 36, nullable = false, updatable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)

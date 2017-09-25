@@ -17,7 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -84,16 +87,20 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public Future<ResponseOrderEvent> registerOrder(final ProcessOrderEvent event) {
 
-        final OrderEntity orderEntity = this.mergePackages(event, OrderStatus.CREATED);
+        this.clientRepository.findById(event.getIdClient())
+                .ifPresent(clientEntity -> {
 
-        orderEntity.setRejectedDate(null);
-        orderEntity.setFinishedDate(null);
-        orderEntity.setRegisteredDate(new Date());
-        orderEntity.setTimeZone(event.getTimeZone());
-        orderEntity.setStatus(OrderStatus.PENDING_TO_ACCEPT);
-        orderEntity.setClient(this.clientRepository.findOne(event.getIdClient()));
+                    final OrderEntity orderEntity = this.mergePackages(event, OrderStatus.CREATED);
 
-        this.orderRepository.save(orderEntity);
+                    orderEntity.setRejectedDate(null);
+                    orderEntity.setFinishedDate(null);
+                    orderEntity.setRegisteredDate(new Date());
+                    orderEntity.setTimeZone(event.getTimeZone());
+                    orderEntity.setStatus(OrderStatus.PENDING_TO_ACCEPT);
+                    orderEntity.setClient(clientEntity);
+
+                    this.orderRepository.save(orderEntity);
+                });
 
         return new AsyncResult<>(null);
     }
@@ -122,19 +129,22 @@ public class OrderServiceImpl implements OrderService {
                 .sorted(Comparator.comparing(pe -> pe.getDish().getId()));
 
         final List<DishEntity> dishEntities = this.dishRepository
-                .findAll(packageEntities
+                .findAllById(packageEntities
                         .map(PackageEntity::getId)
                         .collect(Collectors.toList()));
 
         final ChefEntity chefEntity = this.chefRepository
                 .findOneByDish(dishEntities.get(0).getId());
 
-        Optional.of(this.dishRepository.findAllByChef(chefEntity.getId()))
-                .filter(de -> de.size() < 0 && de.containsAll(dishEntities))
-                .orElseThrow(RuntimeException::new);
+        this.dishRepository.findAllByChef(chefEntity.getId())
+                .ifPresent(currentDishEntities -> {
+                    if (!currentDishEntities.containsAll(dishEntities)) {
+                        throw new RuntimeException();
+                    }
+                });
 
-        final OrderEntity orderEntity = Optional.of(this.orderRepository
-                .findOneByClientAndOrder(event.getIdClient(), event.getOrder().getId(), status))
+        final OrderEntity orderEntity = this.orderRepository
+                .findOneByClientAndOrder(event.getIdClient(), event.getOrder().getId(), status)
                 .map(oe -> {
                     this.packageRepository.deleteInBatch(oe.getPackages());
 

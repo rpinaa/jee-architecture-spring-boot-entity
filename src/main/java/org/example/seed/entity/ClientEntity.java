@@ -14,13 +14,13 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "client")
-@SQLDelete(sql = "UPDATE client SET deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE client SET deleted = 1 WHERE client_id = ?")
 @Where(clause = "deleted <> 1")
 @EqualsAndHashCode(callSuper = true)
 public class ClientEntity extends DatesEntity {
 
     @Id
-    @Column(name = "id", length = 36, nullable = false, updatable = false)
+    @Column(name = "client_id", length = 36, nullable = false, updatable = false)
     private String id;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

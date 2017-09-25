@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.concurrent.Future;
 
 /**
@@ -39,11 +38,13 @@ public class ClientServiceImpl implements ClientService {
     @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public Future<CatalogClientEvent> requestClients(final RequestAllClientEvent event) {
 
-        final Pageable pageable = new PageRequest(event.getPage() - 1, event.getLimit());
+        final Pageable pageable = PageRequest.of(event.getPage() - 1, event.getLimit());
         final Page<ClientEntity> clients = this.clientRepository.findAll(pageable);
 
-        return new AsyncResult<>(CatalogClientEvent.builder()
-                .clients(this.clientMapper.mapListReverse(clients.getContent()))
+        return new AsyncResult<>(CatalogClientEvent
+                .builder()
+                .clients(this.clientMapper
+                        .mapListReverse(clients.getContent()))
                 .total(clients.getTotalElements())
                 .build());
     }
@@ -57,7 +58,9 @@ public class ClientServiceImpl implements ClientService {
         event.getClient().setStatus(ClientStatus.REGISTERED);
         event.getClient().setRating(0F);
 
-        this.clientRepository.save(this.clientMapper.map(event.getClient()));
+        this.clientRepository
+                .save(this.clientMapper
+                        .map(event.getClient()));
 
         return new AsyncResult<>(null);
     }
@@ -67,9 +70,12 @@ public class ClientServiceImpl implements ClientService {
     @Cacheable(value = "client")
     @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public Future<ResponseClientEvent> requestClient(final RequestClientEvent event) {
-
-        return new AsyncResult<>(ResponseClientEvent.builder()
-                .client(this.clientMapper.map(this.clientRepository.findOne(event.getId())))
+        return new AsyncResult<>(ResponseClientEvent
+                .builder()
+                .client(this.clientMapper
+                        .map(this.clientRepository
+                                .findById(event.getId())
+                                .orElseGet(null)))
                 .build());
     }
 
@@ -79,7 +85,7 @@ public class ClientServiceImpl implements ClientService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public Future<ResponseClientEvent> updateClient(final UpdateClientEvent event) {
 
-        Optional.of(this.clientRepository.findOne(event.getClient().getId()))
+        this.clientRepository.findById(event.getClient().getId())
                 .ifPresent(clientEntity -> {
 
                     clientEntity.setFirstName(event.getClient().getFirstName());
@@ -99,7 +105,7 @@ public class ClientServiceImpl implements ClientService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public Future<ResponseClientEvent> deleteClient(final DeleteClientEvent event) {
 
-        this.clientRepository.delete(event.getId());
+        this.clientRepository.deleteById(event.getId());
 
         return new AsyncResult<>(null);
     }

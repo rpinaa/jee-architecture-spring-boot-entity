@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by PINA on 01/07/2017.
@@ -14,5 +15,5 @@ import java.util.List;
 public interface DishRepository extends JpaRepository<DishEntity, String> {
 
     @Query("SELECT de FROM DishEntity de JOIN de.chef AS ce WHERE ce.active = TRUE AND ce.id = ?1")
-    List<DishEntity> findAllByChef(final String idChef);
+    Optional<List<DishEntity>> findAllByChef(final String idChef);
 }
