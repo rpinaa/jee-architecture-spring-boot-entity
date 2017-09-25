@@ -44,7 +44,8 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.4.RELEASE</version>
+        <version>2.0.0.M4</version>
+        <relativePath/>
     </parent>
 
     <properties>
@@ -54,21 +55,19 @@
         <project.build.testResourcesDirectory>${basedir}/src/test/resources</project.build.testResourcesDirectory>
         <project.build.filterDirectory>${basedir}/src/main/filters</project.build.filterDirectory>
 
+        <java.version>1.8</java.version>
+
         <start-class>org.example.seed.Application</start-class>
 
-        <lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
-        <properties.maven.plugin.version>1.0.0</properties.maven.plugin.version>
-
-        <java.version>1.8</java.version>
         <swagger.version>2.2.2</swagger.version>
         <org.mapstruct.version>1.2.0.Beta3</org.mapstruct.version>
     </properties>
 
     <dependencies>
-        <!-- Spring Boot Web -->
+        <!-- Spring Boot Web Flux -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
@@ -89,23 +88,16 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- Spring Boot Jetty -->
+        <!-- Spring Boot Undertow -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jetty</artifactId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
 
         <!-- Spring Boot Data JPA -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <!-- Spring Starter Test -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <!-- MapStruct library -->
@@ -130,11 +122,33 @@
             <artifactId>aspectjweaver</artifactId>
         </dependency>
 
+        <!-- Spring Starter Test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>false</optional>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Swagger and Swagger UI -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -156,20 +170,6 @@
                     <groupId>com.h2database</groupId>
                     <artifactId>h2</artifactId>
                     <scope>runtime</scope>
-                </dependency>
-
-                <!-- Swagger and Swagger UI -->
-                <dependency>
-                    <groupId>io.springfox</groupId>
-                    <artifactId>springfox-swagger2</artifactId>
-                    <version>${swagger.version}</version>
-                    <scope>compile</scope>
-                </dependency>
-                <dependency>
-                    <groupId>io.springfox</groupId>
-                    <artifactId>springfox-swagger-ui</artifactId>
-                    <version>${swagger.version}</version>
-                    <scope>compile</scope>
                 </dependency>
             </dependencies>
         </profile>
@@ -199,10 +199,10 @@
             </properties>
 
             <dependencies>
-                <!-- H2 -->
+                <!-- MySQL -->
                 <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
                     <scope>runtime</scope>
                 </dependency>
             </dependencies>
@@ -216,10 +216,10 @@
             </properties>
 
             <dependencies>
-                <!-- H2 -->
+                <!-- MySQL -->
                 <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
                     <scope>runtime</scope>
                 </dependency>
             </dependencies>
@@ -227,36 +227,6 @@
     </profiles>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>${lifecycle.mapping.version}</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.codehaus.mojo</groupId>
-                                        <artifactId>properties-maven-plugin</artifactId>
-                                        <versionRange>[${properties.maven.plugin.version},)</versionRange>
-                                        <goals>
-                                            <goal>read-project-properties</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore/>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
-
         <finalName>app</finalName>
         <filters>
             <filter>${project.build.filterDirectory}/${project.build.environment}.properties</filter>
@@ -271,40 +241,10 @@
             <testResource>
                 <directory>${project.build.testResourcesDirectory}</directory>
                 <filtering>true</filtering>
-                <excludes>
-                    <exclude>**/*.p12</exclude>
-                </excludes>
-            </testResource>
-            <testResource>
-                <directory>${project.build.testResourcesDirectory}</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>**/*.p12</include>
-                </includes>
             </testResource>
         </testResources>
 
         <plugins>
-            <!-- Defining the plugin stack -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>${properties.maven.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <files>
-                                <file>${project.build.filterDirectory}/${project.build.environment}.properties</file>
-                            </files>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -318,6 +258,55 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>

@@ -21,13 +21,13 @@ import java.util.TimeZone;
 @Data
 @Entity
 @Table(name = "order")
-@SQLDelete(sql = "UPDATE order SET deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE order SET deleted = 1 WHERE order_id = ?")
 @Where(clause = "deleted <> 1")
 @EqualsAndHashCode(callSuper = true)
 public class OrderEntity extends DatesEntity {
 
     @Id
-    @Column(name = "id", length = 36, nullable = false, updatable = false)
+    @Column(name = "order_id", length = 36, nullable = false, updatable = false)
     private String id;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
