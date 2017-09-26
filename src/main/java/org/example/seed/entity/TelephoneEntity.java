@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class TelephoneEntity implements Serializable {
 
     @Id
-    @Column(name = "telephone_id", length = 36, nullable = false, updatable = false)
+    @Column(name = "id", length = 36, nullable = false, updatable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)

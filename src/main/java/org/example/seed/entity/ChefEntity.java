@@ -16,13 +16,13 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "chef")
-@SQLDelete(sql = "UPDATE chef SET deleted = 1 WHERE chef_id = ?")
+@SQLDelete(sql = "UPDATE chef SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted <> 1")
 @EqualsAndHashCode(callSuper = true)
 public class ChefEntity extends DatesEntity {
 
     @Id
-    @Column(name = "chef_id", length = 36, nullable = false, updatable = false)
+    @Column(name = "id", length = 36, nullable = false, updatable = false)
     private String id;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
