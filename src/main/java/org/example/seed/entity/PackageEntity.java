@@ -14,12 +14,12 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "package")
-@SQLDelete(sql = "UPDATE package SET deleted = 1 WHERE package_id = ?")
+@SQLDelete(sql = "UPDATE package SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted <> 1")
 public class PackageEntity extends DatesEntity {
 
     @Id
-    @Column(name = "package_id", length = 36, nullable = false, updatable = false)
+    @Column(name = "id", length = 36, nullable = false, updatable = false)
     private String id;
 
     @OneToOne(fetch = FetchType.EAGER)

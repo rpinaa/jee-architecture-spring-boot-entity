@@ -15,12 +15,12 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "address")
-@SQLDelete(sql = "UPDATE address SET deleted = 1 WHERE address_id = ?")
+@SQLDelete(sql = "UPDATE address SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted <> 1")
 public class AddressEntity extends DatesEntity {
 
     @Id
-    @Column(name = "address_id", length = 36, nullable = false, updatable = false)
+    @Column(name = "id", length = 36, nullable = false, updatable = false)
     private String id;
 
     @Column(name = "int_number", length = 5)
