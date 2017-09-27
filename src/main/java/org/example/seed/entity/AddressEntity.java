@@ -14,8 +14,8 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "address")
-@SQLDelete(sql = "UPDATE address SET deleted = 1 WHERE id = ?")
+@Table(name = "t_address")
+@SQLDelete(sql = "UPDATE t_address SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted <> 1")
 public class AddressEntity extends DatesEntity {
 

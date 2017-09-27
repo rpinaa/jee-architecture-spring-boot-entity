@@ -13,8 +13,8 @@ import javax.persistence.*;
  */
 @Data
 @Entity
-@Table(name = "package")
-@SQLDelete(sql = "UPDATE package SET deleted = 1 WHERE id = ?")
+@Table(name = "t_package")
+@SQLDelete(sql = "UPDATE t_package SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted <> 1")
 public class PackageEntity extends DatesEntity {
 

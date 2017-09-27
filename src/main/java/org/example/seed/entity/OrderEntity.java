@@ -20,8 +20,8 @@ import java.util.TimeZone;
  */
 @Data
 @Entity
-@Table(name = "order")
-@SQLDelete(sql = "UPDATE order SET deleted = 1 WHERE id = ?")
+@Table(name = "t_order")
+@SQLDelete(sql = "UPDATE t_order SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted <> 1")
 @EqualsAndHashCode(callSuper = true)
 public class OrderEntity extends DatesEntity {
