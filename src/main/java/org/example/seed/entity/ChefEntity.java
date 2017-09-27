@@ -15,8 +15,8 @@ import java.util.List;
  */
 @Data
 @Entity
-@Table(name = "chef")
-@SQLDelete(sql = "UPDATE chef SET deleted = 1 WHERE id = ?")
+@Table(name = "t_chef")
+@SQLDelete(sql = "UPDATE t_chef SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted <> 1")
 @EqualsAndHashCode(callSuper = true)
 public class ChefEntity extends DatesEntity {

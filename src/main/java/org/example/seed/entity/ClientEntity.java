@@ -13,8 +13,8 @@ import java.util.List;
  */
 @Data
 @Entity
-@Table(name = "client")
-@SQLDelete(sql = "UPDATE client SET deleted = 1 WHERE id = ?")
+@Table(name = "t_client")
+@SQLDelete(sql = "UPDATE t_client SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted <> 1")
 @EqualsAndHashCode(callSuper = true)
 public class ClientEntity extends DatesEntity {

@@ -12,8 +12,8 @@ import javax.persistence.*;
  */
 @Data
 @Entity
-@Table(name = "account")
-@SQLDelete(sql = "UPDATE account SET deleted = 1 WHERE id = ?")
+@Table(name = "t_account")
+@SQLDelete(sql = "UPDATE t_account SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted <> 1")
 @EqualsAndHashCode(callSuper = true)
 public class AccountEntity extends DatesEntity {
