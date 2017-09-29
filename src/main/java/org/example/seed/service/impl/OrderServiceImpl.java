@@ -32,41 +32,44 @@ import java.util.stream.Stream;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    @Autowired
-    private ChefRepository chefRepository;
+  @Autowired
+  private ChefRepository chefRepository;
 
-    @Autowired
-    private ClientRepository clientRepository;
+  @Autowired
+  private ClientRepository clientRepository;
 
-    @Autowired
-    private DishRepository dishRepository;
+  @Autowired
+  private DishRepository dishRepository;
 
-    @Autowired
-    private OrderMapper orderMapper;
+  @Autowired
+  private OrderMapper orderMapper;
 
-    @Autowired
-    private OrderRepository orderRepository;
+  @Autowired
+  private OrderRepository orderRepository;
 
-    @Autowired
-    private PackageMapper packageMapper;
+  @Autowired
+  private PackageMapper packageMapper;
 
-    @Autowired
-    private PackageRepository packageRepository;
+  @Autowired
+  private PackageRepository packageRepository;
 
-    @Override
-    public Future<CatalogOrderEvent> requestOrders(final RequestAllOrderEvent event) {
-        return null;
-    }
+  @Override
+  public Future<CatalogOrderEvent> requestOrders(final RequestAllOrderEvent event) {
+    return null;
+  }
 
-    @Override
-    public Future<CatalogOrderEvent> requestOrder(final RequestAllOrderEvent event) {
-        return null;
-    }
+  @Override
+  public Future<CatalogOrderEvent> requestOrder(final RequestAllOrderEvent event) {
+    return null;
+  }
 
-    @Override
-    @Async
-    @Transactional(isolation = Isolation.READ_COMMITTED)
-    public Future<ResponseOrderEvent> createOrder(final ProcessOrderEvent event) {
+  @Override
+  @Async
+  @Transactional(isolation = Isolation.READ_COMMITTED)
+  public Future<ResponseOrderEvent> createOrder(final ProcessOrderEvent event) {
+
+    this.clientRepository.findById(event.getIdClient())
+      .ifPresent(clientEntity -> {
 
         event.getOrder().setComment(null);
         event.getOrder().setAddress(null);
@@ -77,96 +80,106 @@ public class OrderServiceImpl implements OrderService {
         event.getOrder().setRegisteredDate(null);
         event.getOrder().setStatus(OrderStatus.CREATED);
 
-        this.orderRepository.save(this.mergePackages(event, OrderStatus.CREATED));
+        final OrderEntity orderEntity = this.mergePackages(event, OrderStatus.CREATED);
 
-        return new AsyncResult<>(null);
-    }
+        orderEntity.setClient(clientEntity);
 
-    @Override
-    @Async
-    @Transactional(isolation = Isolation.READ_COMMITTED)
-    public Future<ResponseOrderEvent> registerOrder(final ProcessOrderEvent event) {
+        this.orderRepository.save(orderEntity);
+      });
 
-        this.clientRepository.findById(event.getIdClient())
-                .ifPresent(clientEntity -> {
+    return new AsyncResult<>(null);
+  }
 
-                    final OrderEntity orderEntity = this.mergePackages(event, OrderStatus.CREATED);
+  @Override
+  @Async
+  @Transactional(isolation = Isolation.READ_COMMITTED)
+  public Future<ResponseOrderEvent> registerOrder(final ProcessOrderEvent event) {
 
-                    orderEntity.setRejectedDate(null);
-                    orderEntity.setFinishedDate(null);
-                    orderEntity.setRegisteredDate(new Date());
-                    orderEntity.setTimeZone(event.getTimeZone());
-                    orderEntity.setStatus(OrderStatus.PENDING_TO_ACCEPT);
-                    orderEntity.setClient(clientEntity);
+    final OrderEntity orderEntity = this.mergePackages(event, OrderStatus.CREATED);
 
-                    this.orderRepository.save(orderEntity);
-                });
+    orderEntity.setRejectedDate(null);
+    orderEntity.setFinishedDate(null);
+    orderEntity.setRegisteredDate(new Date());
+    orderEntity.setTimeZone(event.getTimeZone());
+    orderEntity.setStatus(OrderStatus.PENDING_TO_ACCEPT);
 
-        return new AsyncResult<>(null);
-    }
+    this.orderRepository.save(orderEntity);
 
-    @Override
-    public Future<ResponseOrderEvent> processOrder(final ProcessOrderEvent event) {
-        return null;
-    }
+    return new AsyncResult<>(null);
+  }
 
-    @Override
-    public Future<ResponseOrderEvent> updateOrder(final ProcessOrderEvent event) {
-        return null;
-    }
+  @Override
+  public Future<ResponseOrderEvent> processOrder(final ProcessOrderEvent event) {
 
-    @Override
-    public Future<ResponseOrderEvent> deleteOrder(final DeleteOrderEvent event) {
-        return null;
-    }
+    this.orderRepository.findById(event.getOrder().getId())
+      .ifPresent(orderEntity -> {
 
-    private OrderEntity mergePackages(final ProcessOrderEvent event, final OrderStatus status) {
+        final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.PENDING_TO_ACCEPT);
 
-        final Stream<PackageEntity> packageEntities = this.packageMapper
-                .mapList(event.getOrder().getPackages())
-                .parallelStream()
-                .distinct()
-                .sorted(Comparator.comparing(pe -> pe.getDish().getId()));
+        orderEntity.setScheduledDate(new Date().toString());
+        orderEntity.setStatus(OrderStatus.ACCEPTED);
+      });
 
-        final List<DishEntity> dishEntities = this.dishRepository
-                .findAllById(packageEntities
-                        .map(PackageEntity::getId)
-                        .collect(Collectors.toList()));
+    return null;
+  }
 
-        final ChefEntity chefEntity = this.chefRepository
-                .findOneByDish(dishEntities.get(0).getId());
+  @Override
+  public Future<ResponseOrderEvent> updateOrder(final ProcessOrderEvent event) {
+    return null;
+  }
 
-        this.dishRepository.findAllByChef(chefEntity.getId())
-                .ifPresent(currentDishEntities -> {
-                    if (!currentDishEntities.containsAll(dishEntities)) {
-                        throw new RuntimeException();
-                    }
-                });
+  @Override
+  public Future<ResponseOrderEvent> deleteOrder(final DeleteOrderEvent event) {
+    return null;
+  }
 
-        final OrderEntity orderEntity = this.orderRepository
-                .findOneByClientAndOrder(event.getIdClient(), event.getOrder().getId(), status)
-                .map(oe -> {
-                    this.packageRepository.deleteInBatch(oe.getPackages());
+  private OrderEntity mergePackages(final ProcessOrderEvent event, final OrderStatus status) {
 
-                    return oe;
-                })
-                .orElseGet(() -> this.orderMapper.map(event.getOrder()));
+    final Stream<PackageEntity> packageEntities = this.packageMapper
+      .mapList(event.getOrder().getPackages())
+      .parallelStream()
+      .distinct()
+      .sorted(Comparator.comparing(pe -> pe.getDish().getId()));
 
-        final AtomicInteger atomicInteger = new AtomicInteger(0);
+    final List<DishEntity> dishEntities = this.dishRepository
+      .findAllById(packageEntities
+        .map(PackageEntity::getId)
+        .collect(Collectors.toList()));
 
-        packageEntities.forEach(pe -> {
-            pe.setId(UUID.randomUUID().toString());
-            pe.setOrder(orderEntity);
-            pe.setDish(dishEntities.get(atomicInteger.get()));
-            pe.setPrice(dishEntities.get(atomicInteger.getAndIncrement()).getPrice());
-        });
+    final ChefEntity chefEntity = this.chefRepository
+      .findOneByDish(dishEntities.get(0).getId());
 
-        orderEntity.setPackages(packageEntities.collect(Collectors.toList()));
-        orderEntity.setChef(chefEntity);
-        orderEntity.setTotal((float) packageEntities
-                .mapToDouble(pe -> pe.getPrice() * pe.getQuantity())
-                .sum());
+    this.dishRepository.findAllByChef(chefEntity.getId())
+      .ifPresent(currentDishEntities -> {
+        if (!currentDishEntities.containsAll(dishEntities)) {
+          throw new RuntimeException();
+        }
+      });
 
-        return orderEntity;
-    }
+    final OrderEntity orderEntity = this.orderRepository
+      .findOneByClientAndOrder(event.getIdClient(), event.getOrder().getId(), status)
+      .map(oe -> {
+        this.packageRepository.deleteInBatch(oe.getPackages());
+
+        return oe;
+      })
+      .orElseGet(() -> this.orderMapper.map(event.getOrder()));
+
+    final AtomicInteger atomicInteger = new AtomicInteger(0);
+
+    packageEntities.forEach(pe -> {
+      pe.setId(UUID.randomUUID().toString());
+      pe.setOrder(orderEntity);
+      pe.setDish(dishEntities.get(atomicInteger.get()));
+      pe.setPrice(dishEntities.get(atomicInteger.getAndIncrement()).getPrice());
+    });
+
+    orderEntity.setPackages(packageEntities.collect(Collectors.toList()));
+    orderEntity.setChef(chefEntity);
+    orderEntity.setTotal((float) packageEntities
+      .mapToDouble(pe -> pe.getPrice() * pe.getQuantity())
+      .sum());
+
+    return orderEntity;
+  }
 }
