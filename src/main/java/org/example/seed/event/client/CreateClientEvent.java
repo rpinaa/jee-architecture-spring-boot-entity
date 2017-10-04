@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class CreateClientEvent extends CreateEvent {
 
-    @Valid
-    @NotNull(groups = {ClientCreateGroup.class})
-    private Client client;
+  @Valid
+  @NotNull(groups = {ClientCreateGroup.class})
+  private Client client;
 }

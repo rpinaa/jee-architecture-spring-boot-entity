@@ -17,6 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class RequestAllClientEvent {
 
-    private int page;
-    private int limit;
+  private int page;
+  private int limit;
 }

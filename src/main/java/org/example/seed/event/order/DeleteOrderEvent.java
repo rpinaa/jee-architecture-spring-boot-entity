@@ -11,8 +11,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class DeleteOrderEvent extends DeleteEvent {
 
-    @Builder
-    public DeleteOrderEvent(final String id) {
-        super(id);
-    }
+  @Builder
+  public DeleteOrderEvent(final String id) {
+    super(id);
+  }
 }

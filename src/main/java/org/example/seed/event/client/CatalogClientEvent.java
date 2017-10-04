@@ -21,6 +21,6 @@ import java.util.List;
 @XmlRootElement
 public class CatalogClientEvent {
 
-    private long total;
-    private List<Client> clients;
+  private long total;
+  private List<Client> clients;
 }

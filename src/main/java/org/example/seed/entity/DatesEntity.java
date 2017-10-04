@@ -17,13 +17,13 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class DatesEntity implements Serializable {
 
-    @Column(name = "created_date", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    @CreatedDate
-    private Date createdDate;
+  @Column(name = "created_date", updatable = false)
+  @Temporal(TemporalType.TIMESTAMP)
+  @CreatedDate
+  private Date createdDate;
 
-    @Column(name = "updated_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    @LastModifiedDate
-    private Date updatedDate;
+  @Column(name = "updated_date")
+  @Temporal(TemporalType.TIMESTAMP)
+  @LastModifiedDate
+  private Date updatedDate;
 }

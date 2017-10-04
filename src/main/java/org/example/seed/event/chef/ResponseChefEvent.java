@@ -18,5 +18,5 @@ import javax.xml.bind.annotation.XmlRootElement;
 @AllArgsConstructor
 @XmlRootElement
 public class ResponseChefEvent {
-    private Chef chef;
+  private Chef chef;
 }

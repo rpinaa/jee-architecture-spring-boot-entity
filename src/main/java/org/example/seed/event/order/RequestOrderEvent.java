@@ -11,8 +11,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class RequestOrderEvent extends RequestEvent {
 
-    @Builder
-    public RequestOrderEvent(final String id) {
-        super(id);
-    }
+  @Builder
+  public RequestOrderEvent(final String id) {
+    super(id);
+  }
 }

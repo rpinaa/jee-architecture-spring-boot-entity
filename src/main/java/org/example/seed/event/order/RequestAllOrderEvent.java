@@ -17,6 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class RequestAllOrderEvent {
 
-    private int page;
-    private int limit;
+  private int page;
+  private int limit;
 }

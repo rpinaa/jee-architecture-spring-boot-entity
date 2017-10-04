@@ -18,25 +18,25 @@ import javax.persistence.*;
 @Where(clause = "deleted <> 1")
 public class PackageEntity extends DatesEntity {
 
-    @Id
-    @Column(name = "id", length = 36, nullable = false, updatable = false)
-    private String id;
+  @Id
+  @Column(name = "id", length = 36, nullable = false, updatable = false)
+  private String id;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "fk_id_dish")
-    private DishEntity dish;
+  @OneToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "fk_id_dish")
+  private DishEntity dish;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_id_order")
-    @Getter(AccessLevel.NONE)
-    private OrderEntity order;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "fk_id_order")
+  @Getter(AccessLevel.NONE)
+  private OrderEntity order;
 
-    @Column(name = "quantity")
-    private Integer quantity;
+  @Column(name = "quantity")
+  private Integer quantity;
 
-    @Column(name = "price")
-    private Float price;
+  @Column(name = "price")
+  private Float price;
 
-    @Column(name = "deleted")
-    private boolean deleted;
+  @Column(name = "deleted")
+  private boolean deleted;
 }

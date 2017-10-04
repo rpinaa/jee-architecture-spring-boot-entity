@@ -18,5 +18,5 @@ import javax.xml.bind.annotation.XmlRootElement;
 @AllArgsConstructor
 @XmlRootElement
 public class ResponseClientEvent {
-    private Client client;
+  private Client client;
 }

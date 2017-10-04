@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class UpdateClientEvent extends UpdateEvent {
 
-    @Valid
-    @NotNull(groups = {ClientUpdateGroup.class})
-    private Client client;
+  @Valid
+  @NotNull(groups = {ClientUpdateGroup.class})
+  private Client client;
 }

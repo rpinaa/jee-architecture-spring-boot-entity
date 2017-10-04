@@ -18,5 +18,5 @@ import javax.xml.bind.annotation.XmlRootElement;
 @AllArgsConstructor
 @XmlRootElement
 public class ResponseOrderEvent {
-    private Order order;
+  private Order order;
 }
