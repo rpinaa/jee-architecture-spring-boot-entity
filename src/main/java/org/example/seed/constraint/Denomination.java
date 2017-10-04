@@ -9,15 +9,15 @@ import java.lang.annotation.*;
 /**
  * Created by PINA on 30/06/2017.
  */
-@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE })
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = DenominationImpl.class)
 @Documented
 public @interface Denomination {
 
-    String message() default "NAMES";
+  String message() default "NAMES";
 
-    Class<?>[] groups() default {};
+  Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+  Class<? extends Payload>[] payload() default {};
 }

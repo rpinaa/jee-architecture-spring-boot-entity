@@ -21,40 +21,42 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 public class Order extends Dates {
 
-    public Order() {
-        this.id = UUID.randomUUID().toString();
-    }
+  @Size(min = 36, max = 36, groups = {OrderRegisterGroup.class})
+  @NotEmpty(groups = {OrderRegisterGroup.class})
+  private String id;
 
-    @Size(min = 36, max = 36, groups = {OrderRegisterGroup.class})
-    @NotEmpty(groups = {OrderRegisterGroup.class})
-    private String id;
+  @NotNull(groups = {OrderCreateGroup.class})
+  private Double latitude;
 
-    @NotNull(groups = {OrderCreateGroup.class})
-    private Double latitude;
+  @NotNull(groups = {OrderCreateGroup.class})
+  private Double longitude;
 
-    @NotNull(groups = {OrderCreateGroup.class})
-    private Double longitude;
+  @Size(max = 50, groups = {OrderCreateGroup.class})
+  @NotEmpty(groups = {OrderCreateGroup.class})
+  private String comment;
 
-    @Size(max = 50, groups = {OrderCreateGroup.class})
-    @NotEmpty(groups = {OrderCreateGroup.class})
-    private String comment;
+  @NotEmpty(groups = {OrderCreateGroup.class})
+  private String scheduledDate;
 
-    @NotEmpty(groups = {OrderCreateGroup.class})
-    private String scheduledDate;
+  @NotNull(groups = {OrderRegisterGroup.class})
+  private Float total;
 
-    @NotNull(groups = {OrderRegisterGroup.class})
-    private Float total;
+  private Date registeredDate;
 
-    private Date registeredDate;
-    private Date rejectedDate;
-    private Date finishedDate;
+  private Date rejectedDate;
 
-    @NotNull(groups = {OrderRegisterGroup.class})
-    private OrderStatus status;
+  private Date finishedDate;
 
-    @Valid
-    private Address address;
+  @NotNull(groups = {OrderRegisterGroup.class})
+  private OrderStatus status;
 
-    @Valid
-    private List<Package> packages;
+  @Valid
+  private Address address;
+
+  @Valid
+  private List<Package> packages;
+
+  public Order() {
+    this.id = UUID.randomUUID().toString();
+  }
 }

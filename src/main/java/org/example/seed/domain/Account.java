@@ -18,24 +18,24 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 public class Account extends Dates {
 
-    public Account() {
-        this.id = UUID.randomUUID().toString();
-    }
+  private String id;
 
-    private String id;
+  @Denomination(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  @Size(min = 2, max = 80, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  @NotNull(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  private String firstName;
 
-    @Denomination(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    @Size(min = 2, max = 80, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    @NotNull(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    private String firstName;
+  @Denomination(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  @Size(min = 2, max = 80, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  @NotNull(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  private String lastName;
 
-    @Denomination(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    @Size(min = 2, max = 80, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    @NotNull(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    private String lastName;
+  @Email(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  @Size(max = 45, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  @NotNull(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  private String email;
 
-    @Email(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    @Size(max = 45, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    @NotNull(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    private String email;
+  public Account() {
+    this.id = UUID.randomUUID().toString();
+  }
 }
