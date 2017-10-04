@@ -16,20 +16,20 @@ import javax.servlet.Filter;
 @EnableWebFlux
 public class RestConfig extends WebFluxConfigurationSupport {
 
-    @Bean
-    public FilterRegistrationBean<Filter> filterRegistrationBean() {
-        final FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+  @Bean
+  public FilterRegistrationBean<Filter> filterRegistrationBean() {
+    final FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
 
-        filterRegistrationBean.setFilter(this.etagFilter());
-        filterRegistrationBean.addUrlPatterns("/*");
-        filterRegistrationBean.setName("etagFilter");
-        filterRegistrationBean.setOrder(1);
+    filterRegistrationBean.setFilter(this.etagFilter());
+    filterRegistrationBean.addUrlPatterns("/*");
+    filterRegistrationBean.setName("etagFilter");
+    filterRegistrationBean.setOrder(1);
 
-        return filterRegistrationBean;
-    }
+    return filterRegistrationBean;
+  }
 
-    @Bean(name = "etagFilter")
-    public Filter etagFilter() {
-        return new ShallowEtagHeaderFilter();
-    }
+  @Bean(name = "etagFilter")
+  public Filter etagFilter() {
+    return new ShallowEtagHeaderFilter();
+  }
 }

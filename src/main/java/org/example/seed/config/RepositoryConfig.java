@@ -13,8 +13,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @Configuration
 public class RepositoryConfig {
 
-    @Bean
-    public AuditingEntityListener createAuditingListener() {
-        return new AuditingEntityListener();
-    }
+  @Bean
+  public AuditingEntityListener createAuditingListener() {
+    return new AuditingEntityListener();
+  }
 }

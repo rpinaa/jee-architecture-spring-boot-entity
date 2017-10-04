@@ -20,27 +20,27 @@ import java.util.concurrent.ThreadPoolExecutor;
 @EnableCaching
 public class ServiceConfig implements AsyncConfigurer {
 
-    @Override
-    public Executor getAsyncExecutor() {
-        final ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+  @Override
+  public Executor getAsyncExecutor() {
+    final ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
 
-        taskExecutor.setMaxPoolSize(100000);
-        taskExecutor.setCorePoolSize(1000);
-        taskExecutor.setQueueCapacity(100000);
-        taskExecutor.setWaitForTasksToCompleteOnShutdown(true);
-        taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+    taskExecutor.setMaxPoolSize(100000);
+    taskExecutor.setCorePoolSize(1000);
+    taskExecutor.setQueueCapacity(100000);
+    taskExecutor.setWaitForTasksToCompleteOnShutdown(true);
+    taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 
-        taskExecutor.initialize();
+    taskExecutor.initialize();
 
-        final ConcurrentTaskExecutor concurrentTaskExecutor = new ConcurrentTaskExecutor();
+    final ConcurrentTaskExecutor concurrentTaskExecutor = new ConcurrentTaskExecutor();
 
-        concurrentTaskExecutor.setConcurrentExecutor(taskExecutor);
+    concurrentTaskExecutor.setConcurrentExecutor(taskExecutor);
 
-        return concurrentTaskExecutor;
-    }
+    return concurrentTaskExecutor;
+  }
 
-    @Override
-    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return new SimpleAsyncUncaughtExceptionHandler();
-    }
+  @Override
+  public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+    return new SimpleAsyncUncaughtExceptionHandler();
+  }
 }
