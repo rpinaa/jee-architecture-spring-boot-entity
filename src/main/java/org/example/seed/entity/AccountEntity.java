@@ -18,23 +18,23 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper = true)
 public class AccountEntity extends DatesEntity {
 
-    @Id
-    @Column(name = "id", length = 36, nullable = false, updatable = false)
-    private String id;
+  @Id
+  @Column(name = "id", length = 36, nullable = false, updatable = false)
+  private String id;
 
-    @Column(name = "fist_name", length = 80)
-    private String firstName;
+  @Column(name = "fist_name", length = 80)
+  private String firstName;
 
-    @Column(name = "last_name", length = 80)
-    private String lastName;
+  @Column(name = "last_name", length = 80)
+  private String lastName;
 
-    @Column(name = "email", length = 45)
-    private String email;
+  @Column(name = "email", length = 45)
+  private String email;
 
-    @Lob
-    @Column(name = "secret")
-    private byte[] secret;
+  @Lob
+  @Column(name = "secret")
+  private byte[] secret;
 
-    @Column(name = "deleted")
-    private boolean deleted;
+  @Column(name = "deleted")
+  private boolean deleted;
 }

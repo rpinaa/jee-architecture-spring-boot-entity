@@ -19,39 +19,39 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class ClientEntity extends DatesEntity {
 
-    @Id
-    @Column(name = "id", length = 36, nullable = false, updatable = false)
-    private String id;
+  @Id
+  @Column(name = "id", length = 36, nullable = false, updatable = false)
+  private String id;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_id_telephone")
-    private TelephoneEntity telephone;
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @JoinColumn(name = "fk_id_telephone")
+  private TelephoneEntity telephone;
 
-    @OneToMany(mappedBy = "client", cascade = {CascadeType.REMOVE})
-    @Setter(AccessLevel.NONE)
-    @Getter(AccessLevel.NONE)
-    private List<OrderEntity> orders;
+  @OneToMany(mappedBy = "client", cascade = {CascadeType.REMOVE})
+  @Setter(AccessLevel.NONE)
+  @Getter(AccessLevel.NONE)
+  private List<OrderEntity> orders;
 
-    @Column(name = "fist_name", length = 80)
-    private String firstName;
+  @Column(name = "fist_name", length = 80)
+  private String firstName;
 
-    @Column(name = "last_name", length = 80)
-    private String lastName;
+  @Column(name = "last_name", length = 80)
+  private String lastName;
 
-    @Column(name = "email", length = 45)
-    private String email;
+  @Column(name = "email", length = 45)
+  private String email;
 
-    @Column(name = "rating")
-    private Float rating;
+  @Column(name = "rating")
+  private Float rating;
 
-    @Lob
-    @Column(name = "secret")
-    private byte[] secret;
+  @Lob
+  @Column(name = "secret")
+  private byte[] secret;
 
-    @Column(name = "status", length = 20)
-    @Enumerated(EnumType.STRING)
-    private ClientStatus status;
+  @Column(name = "status", length = 20)
+  @Enumerated(EnumType.STRING)
+  private ClientStatus status;
 
-    @Column(name = "deleted")
-    private boolean deleted;
+  @Column(name = "deleted")
+  private boolean deleted;
 }

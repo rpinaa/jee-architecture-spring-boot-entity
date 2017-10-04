@@ -19,37 +19,37 @@ import javax.persistence.Table;
 @Where(clause = "deleted <> 1")
 public class AddressEntity extends DatesEntity {
 
-    @Id
-    @Column(name = "id", length = 36, nullable = false, updatable = false)
-    private String id;
+  @Id
+  @Column(name = "id", length = 36, nullable = false, updatable = false)
+  private String id;
 
-    @Column(name = "int_number", length = 5)
-    private String intNumber;
+  @Column(name = "int_number", length = 5)
+  private String intNumber;
 
-    @Column(name = "ext_number", length = 5)
-    private String exNumber;
+  @Column(name = "ext_number", length = 5)
+  private String exNumber;
 
-    @Column(name = "block", length = 5)
-    private String block;
+  @Column(name = "block", length = 5)
+  private String block;
 
-    @Column(name = "number", length = 5)
-    private String number;
+  @Column(name = "number", length = 5)
+  private String number;
 
-    @Column(name = "street", length = 15)
-    private String street;
+  @Column(name = "street", length = 15)
+  private String street;
 
-    @Column(name = "colony", length = 15)
-    private String colony;
+  @Column(name = "colony", length = 15)
+  private String colony;
 
-    @Column(name = "municipality", length = 20)
-    private String municipality;
+  @Column(name = "municipality", length = 20)
+  private String municipality;
 
-    @Column(name = "state", length = 15)
-    private String state;
+  @Column(name = "state", length = 15)
+  private String state;
 
-    @Column(name = "country", length = 10)
-    private String country;
+  @Column(name = "country", length = 10)
+  private String country;
 
-    @Column(name = "deleted")
-    private boolean deleted;
+  @Column(name = "deleted")
+  private boolean deleted;
 }
