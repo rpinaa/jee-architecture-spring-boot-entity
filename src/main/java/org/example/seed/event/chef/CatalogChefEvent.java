@@ -19,6 +19,6 @@ import java.util.List;
 @XmlRootElement
 public class CatalogChefEvent {
 
-    private long total;
-    private List<Chef> chefs;
+  private long total;
+  private List<Chef> chefs;
 }

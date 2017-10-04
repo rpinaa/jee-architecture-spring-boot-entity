@@ -11,8 +11,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class RequestChefEvent extends RequestEvent {
 
-    @Builder
-    public RequestChefEvent(final String id) {
-        super(id);
-    }
+  @Builder
+  public RequestChefEvent(final String id) {
+    super(id);
+  }
 }

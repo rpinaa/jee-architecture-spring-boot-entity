@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class CreateChefEvent extends CreateEvent {
 
-    @Valid
-    @NotNull(groups = {ChefCreateGroup.class})
-    private Chef chef;
+  @Valid
+  @NotNull(groups = {ChefCreateGroup.class})
+  private Chef chef;
 }

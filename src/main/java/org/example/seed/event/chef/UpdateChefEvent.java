@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class UpdateChefEvent extends UpdateEvent {
 
-    @Valid
-    @NotNull(groups = {ChefUpdateGroup.class})
-    private Chef chef;
+  @Valid
+  @NotNull(groups = {ChefUpdateGroup.class})
+  private Chef chef;
 }

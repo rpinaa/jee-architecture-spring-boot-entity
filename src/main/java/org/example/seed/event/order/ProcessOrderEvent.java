@@ -19,8 +19,8 @@ import java.util.TimeZone;
 @XmlRootElement
 public class ProcessOrderEvent {
 
-    private Order order;
-    private String idChef;
-    private String idClient;
-    private TimeZone timeZone;
+  private Order order;
+  private String idChef;
+  private String idClient;
+  private TimeZone timeZone;
 }
