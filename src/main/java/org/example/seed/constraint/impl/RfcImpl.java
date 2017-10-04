@@ -11,17 +11,17 @@ import java.util.Optional;
  */
 public class RfcImpl implements ConstraintValidator<Rfc, String> {
 
-    private Rfc rfc;
+  private Rfc rfc;
 
-    @Override
-    public void initialize(final Rfc rfc) {
-        this.rfc = rfc;
-    }
+  @Override
+  public void initialize(final Rfc rfc) {
+    this.rfc = rfc;
+  }
 
-    @Override
-    public boolean isValid(final String value, final ConstraintValidatorContext constraintValidatorContext) {
-        return Optional.of(value)
-                .map(v -> v.matches("[A-Z]{4}[0-9]{6}[A-Z0-9]{3}$"))
-                .orElse(true);
-    }
+  @Override
+  public boolean isValid(final String value, final ConstraintValidatorContext constraintValidatorContext) {
+    return Optional.of(value)
+      .map(v -> v.matches("[A-Z]{4}[0-9]{6}[A-Z0-9]{3}$"))
+      .orElse(true);
+  }
 }

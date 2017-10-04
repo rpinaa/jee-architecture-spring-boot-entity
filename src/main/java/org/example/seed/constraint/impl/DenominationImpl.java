@@ -11,17 +11,17 @@ import java.util.Optional;
  */
 public class DenominationImpl implements ConstraintValidator<Denomination, String> {
 
-    private Denomination denomination;
+  private Denomination denomination;
 
-    @Override
-    public void initialize(final Denomination denomination) {
-        this.denomination = denomination;
-    }
+  @Override
+  public void initialize(final Denomination denomination) {
+    this.denomination = denomination;
+  }
 
-    @Override
-    public boolean isValid(final String value, final ConstraintValidatorContext constraintValidatorContext) {
-        return Optional.of(value)
-                .map(v -> v.matches("^([a-z]+[,.]?[ ]?|[a-z]+['-]?)+$"))
-                .orElse(true);
-    }
+  @Override
+  public boolean isValid(final String value, final ConstraintValidatorContext constraintValidatorContext) {
+    return Optional.of(value)
+      .map(v -> v.matches("^([a-z]+[,.]?[ ]?|[a-z]+['-]?)+$"))
+      .orElse(true);
+  }
 }

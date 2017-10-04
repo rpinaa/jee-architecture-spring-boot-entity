@@ -11,17 +11,17 @@ import java.util.Optional;
  */
 public class LocationImpl implements ConstraintValidator<Location, String> {
 
-    private Location location;
+  private Location location;
 
-    @Override
-    public void initialize(final Location location) {
-        this.location = location;
-    }
+  @Override
+  public void initialize(final Location location) {
+    this.location = location;
+  }
 
-    @Override
-    public boolean isValid(final String value, final ConstraintValidatorContext constraintValidatorContext) {
-        return Optional.of(value)
-                .map(v -> v.matches("^([^*|&~^@#$%<>=()\\[\\]{}_+?¿!/¡/\\\\/])+$"))
-                .orElse(true);
-    }
+  @Override
+  public boolean isValid(final String value, final ConstraintValidatorContext constraintValidatorContext) {
+    return Optional.of(value)
+      .map(v -> v.matches("^([^*|&~^@#$%<>=()\\[\\]{}_+?¿!/¡/\\\\/])+$"))
+      .orElse(true);
+  }
 }

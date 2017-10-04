@@ -11,17 +11,17 @@ import java.util.Optional;
  */
 public class TextImpl implements ConstraintValidator<Text, String> {
 
-    private Text text;
+  private Text text;
 
-    @Override
-    public void initialize(final Text text) {
-        this.text = text;
-    }
+  @Override
+  public void initialize(final Text text) {
+    this.text = text;
+  }
 
-    @Override
-    public boolean isValid(final String value, final ConstraintValidatorContext constraintValidatorContext) {
-        return Optional.of(value)
-                .map(v -> v.matches("^[a-zA-Z0-9?$()'!,+\\-:.€£%\\s]+$"))
-                .orElse(true);
-    }
+  @Override
+  public boolean isValid(final String value, final ConstraintValidatorContext constraintValidatorContext) {
+    return Optional.of(value)
+      .map(v -> v.matches("^[a-zA-Z0-9?$()'!,+\\-:.€£%\\s]+$"))
+      .orElse(true);
+  }
 }
