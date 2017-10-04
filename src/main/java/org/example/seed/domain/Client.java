@@ -24,37 +24,37 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 public class Client extends Dates {
 
-    public Client() {
-        this.id = UUID.randomUUID().toString();
-    }
+  @Size(min = 36, max = 36, groups = {ClientUpdateGroup.class})
+  @NotNull(groups = {ClientUpdateGroup.class})
+  private String id;
 
-    @Size(min = 36, max = 36, groups = {ClientUpdateGroup.class})
-    @NotNull(groups = {ClientUpdateGroup.class})
-    private String id;
+  @Email(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  @Size(max = 45, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  private String email;
 
-    @Email(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
-    @Size(max = 45, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
-    @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
-    private String email;
+  @Denomination(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  private String firstName;
 
-    @Denomination(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
-    @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
-    private String firstName;
+  @Denomination(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  private String lastName;
 
-    @Denomination(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
-    @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
-    private String lastName;
+  @Min(value = 0, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  @Max(value = 5, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  private Float rating;
 
-    @Min(value = 0, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
-    @Max(value = 5, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
-    @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
-    private Float rating;
+  @NotNull(groups = {ClientUpdateGroup.class})
+  private ClientStatus status;
 
-    @NotNull(groups = {ClientUpdateGroup.class})
-    private ClientStatus status;
+  @Valid
+  private Telephone telephone;
 
-    @Valid
-    private Telephone telephone;
+  public Client() {
+    this.id = UUID.randomUUID().toString();
+  }
 }

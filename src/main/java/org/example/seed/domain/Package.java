@@ -12,12 +12,12 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 public class Package extends Dates {
 
-    public Package() {
-        this.id = UUID.randomUUID().toString();
-    }
+  private String id;
+  private Float price;
+  private Integer quantity;
+  private Dish dish;
 
-    private String id;
-    private Float price;
-    private Integer quantity;
-    private Dish dish;
+  public Package() {
+    this.id = UUID.randomUUID().toString();
+  }
 }

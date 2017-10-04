@@ -13,17 +13,17 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 public class Dish extends Dates {
 
-    public Dish() {
-        this.id = UUID.randomUUID().toString();
-    }
+  private String id;
+  private String name;
+  private String uuidImage;
+  private String pathImage;
+  private String allergens;
+  private String description;
+  private Float price;
+  private DishType type;
+  private boolean active;
 
-    private String id;
-    private String name;
-    private String uuidImage;
-    private String pathImage;
-    private String allergens;
-    private String description;
-    private Float price;
-    private DishType type;
-    private boolean active;
+  public Dish() {
+    this.id = UUID.randomUUID().toString();
+  }
 }

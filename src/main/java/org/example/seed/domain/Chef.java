@@ -24,36 +24,36 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 public class Chef extends Dates {
 
-    public Chef() {
-        this.id = UUID.randomUUID().toString();
-    }
+  @Size(min = 36, max = 36, groups = {ChefUpdateGroup.class})
+  @NotNull(groups = {ChefUpdateGroup.class})
+  private String id;
 
-    @Size(min = 36, max = 36, groups = {ChefUpdateGroup.class})
-    @NotNull(groups = {ChefUpdateGroup.class})
-    private String id;
+  @Rfc(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  @NotNull(groups = {ChefUpdateGroup.class})
+  private String rfc;
 
-    @Rfc(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    @NotNull(groups = {ChefUpdateGroup.class})
-    private String rfc;
+  @Curp(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  @NotNull(groups = {ChefUpdateGroup.class})
+  private String curp;
 
-    @Curp(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    @NotNull(groups = {ChefUpdateGroup.class})
-    private String curp;
+  @Min(value = 0, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  @Max(value = 5, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
+  @NotNull(groups = {ChefUpdateGroup.class})
+  private Float rating;
 
-    @Min(value = 0, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    @Max(value = 5, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-    @NotNull(groups = {ChefUpdateGroup.class})
-    private Float rating;
+  @NotNull(groups = {ChefUpdateGroup.class})
+  private ChefStatus status;
 
-    @NotNull(groups = {ChefUpdateGroup.class})
-    private ChefStatus status;
+  private boolean active;
 
-    private boolean active;
+  @Valid
+  private Account account;
 
-    @Valid
-    private Account account;
+  @Valid
+  @NotEmpty(groups = {ChefUpdateGroup.class})
+  private List<Telephone> telephones;
 
-    @Valid
-    @NotEmpty(groups = {ChefUpdateGroup.class})
-    private List<Telephone> telephones;
+  public Chef() {
+    this.id = UUID.randomUUID().toString();
+  }
 }
