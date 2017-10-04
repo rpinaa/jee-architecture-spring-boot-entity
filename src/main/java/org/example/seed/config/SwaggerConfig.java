@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.config.WebFluxConfigurationSupport;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -22,25 +21,15 @@ import java.time.LocalDate;
 @Profile("local")
 public class SwaggerConfig extends WebFluxConfigurationSupport {
 
-    @Bean
-    public Docket configuration() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors
-                        .basePackage("org.example.seed.rest"))
-                .paths(PathSelectors.any())
-                .build()
-                .directModelSubstitute(LocalDate.class, String.class)
-                .genericModelSubstitutes(ResponseEntity.class);
-    }
-
-    public void addResourceHandlers(final ResourceHandlerRegistry resourceHandlerRegistry) {
-        resourceHandlerRegistry
-                .addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
-
-        resourceHandlerRegistry
-                .addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
-    }
+  @Bean
+  public Docket configuration() {
+    return new Docket(DocumentationType.SWAGGER_2)
+      .select()
+      .apis(RequestHandlerSelectors
+        .basePackage("org.example.seed.rest"))
+      .paths(PathSelectors.any())
+      .build()
+      .directModelSubstitute(LocalDate.class, String.class)
+      .genericModelSubstitutes(ResponseEntity.class);
+  }
 }
