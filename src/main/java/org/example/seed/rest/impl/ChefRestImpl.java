@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -21,60 +21,36 @@ import java.util.concurrent.ExecutionException;
 @RestController
 public class ChefRestImpl implements ChefRest {
 
-    @Autowired
-    private ChefService chefService;
+  @Autowired
+  private ChefService chefService;
 
-    @Override
-    public Callable<CatalogChefEvent> getChefs(@RequestParam("page") final int page, @RequestParam("limit") final int limit)
-            throws ExecutionException, InterruptedException {
+  @Override
+  public Mono<CatalogChefEvent> getChefs(@RequestParam("page") final int page, @RequestParam("limit") final int limit)
+    throws ExecutionException, InterruptedException {
+    return Mono.justOrEmpty(this.chefService.requestChefs(RequestAllChefEvent.builder().page(page).limit(limit).build()).get());
+  }
 
-        final RequestAllChefEvent requestAllChefEvent = RequestAllChefEvent.builder()
-                .page(page)
-                .limit(limit)
-                .build();
+  @Override
+  public Mono<ResponseChefEvent> createChef(@RequestBody @Validated(value = {ChefCreateGroup.class}) final CreateChefEvent event)
+    throws ExecutionException, InterruptedException {
+    return Mono.justOrEmpty(this.chefService.createChef(event).get());
+  }
 
-        final CatalogChefEvent catalogChefEvent = this.chefService.requestChefs(requestAllChefEvent).get();
+  @Override
+  public Mono<ResponseChefEvent> getChef(@PathVariable("id") final String id)
+    throws ExecutionException, InterruptedException {
+    return Mono.justOrEmpty(this.chefService.requestChef(RequestChefEvent.builder().id(id).build()).get());
+  }
 
-        return () -> catalogChefEvent;
-    }
+  @Override
+  public Mono<ResponseChefEvent> updateChef(@RequestBody @Validated(value = {ChefUpdateGroup.class}) final UpdateChefEvent event)
+    throws ExecutionException, InterruptedException {
+    return Mono.justOrEmpty(this.chefService.updateChef(event).get());
+  }
 
-    @Override
-    public Callable<ResponseChefEvent> createChef(@RequestBody @Validated(value = {ChefCreateGroup.class}) final CreateChefEvent event)
-            throws ExecutionException, InterruptedException {
-
-        final ResponseChefEvent responseChefEvent = this.chefService.createChef(event).get();
-
-        return () -> responseChefEvent;
-    }
-
-    @Override
-    public Callable<ResponseChefEvent> getChef(@PathVariable("id") final String id)
-            throws ExecutionException, InterruptedException {
-
-        final RequestChefEvent requestChefEvent = RequestChefEvent.builder().id(id).build();
-
-        final ResponseChefEvent responseChefEvent = this.chefService.requestChef(requestChefEvent).get();
-
-        return () -> responseChefEvent;
-    }
-
-    @Override
-    public Callable<ResponseChefEvent> updateChef(@RequestBody @Validated(value = {ChefUpdateGroup.class}) final UpdateChefEvent event)
-            throws ExecutionException, InterruptedException {
-
-        final ResponseChefEvent responseChefEvent = this.chefService.updateChef(event).get();
-
-        return () -> responseChefEvent;
-    }
-
-    @Override
-    public Callable<ResponseChefEvent> deleteChef(@PathVariable("id") final String id)
-            throws ExecutionException, InterruptedException {
-
-        final DeleteChefEvent deleteChefEvent = DeleteChefEvent.builder().id(id).build();
-
-        final ResponseChefEvent responseChefEvent = this.chefService.deleteChef(deleteChefEvent).get();
-
-        return () -> responseChefEvent;
-    }
+  @Override
+  public Mono<ResponseChefEvent> deleteChef(@PathVariable("id") final String id)
+    throws ExecutionException, InterruptedException {
+    return Mono.justOrEmpty(this.chefService.deleteChef(DeleteChefEvent.builder().id(id).build()).get());
+  }
 }
