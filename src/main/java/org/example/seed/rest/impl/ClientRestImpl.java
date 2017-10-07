@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -25,56 +25,32 @@ public class ClientRestImpl implements ClientRest {
     private ClientService clientService;
 
     @Override
-    public Callable<CatalogClientEvent> getClients(@RequestParam("page") final int page, @RequestParam("limit") final int limit)
+    public Mono<CatalogClientEvent> getClients(@RequestParam("page") final int page, @RequestParam("limit") final int limit)
             throws ExecutionException, InterruptedException {
-
-        final RequestAllClientEvent requestAllClientEvent = RequestAllClientEvent.builder()
-                .page(page)
-                .limit(limit)
-                .build();
-
-        final CatalogClientEvent catalogClientEvent = this.clientService.requestClients(requestAllClientEvent).get();
-
-        return () -> catalogClientEvent;
+        return Mono.justOrEmpty(this.clientService.requestClients(RequestAllClientEvent.builder().page(page).limit(limit).build()).get());
     }
 
     @Override
-    public Callable<ResponseClientEvent> createClient(@RequestBody @Validated(value = {ClientCreateGroup.class}) final CreateClientEvent event)
+    public Mono<ResponseClientEvent> createClient(@RequestBody @Validated(value = {ClientCreateGroup.class}) final CreateClientEvent event)
             throws ExecutionException, InterruptedException {
-
-        final ResponseClientEvent responseClientEvent = this.clientService.createClient(event).get();
-
-        return () -> responseClientEvent;
+        return Mono.justOrEmpty(this.clientService.createClient(event).get());
     }
 
     @Override
-    public Callable<ResponseClientEvent> getClient(@PathVariable("id") final String id)
+    public Mono<ResponseClientEvent> getClient(@PathVariable("id") final String id)
             throws ExecutionException, InterruptedException {
-
-        final RequestClientEvent requestClientEvent = RequestClientEvent.builder().id(id).build();
-
-        final ResponseClientEvent responseClientEvent = this.clientService.requestClient(requestClientEvent).get();
-
-        return () -> responseClientEvent;
+        return Mono.justOrEmpty(this.clientService.requestClient(RequestClientEvent.builder().id(id).build()).get());
     }
 
     @Override
-    public Callable<ResponseClientEvent> updateClient(@RequestBody @Validated(value = {ClientUpdateGroup.class}) final UpdateClientEvent event)
+    public Mono<ResponseClientEvent> updateClient(@RequestBody @Validated(value = {ClientUpdateGroup.class}) final UpdateClientEvent event)
             throws ExecutionException, InterruptedException {
-
-        final ResponseClientEvent responseClientEvent = this.clientService.updateClient(event).get();
-
-        return () -> responseClientEvent;
+        return Mono.justOrEmpty(this.clientService.updateClient(event).get());
     }
 
     @Override
-    public Callable<ResponseClientEvent> deleteClient(@PathVariable("id") final String id)
+    public Mono<ResponseClientEvent> deleteClient(@PathVariable("id") final String id)
             throws ExecutionException, InterruptedException {
-
-        final DeleteClientEvent deleteClientEvent = DeleteClientEvent.builder().id(id).build();
-
-        final ResponseClientEvent responseClientEvent = this.clientService.deleteClient(deleteClientEvent).get();
-
-        return () -> responseClientEvent;
+        return Mono.justOrEmpty(this.clientService.deleteClient(DeleteClientEvent.builder().id(id).build()).get());
     }
 }
