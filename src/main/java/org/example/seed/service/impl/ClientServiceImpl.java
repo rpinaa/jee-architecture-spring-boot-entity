@@ -38,8 +38,7 @@ public class ClientServiceImpl implements ClientService {
       .findAll(PageRequest
         .of(event.getPage() - 1, event.getLimit()));
 
-    return Mono.justOrEmpty(CatalogClientEvent
-      .builder()
+    return Mono.justOrEmpty(CatalogClientEvent.builder()
       .clients(this.clientMapper
         .mapListReverse(clients.getContent()))
       .total(clients.getTotalElements())
