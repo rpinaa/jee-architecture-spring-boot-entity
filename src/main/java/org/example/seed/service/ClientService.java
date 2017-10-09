@@ -1,21 +1,20 @@
 package org.example.seed.service;
 
 import org.example.seed.event.client.*;
-
-import java.util.concurrent.Future;
+import reactor.core.publisher.Mono;
 
 /**
  * Created by PINA on 16/06/2017.
  */
 public interface ClientService {
 
-    Future<CatalogClientEvent> requestClients(final RequestAllClientEvent event);
+    Mono<CatalogClientEvent> requestClients(final RequestAllClientEvent event);
 
-    Future<ResponseClientEvent> createClient(final CreateClientEvent event);
+    Mono<ResponseClientEvent> createClient(final CreateClientEvent event);
 
-    Future<ResponseClientEvent> requestClient(final RequestClientEvent event);
+    Mono<ResponseClientEvent> requestClient(final RequestClientEvent event);
 
-    Future<ResponseClientEvent> updateClient(final UpdateClientEvent event);
+    Mono<ResponseClientEvent> updateClient(final UpdateClientEvent event);
 
-    Future<ResponseClientEvent> deleteClient(final DeleteClientEvent event);
+    Mono<ResponseClientEvent> deleteClient(final DeleteClientEvent event);
 }
