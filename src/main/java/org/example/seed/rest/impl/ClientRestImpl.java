@@ -21,36 +21,36 @@ import java.util.concurrent.ExecutionException;
 @RestController
 public class ClientRestImpl implements ClientRest {
 
-    @Autowired
-    private ClientService clientService;
+  @Autowired
+  private ClientService clientService;
 
-    @Override
-    public Mono<CatalogClientEvent> getClients(@RequestParam("page") final int page, @RequestParam("limit") final int limit)
-            throws ExecutionException, InterruptedException {
-        return Mono.justOrEmpty(this.clientService.requestClients(RequestAllClientEvent.builder().page(page).limit(limit).build()).get());
-    }
+  @Override
+  public Mono<CatalogClientEvent> getClients(@RequestParam("page") final int page, @RequestParam("limit") final int limit)
+    throws ExecutionException, InterruptedException {
+    return this.clientService.requestClients(RequestAllClientEvent.builder().page(page).limit(limit).build());
+  }
 
-    @Override
-    public Mono<ResponseClientEvent> createClient(@RequestBody @Validated(value = {ClientCreateGroup.class}) final CreateClientEvent event)
-            throws ExecutionException, InterruptedException {
-        return Mono.justOrEmpty(this.clientService.createClient(event).get());
-    }
+  @Override
+  public Mono<ResponseClientEvent> createClient(@RequestBody @Validated(value = {ClientCreateGroup.class}) final CreateClientEvent event)
+    throws ExecutionException, InterruptedException {
+    return this.clientService.createClient(event);
+  }
 
-    @Override
-    public Mono<ResponseClientEvent> getClient(@PathVariable("id") final String id)
-            throws ExecutionException, InterruptedException {
-        return Mono.justOrEmpty(this.clientService.requestClient(RequestClientEvent.builder().id(id).build()).get());
-    }
+  @Override
+  public Mono<ResponseClientEvent> getClient(@PathVariable("id") final String id)
+    throws ExecutionException, InterruptedException {
+    return this.clientService.requestClient(RequestClientEvent.builder().id(id).build());
+  }
 
-    @Override
-    public Mono<ResponseClientEvent> updateClient(@RequestBody @Validated(value = {ClientUpdateGroup.class}) final UpdateClientEvent event)
-            throws ExecutionException, InterruptedException {
-        return Mono.justOrEmpty(this.clientService.updateClient(event).get());
-    }
+  @Override
+  public Mono<ResponseClientEvent> updateClient(@RequestBody @Validated(value = {ClientUpdateGroup.class}) final UpdateClientEvent event)
+    throws ExecutionException, InterruptedException {
+    return this.clientService.updateClient(event);
+  }
 
-    @Override
-    public Mono<ResponseClientEvent> deleteClient(@PathVariable("id") final String id)
-            throws ExecutionException, InterruptedException {
-        return Mono.justOrEmpty(this.clientService.deleteClient(DeleteClientEvent.builder().id(id).build()).get());
-    }
+  @Override
+  public Mono<ResponseClientEvent> deleteClient(@PathVariable("id") final String id)
+    throws ExecutionException, InterruptedException {
+    return this.clientService.deleteClient(DeleteClientEvent.builder().id(id).build());
+  }
 }
