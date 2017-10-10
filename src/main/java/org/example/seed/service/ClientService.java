@@ -9,13 +9,13 @@ import java.util.concurrent.Future;
  */
 public interface ClientService {
 
-    Future<CatalogClientEvent> requestClients(final RequestAllClientEvent event);
+  Future<CatalogClientEvent> requestClients(final RequestAllClientEvent event);
 
-    Future<ResponseClientEvent> createClient(final CreateClientEvent event);
+  Future<ResponseClientEvent> createClient(final CreateClientEvent event);
 
-    Future<ResponseClientEvent> requestClient(final RequestClientEvent event);
+  Future<ResponseClientEvent> requestClient(final RequestClientEvent event);
 
-    Future<ResponseClientEvent> updateClient(final UpdateClientEvent event);
+  Future<ResponseClientEvent> updateClient(final UpdateClientEvent event);
 
-    Future<ResponseClientEvent> deleteClient(final DeleteClientEvent event);
+  Future<ResponseClientEvent> deleteClient(final DeleteClientEvent event);
 }
