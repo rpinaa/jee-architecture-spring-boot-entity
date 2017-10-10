@@ -41,8 +41,7 @@ public class ClientServiceImpl implements ClientService {
         final Pageable pageable = PageRequest.of(event.getPage() - 1, event.getLimit());
         final Page<ClientEntity> clients = this.clientRepository.findAll(pageable);
 
-        return new AsyncResult<>(CatalogClientEvent
-                .builder()
+        return new AsyncResult<>(CatalogClientEvent.builder()
                 .clients(this.clientMapper
                         .mapListReverse(clients.getContent()))
                 .total(clients.getTotalElements())
@@ -70,8 +69,7 @@ public class ClientServiceImpl implements ClientService {
     @Cacheable(value = "client")
     @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public Future<ResponseClientEvent> requestClient(final RequestClientEvent event) {
-        return new AsyncResult<>(ResponseClientEvent
-                .builder()
+        return new AsyncResult<>(ResponseClientEvent.builder()
                 .client(this.clientMapper
                         .map(this.clientRepository
                                 .findById(event.getId())
