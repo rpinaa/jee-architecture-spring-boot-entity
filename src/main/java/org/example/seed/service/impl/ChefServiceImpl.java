@@ -13,12 +13,14 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
 
 import java.util.UUID;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -40,15 +42,16 @@ public class ChefServiceImpl implements ChefService {
   private TelephoneRepository telephoneRepository;
 
   @Override
+  @Async
   @Cacheable(value = "chefs")
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-  public Mono<CatalogChefEvent> requestChefs(final RequestAllChefEvent event) {
+  public Future<CatalogChefEvent> requestChefs(final RequestAllChefEvent event) {
 
     final Page<ChefEntity> chefs = this.chefRepository
       .findAll(PageRequest
         .of(event.getPage() - 1, event.getLimit()));
 
-    return Mono.justOrEmpty(CatalogChefEvent.builder()
+    return new AsyncResult<>(CatalogChefEvent.builder()
       .chefs(this.chefMapper
         .mapListReverse(chefs.getContent()))
       .total(chefs.getTotalElements())
@@ -56,27 +59,29 @@ public class ChefServiceImpl implements ChefService {
   }
 
   @Override
+  @Async
   @CacheEvict(value = "chefs", allEntries = true)
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Mono<ResponseChefEvent> createChef(final CreateChefEvent event) {
+  public Future<ResponseChefEvent> createChef(final CreateChefEvent event) {
 
-    event.getChef().setRating(0F);
-    event.getChef().setActive(false);
-    event.getChef().setTelephones(null);
     event.getChef().setStatus(ChefStatus.REGISTERED);
+    event.getChef().setRating(0F);
+    event.getChef().setTelephones(null);
+    event.getChef().setActive(false);
 
     this.chefRepository
       .save(this.chefMapper
         .map(event.getChef()));
 
-    return Mono.justOrEmpty(ResponseChefEvent.builder().chef(null).build());
+    return new AsyncResult<>(null);
   }
 
   @Override
+  @Async
   @Cacheable(value = "chefs")
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-  public Mono<ResponseChefEvent> requestChef(final RequestChefEvent event) {
-    return Mono.justOrEmpty(ResponseChefEvent.builder()
+  public Future<ResponseChefEvent> requestChef(final RequestChefEvent event) {
+    return new AsyncResult<>(ResponseChefEvent.builder()
       .chef(this.chefMapper
         .map(this.chefRepository
           .findById(event.getId())
@@ -86,19 +91,20 @@ public class ChefServiceImpl implements ChefService {
   }
 
   @Override
+  @Async
   @CacheEvict(value = "chefs", allEntries = true)
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Mono<ResponseChefEvent> updateChef(final UpdateChefEvent event) {
+  public Future<ResponseChefEvent> updateChef(final UpdateChefEvent event) {
 
     this.chefRepository.findById(event.getChef().getId())
       .ifPresent(chefEntity -> {
 
         this.telephoneRepository.deleteInBatch(chefEntity.getTelephones());
 
-        chefEntity.setStatus(ChefStatus.ACTIVATED);
+        chefEntity.setRating(event.getChef().getRating());
         chefEntity.setRfc(event.getChef().getRfc());
         chefEntity.setCurp(event.getChef().getCurp());
-        chefEntity.setRating(event.getChef().getRating());
+        chefEntity.setStatus(ChefStatus.ACTIVATED);
         chefEntity.getAccount().setFirstName(event.getChef().getAccount().getFirstName());
         chefEntity.getAccount().setLastName(event.getChef().getAccount().getLastName());
         chefEntity.setTelephones(this.telephoneMapper
@@ -114,16 +120,17 @@ public class ChefServiceImpl implements ChefService {
         this.chefRepository.save(chefEntity);
       });
 
-    return Mono.justOrEmpty(ResponseChefEvent.builder().chef(null).build());
+    return new AsyncResult<>(null);
   }
 
   @Override
+  @Async
   @CacheEvict(value = "chefs", allEntries = true)
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Mono<ResponseChefEvent> deleteChef(final DeleteChefEvent event) {
+  public Future<ResponseChefEvent> deleteChef(final DeleteChefEvent event) {
 
     this.chefRepository.deleteById(event.getId());
 
-    return Mono.justOrEmpty(ResponseChefEvent.builder().chef(null).build());
+    return new AsyncResult<>(null);
   }
 }
