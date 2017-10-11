@@ -95,15 +95,15 @@ public class OrderServiceImpl implements OrderService {
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public Future<ResponseOrderEvent> registerOrder(final ProcessOrderEvent event) {
 
-    final OrderEntity orderEntity = this.mergePackages(event, OrderStatus.CREATED);
+    final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED);
 
-    orderEntity.setRejectedDate(null);
-    orderEntity.setFinishedDate(null);
-    orderEntity.setRegisteredDate(new Date());
-    orderEntity.setTimeZone(event.getTimeZone());
-    orderEntity.setStatus(OrderStatus.PENDING_TO_ACCEPT);
+    currentOrder.setRejectedDate(null);
+    currentOrder.setFinishedDate(null);
+    currentOrder.setRegisteredDate(new Date());
+    currentOrder.setTimeZone(event.getTimeZone());
+    currentOrder.setStatus(OrderStatus.PENDING_TO_ACCEPT);
 
-    this.orderRepository.save(orderEntity);
+    this.orderRepository.save(currentOrder);
 
     return new AsyncResult<>(null);
   }
@@ -111,26 +111,45 @@ public class OrderServiceImpl implements OrderService {
   @Override
   public Future<ResponseOrderEvent> processOrder(final ProcessOrderEvent event) {
 
-    this.orderRepository.findById(event.getOrder().getId())
+    this.orderRepository
+      .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.PENDING_TO_ACCEPT)
       .ifPresent(orderEntity -> {
 
         final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.PENDING_TO_ACCEPT);
 
-        orderEntity.setScheduledDate(new Date().toString());
-        orderEntity.setStatus(OrderStatus.ACCEPTED);
+        currentOrder.setScheduledDate(new Date().toString());
+        currentOrder.setStatus(OrderStatus.ACCEPTED);
+
+        this.orderRepository.save(currentOrder);
       });
 
-    return null;
+    return new AsyncResult<>(null);
   }
 
   @Override
   public Future<ResponseOrderEvent> updateOrder(final ProcessOrderEvent event) {
-    return null;
+
+    if (this.orderRepository
+      .findIdByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
+      .isPresent()) {
+      this.orderRepository.save(this.mergePackages(event, OrderStatus.CREATED));
+    }
+
+    return new AsyncResult<>(null);
   }
 
   @Override
   public Future<ResponseOrderEvent> deleteOrder(final DeleteOrderEvent event) {
-    return null;
+
+    this.orderRepository.findById(event.getId())
+      .ifPresent(orderEntity -> {
+
+        if (orderEntity.getStatus().equals(OrderStatus.CREATED)) {
+          this.orderRepository.deleteById(event.getId());
+        }
+      });
+
+    return new AsyncResult<>(null);
   }
 
   private OrderEntity mergePackages(final ProcessOrderEvent event, final OrderStatus status) {
@@ -157,7 +176,7 @@ public class OrderServiceImpl implements OrderService {
       });
 
     final OrderEntity orderEntity = this.orderRepository
-      .findOneByClientAndOrder(event.getIdClient(), event.getOrder().getId(), status)
+      .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), status)
       .map(oe -> {
         this.packageRepository.deleteInBatch(oe.getPackages());
 
