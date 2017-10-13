@@ -42,16 +42,16 @@ public class OrderServiceImpl implements OrderService {
   private DishRepository dishRepository;
 
   @Autowired
-  private OrderMapper orderMapper;
-
-  @Autowired
   private OrderRepository orderRepository;
 
   @Autowired
-  private PackageMapper packageMapper;
+  private PackageRepository packageRepository;
 
   @Autowired
-  private PackageRepository packageRepository;
+  private OrderMapper orderMapper;
+
+  @Autowired
+  private PackageMapper packageMapper;
 
   @Override
   public Future<CatalogOrderEvent> requestOrders(final RequestAllOrderEvent event) {
@@ -77,6 +77,7 @@ public class OrderServiceImpl implements OrderService {
         event.getOrder().setLongitude(null);
         event.getOrder().setRejectedDate(null);
         event.getOrder().setFinishedDate(null);
+        event.getOrder().setScheduledDate(null);
         event.getOrder().setRegisteredDate(null);
         event.getOrder().setStatus(OrderStatus.CREATED);
 
