@@ -9,17 +9,17 @@ import java.util.concurrent.Future;
  */
 public interface OrderService {
 
-    Future<CatalogOrderEvent> requestOrders(final RequestAllOrderEvent event);
+  Future<CatalogOrderEvent> requestOrders(final RequestAllOrderEvent event);
 
-    Future<CatalogOrderEvent> requestOrder(final RequestAllOrderEvent event);
+  Future<ResponseOrderEvent> requestOrder(final RequestAllOrderEvent event);
 
-    Future<ResponseOrderEvent> createOrder(final ProcessOrderEvent event);
+  void createOrder(final ProcessOrderEvent event);
 
-    Future<ResponseOrderEvent> registerOrder(final ProcessOrderEvent event);
+  void registerOrder(final ProcessOrderEvent event);
 
-    Future<ResponseOrderEvent> processOrder(final ProcessOrderEvent event);
+  void processOrder(final ProcessOrderEvent event);
 
-    Future<ResponseOrderEvent> updateOrder(final ProcessOrderEvent event);
+  Future<ResponseOrderEvent> updateOrder(final ProcessOrderEvent event);
 
-    Future<ResponseOrderEvent> deleteOrder(final DeleteOrderEvent event);
+  void deleteOrder(final DeleteOrderEvent event);
 }

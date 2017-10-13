@@ -59,17 +59,18 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public Future<CatalogOrderEvent> requestOrder(final RequestAllOrderEvent event) {
+  public Future<ResponseOrderEvent> requestOrder(final RequestAllOrderEvent event) {
     return null;
   }
 
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseOrderEvent> createOrder(final ProcessOrderEvent event) {
+  public void createOrder(final ProcessOrderEvent event) {
 
-    this.clientRepository.findById(event.getIdClient())
-      .ifPresent(clientEntity -> {
+    this.clientRepository
+      .findById(event.getIdClient())
+      .map(clientEntity -> {
 
         event.getOrder().setComment(null);
         event.getOrder().setAddress(null);
@@ -86,31 +87,37 @@ public class OrderServiceImpl implements OrderService {
         orderEntity.setClient(clientEntity);
 
         this.orderRepository.save(orderEntity);
-      });
 
-    return new AsyncResult<>(null);
+        return orderEntity;
+      })
+      .orElseThrow(() -> new RuntimeException("No data!"));
   }
 
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseOrderEvent> registerOrder(final ProcessOrderEvent event) {
+  public void registerOrder(final ProcessOrderEvent event) {
 
-    final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED);
+    this.orderRepository
+      .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
+      .ifPresent(orderEntity -> {
 
-    currentOrder.setRejectedDate(null);
-    currentOrder.setFinishedDate(null);
-    currentOrder.setRegisteredDate(new Date());
-    currentOrder.setTimeZone(event.getTimeZone());
-    currentOrder.setStatus(OrderStatus.PENDING_TO_ACCEPT);
+        final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED);
 
-    this.orderRepository.save(currentOrder);
+        currentOrder.setRejectedDate(null);
+        currentOrder.setFinishedDate(null);
+        currentOrder.setRegisteredDate(new Date());
+        currentOrder.setTimeZone(event.getTimeZone());
+        currentOrder.setStatus(OrderStatus.PENDING_TO_ACCEPT);
 
-    return new AsyncResult<>(null);
+        this.orderRepository.save(currentOrder);
+      });
   }
 
   @Override
-  public Future<ResponseOrderEvent> processOrder(final ProcessOrderEvent event) {
+  @Async
+  @Transactional(isolation = Isolation.READ_COMMITTED)
+  public void processOrder(final ProcessOrderEvent event) {
 
     this.orderRepository
       .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.PENDING_TO_ACCEPT)
@@ -123,11 +130,11 @@ public class OrderServiceImpl implements OrderService {
 
         this.orderRepository.save(currentOrder);
       });
-
-    return new AsyncResult<>(null);
   }
 
   @Override
+  @Async
+  @Transactional(isolation = Isolation.READ_COMMITTED)
   public Future<ResponseOrderEvent> updateOrder(final ProcessOrderEvent event) {
 
     if (this.orderRepository
@@ -140,7 +147,9 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public Future<ResponseOrderEvent> deleteOrder(final DeleteOrderEvent event) {
+  @Async
+  @Transactional(isolation = Isolation.READ_COMMITTED)
+  public void deleteOrder(final DeleteOrderEvent event) {
 
     this.orderRepository.findById(event.getId())
       .ifPresent(orderEntity -> {
@@ -149,8 +158,6 @@ public class OrderServiceImpl implements OrderService {
           this.orderRepository.deleteById(event.getId());
         }
       });
-
-    return new AsyncResult<>(null);
   }
 
   private OrderEntity mergePackages(final ProcessOrderEvent event, final OrderStatus status) {
