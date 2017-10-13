@@ -31,11 +31,11 @@ public class Order extends Dates {
   @NotNull(groups = {OrderCreateGroup.class})
   private Double longitude;
 
-  @Size(max = 50, groups = {OrderCreateGroup.class})
-  @NotEmpty(groups = {OrderCreateGroup.class})
+  @Size(max = 50, groups = {OrderRegisterGroup.class})
+  @NotEmpty(groups = {OrderRegisterGroup.class})
   private String comment;
 
-  @NotEmpty(groups = {OrderCreateGroup.class})
+  @NotEmpty(groups = {OrderRegisterGroup.class})
   private String scheduledDate;
 
   @NotNull(groups = {OrderRegisterGroup.class})
