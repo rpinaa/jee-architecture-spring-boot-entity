@@ -85,13 +85,13 @@ public class OrderServiceImpl implements OrderService {
             event.getOrder().setRegisteredDate(null);
             event.getOrder().setStatus(OrderStatus.CREATED);
 
-            final OrderEntity orderEntity = this.mergePackages(event, OrderStatus.CREATED);
+            final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED);
 
-            orderEntity.setClient(clientEntity);
+            currentOrder.setClient(clientEntity);
 
-            this.orderRepository.save(orderEntity);
+            this.orderRepository.save(currentOrder);
 
-            return orderEntity;
+            return currentOrder;
           })
           .orElseThrow(RuntimeException::new))));
   }
@@ -125,20 +125,26 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Async
+  @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public void processOrder(final ProcessOrderEvent event) {
+  public Future<ResponseOrderEvent> processOrder(final ProcessOrderEvent event) {
+    return new AsyncResult(ResponseOrderEvent
+      .builder()
+      .order(this.orderMapper
+        .map(this.orderRepository
+          .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.PENDING_TO_ACCEPT)
+          .map(orderEntity -> {
 
-    this.orderRepository
-      .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.PENDING_TO_ACCEPT)
-      .ifPresent(orderEntity -> {
+            final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.PENDING_TO_ACCEPT);
 
-        final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.PENDING_TO_ACCEPT);
+            currentOrder.setScheduledDate(new Date().toString());
+            currentOrder.setStatus(OrderStatus.ACCEPTED);
 
-        currentOrder.setScheduledDate(new Date().toString());
-        currentOrder.setStatus(OrderStatus.ACCEPTED);
+            this.orderRepository.save(currentOrder);
 
-        this.orderRepository.save(currentOrder);
-      });
+            return currentOrder;
+          })
+          .orElseThrow(RuntimeException::new))));
   }
 
   @Override

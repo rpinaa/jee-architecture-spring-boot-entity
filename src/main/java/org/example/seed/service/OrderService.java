@@ -17,7 +17,7 @@ public interface OrderService {
 
   Future<ResponseOrderEvent> registerOrder(final ProcessOrderEvent event);
 
-  void processOrder(final ProcessOrderEvent event);
+  Future<ResponseOrderEvent> processOrder(final ProcessOrderEvent event);
 
   Future<ResponseOrderEvent> updateOrder(final ProcessOrderEvent event);
 
