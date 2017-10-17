@@ -65,53 +65,62 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Async
+  @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public void createOrder(final ProcessOrderEvent event) {
+  public Future<ResponseOrderEvent> createOrder(final ProcessOrderEvent event) {
+    return new AsyncResult(ResponseOrderEvent
+      .builder()
+      .order(this.orderMapper
+        .map(this.clientRepository
+          .findById(event.getIdClient())
+          .map(clientEntity -> {
 
-    this.clientRepository
-      .findById(event.getIdClient())
-      .map(clientEntity -> {
+            event.getOrder().setComment(null);
+            event.getOrder().setAddress(null);
+            event.getOrder().setLatitude(null);
+            event.getOrder().setLongitude(null);
+            event.getOrder().setRejectedDate(null);
+            event.getOrder().setFinishedDate(null);
+            event.getOrder().setScheduledDate(null);
+            event.getOrder().setRegisteredDate(null);
+            event.getOrder().setStatus(OrderStatus.CREATED);
 
-        event.getOrder().setComment(null);
-        event.getOrder().setAddress(null);
-        event.getOrder().setLatitude(null);
-        event.getOrder().setLongitude(null);
-        event.getOrder().setRejectedDate(null);
-        event.getOrder().setFinishedDate(null);
-        event.getOrder().setScheduledDate(null);
-        event.getOrder().setRegisteredDate(null);
-        event.getOrder().setStatus(OrderStatus.CREATED);
+            final OrderEntity orderEntity = this.mergePackages(event, OrderStatus.CREATED);
 
-        final OrderEntity orderEntity = this.mergePackages(event, OrderStatus.CREATED);
+            orderEntity.setClient(clientEntity);
 
-        orderEntity.setClient(clientEntity);
+            this.orderRepository.save(orderEntity);
 
-        this.orderRepository.save(orderEntity);
-
-        return orderEntity;
-      })
-      .orElseThrow(() -> new RuntimeException("No data!"));
+            return orderEntity;
+          })
+          .orElseThrow(RuntimeException::new))));
   }
 
   @Override
   @Async
+  @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public void registerOrder(final ProcessOrderEvent event) {
+  public Future<ResponseOrderEvent> registerOrder(final ProcessOrderEvent event) {
+    return new AsyncResult(ResponseOrderEvent
+      .builder()
+      .order(this.orderMapper
+        .map(this.orderRepository
+          .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
+          .map(orderEntity -> {
 
-    this.orderRepository
-      .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
-      .ifPresent(orderEntity -> {
+            final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED);
 
-        final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED);
+            currentOrder.setRejectedDate(null);
+            currentOrder.setFinishedDate(null);
+            currentOrder.setRegisteredDate(new Date());
+            currentOrder.setTimeZone(event.getTimeZone());
+            currentOrder.setStatus(OrderStatus.PENDING_TO_ACCEPT);
 
-        currentOrder.setRejectedDate(null);
-        currentOrder.setFinishedDate(null);
-        currentOrder.setRegisteredDate(new Date());
-        currentOrder.setTimeZone(event.getTimeZone());
-        currentOrder.setStatus(OrderStatus.PENDING_TO_ACCEPT);
+            this.orderRepository.save(currentOrder);
 
-        this.orderRepository.save(currentOrder);
-      });
+            return currentOrder;
+          })
+          .orElseThrow(RuntimeException::new))));
   }
 
   @Override
