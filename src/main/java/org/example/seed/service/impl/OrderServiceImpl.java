@@ -149,16 +149,16 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Async
+  @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public Future<ResponseOrderEvent> updateOrder(final ProcessOrderEvent event) {
-
-    if (this.orderRepository
-      .findIdByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
-      .isPresent()) {
-      this.orderRepository.save(this.mergePackages(event, OrderStatus.CREATED));
-    }
-
-    return new AsyncResult<>(null);
+    return new AsyncResult(ResponseOrderEvent
+      .builder()
+      .order(this.orderMapper
+        .map(this.orderRepository
+          .findIdByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
+          .map(orderEntity -> this.orderRepository.save(this.mergePackages(event, OrderStatus.CREATED)))
+          .orElseThrow(RuntimeException::new))));
   }
 
   @Override
