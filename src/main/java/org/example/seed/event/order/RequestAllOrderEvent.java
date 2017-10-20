@@ -19,4 +19,6 @@ public class RequestAllOrderEvent {
 
   private int page;
   private int limit;
+  private String idChef;
+  private String idClient;
 }

@@ -11,6 +11,8 @@ import org.example.seed.mapper.PackageMapper;
 import org.example.seed.repository.*;
 import org.example.seed.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
@@ -54,8 +56,35 @@ public class OrderServiceImpl implements OrderService {
   private PackageMapper packageMapper;
 
   @Override
-  public Future<CatalogOrderEvent> requestOrders(final RequestAllOrderEvent event) {
-    return null;
+  @Async
+  @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
+  public Future<CatalogOrderEvent> requestOrdersByClient(final RequestAllOrderEvent event) {
+
+    final Page<OrderEntity> orderEntities = this.orderRepository
+      .findAllByClient(event.getIdClient(), PageRequest.of(event.getPage() - 1, event.getLimit()));
+
+    return new AsyncResult<>(CatalogOrderEvent
+      .builder()
+      .total(orderEntities.getTotalElements())
+      .orders(this.orderMapper
+        .mapListReverse(orderEntities.getContent()))
+      .build());
+  }
+
+  @Override
+  @Async
+  @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
+  public Future<CatalogOrderEvent> requestOrdersByChef(final RequestAllOrderEvent event) {
+
+    final Page<OrderEntity> orderEntities = this.orderRepository
+      .findAllByChef(event.getIdClient(), PageRequest.of(event.getPage() - 1, event.getLimit()));
+
+    return new AsyncResult<>(CatalogOrderEvent
+      .builder()
+      .total(orderEntities.getTotalElements())
+      .orders(this.orderMapper
+        .mapListReverse(orderEntities.getContent()))
+      .build());
   }
 
   @Override
