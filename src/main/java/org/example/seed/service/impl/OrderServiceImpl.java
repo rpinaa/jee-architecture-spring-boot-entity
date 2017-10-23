@@ -185,7 +185,7 @@ public class OrderServiceImpl implements OrderService {
       .builder()
       .order(this.orderMapper
         .map(this.orderRepository
-          .findIdByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
+          .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
           .map(orderEntity -> this.orderRepository.save(this.mergePackages(event, OrderStatus.CREATED)))
           .orElseThrow(RuntimeException::new))));
   }
