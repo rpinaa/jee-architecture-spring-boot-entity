@@ -16,9 +16,6 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, String> {
 
-  @Query("SELECT oe.id FROM ClientEntity ce JOIN ce.orders AS oe WHERE ce.id = ?1 AND oe.id = ?2 AND oe.status = ?3")
-  Optional<String> findIdByClientAndOrder(final String idClient, final String idOrder, final OrderStatus status);
-
   @Query("SELECT oe FROM ClientEntity ce JOIN ce.orders AS oe WHERE ce.id = ?1 AND oe.id = ?2 AND oe.status = ?3")
   Optional<OrderEntity> findByClientAndOrder(final String idClient, final String idOrder, final OrderStatus status);
 
