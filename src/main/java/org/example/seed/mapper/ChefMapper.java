@@ -11,7 +11,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ChefMapper extends GenericMapper<Chef, ChefEntity> {
 
-    Chef map(final ChefEntity chefEntity);
+  Chef map(final ChefEntity chefEntity);
 
-    ChefEntity map(final Chef chef);
+  ChefEntity map(final Chef chef);
 }

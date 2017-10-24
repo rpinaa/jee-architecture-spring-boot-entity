@@ -11,7 +11,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface PackageMapper extends GenericMapper<Package, PackageEntity> {
 
-    Package map(final PackageEntity packageEntity);
+  Package map(final PackageEntity packageEntity);
 
-    PackageEntity map(final Package sPackage);
+  PackageEntity map(final Package sPackage);
 }

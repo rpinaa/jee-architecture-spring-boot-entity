@@ -11,7 +11,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ClientMapper extends GenericMapper<Client, ClientEntity> {
 
-    Client map(final ClientEntity clientEntity);
+  Client map(final ClientEntity clientEntity);
 
-    ClientEntity map(final Client client);
+  ClientEntity map(final Client client);
 }
