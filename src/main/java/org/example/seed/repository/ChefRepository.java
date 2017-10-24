@@ -13,8 +13,8 @@ import java.util.Optional;
 @Repository
 public interface ChefRepository extends JpaRepository<ChefEntity, String> {
 
-    Optional<ChefEntity> findById(final String id);
+  Optional<ChefEntity> findById(final String id);
 
-    @Query("SELECT ce FROM ChefEntity ce LEFT JOIN ce.account AS ae JOIN ce.dishes AS se WHERE ce.active = TRUE AND se.id = ?1")
-    ChefEntity findOneByDish(final String idDish);
+  @Query("SELECT ce FROM ChefEntity ce LEFT JOIN ce.account AS ae JOIN ce.dishes AS se WHERE ce.active = TRUE AND se.id = ?1")
+  ChefEntity findOneByDish(final String idDish);
 }
