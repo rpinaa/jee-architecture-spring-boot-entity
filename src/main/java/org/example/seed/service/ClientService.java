@@ -9,9 +9,11 @@ import java.util.concurrent.Future;
  */
 public interface ClientService {
 
-  Future<CatalogClientEvent> requestClients(final RequestAllClientEvent event);
+  Future<ResponseClientsEvent> requestClients(final RequestClientsEvent event);
 
   Future<ResponseClientEvent> createClient(final CreateClientEvent event);
+
+  Future<ResponseClientEvent> registerClient(final RegisterClientEvent event);
 
   Future<ResponseClientEvent> requestClient(final RequestClientEvent event);
 
