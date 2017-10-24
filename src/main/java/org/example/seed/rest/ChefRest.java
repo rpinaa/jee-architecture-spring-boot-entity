@@ -1,9 +1,12 @@
 package org.example.seed.rest;
 
 import org.example.seed.event.chef.*;
+import org.example.seed.event.order.ResponseOrdersEvent;
+import org.example.seed.event.order.RequestOrdersEvent;
 import org.example.seed.group.chef.ChefCreateGroup;
 import org.example.seed.group.chef.ChefUpdateGroup;
 import org.example.seed.service.ChefService;
+import org.example.seed.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -20,10 +23,12 @@ import java.util.concurrent.ExecutionException;
 public class ChefRest {
 
   private final ChefService chefService;
+  private final OrderService orderService;
 
   @Autowired
-  public ChefRest(final ChefService chefService) {
+  public ChefRest(final ChefService chefService, final OrderService orderService) {
     this.chefService = chefService;
+    this.orderService = orderService;
   }
 
   @GetMapping
@@ -32,6 +37,23 @@ public class ChefRest {
     throws ExecutionException, InterruptedException {
     return Mono.justOrEmpty(this.chefService
       .requestChefs(RequestAllChefEvent.builder()
+        .page(page)
+        .limit(limit)
+        .build())
+      .get());
+  }
+
+  @GetMapping("/{chefId}/orders")
+  @ResponseStatus(HttpStatus.OK)
+  public Mono<ResponseOrdersEvent> getOrdersByClient(
+    @RequestParam("page") final int page,
+    @RequestParam("limit") final int limit,
+    @PathVariable("chefId") final String chefId
+  )
+    throws ExecutionException, InterruptedException {
+    return Mono.justOrEmpty(this.orderService
+      .requestOrdersByChef(RequestOrdersEvent.builder()
+        .chefId(chefId)
         .page(page)
         .limit(limit)
         .build())
@@ -47,9 +69,9 @@ public class ChefRest {
     return Mono.justOrEmpty(this.chefService.createChef(event).get());
   }
 
-  @GetMapping(value = "/{id}")
+  @GetMapping(value = "/{chefId}")
   @ResponseStatus(HttpStatus.OK)
-  public Mono<ResponseChefEvent> getChef(@PathVariable("id") final String id)
+  public Mono<ResponseChefEvent> getChef(@PathVariable("chefId") final String id)
     throws ExecutionException, InterruptedException {
     return Mono.justOrEmpty(this.chefService
       .requestChef(RequestChefEvent.builder().id(id).build()).get());
@@ -64,9 +86,9 @@ public class ChefRest {
     return Mono.justOrEmpty(this.chefService.updateChef(event).get());
   }
 
-  @DeleteMapping(value = "/{id}")
+  @DeleteMapping(value = "/{chefId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<ResponseChefEvent> deleteChef(@PathVariable("id") final String id)
+  public Mono<ResponseChefEvent> deleteChef(@PathVariable("chefId") final String id)
     throws ExecutionException, InterruptedException {
     return Mono.justOrEmpty(this.chefService
       .deleteChef(DeleteChefEvent.builder()

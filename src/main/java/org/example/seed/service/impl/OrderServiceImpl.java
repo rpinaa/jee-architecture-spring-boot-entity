@@ -58,12 +58,12 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-  public Future<CatalogOrderEvent> requestOrdersByClient(final RequestAllOrderEvent event) {
+  public Future<ResponseOrdersEvent> requestOrdersByClient(final RequestOrdersEvent event) {
 
     final Page<OrderEntity> orderEntities = this.orderRepository
-      .findAllByClient(event.getIdClient(), PageRequest.of(event.getPage() - 1, event.getLimit()));
+      .findAllByClient(event.getClientId(), PageRequest.of(event.getPage() - 1, event.getLimit()));
 
-    return new AsyncResult<>(CatalogOrderEvent
+    return new AsyncResult<>(ResponseOrdersEvent
       .builder()
       .total(orderEntities.getTotalElements())
       .orders(this.orderMapper
@@ -74,12 +74,12 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-  public Future<CatalogOrderEvent> requestOrdersByChef(final RequestAllOrderEvent event) {
+  public Future<ResponseOrdersEvent> requestOrdersByChef(final RequestOrdersEvent event) {
 
     final Page<OrderEntity> orderEntities = this.orderRepository
-      .findAllByChef(event.getIdClient(), PageRequest.of(event.getPage() - 1, event.getLimit()));
+      .findAllByChef(event.getClientId(), PageRequest.of(event.getPage() - 1, event.getLimit()));
 
-    return new AsyncResult<>(CatalogOrderEvent
+    return new AsyncResult<>(ResponseOrdersEvent
       .builder()
       .total(orderEntities.getTotalElements())
       .orders(this.orderMapper
@@ -88,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public Future<ResponseOrderEvent> requestOrder(final RequestAllOrderEvent event) {
+  public Future<ResponseOrderEvent> requestOrder(final RequestOrdersEvent event) {
     return null;
   }
 

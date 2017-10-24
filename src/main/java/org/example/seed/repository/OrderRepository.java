@@ -3,7 +3,7 @@ package org.example.seed.repository;
 import org.example.seed.catalog.OrderStatus;
 import org.example.seed.entity.OrderEntity;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -20,8 +20,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, String> {
   Optional<OrderEntity> findByClientAndOrder(final String idClient, final String idOrder, final OrderStatus status);
 
   @Query("SELECT oe FROM ClientEntity ce JOIN ce.orders AS oe WHERE ce.id = ?1")
-  Page<OrderEntity> findAllByClient(final String idClient, final PageRequest pageRequest);
+  Page<OrderEntity> findAllByClient(final String idClient, final Pageable pageable);
 
   @Query("SELECT oe FROM ChefEntity ce JOIN ce.orders AS oe WHERE ce.id = ?1")
-  Page<OrderEntity> findAllByChef(final String idChef, final PageRequest pageRequest);
+  Page<OrderEntity> findAllByChef(final String idChef, final Pageable pageable);
 }

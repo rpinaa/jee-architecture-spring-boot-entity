@@ -9,11 +9,11 @@ import java.util.concurrent.Future;
  */
 public interface OrderService {
 
-  Future<CatalogOrderEvent> requestOrdersByClient(final RequestAllOrderEvent event);
+  Future<ResponseOrdersEvent> requestOrdersByClient(final RequestOrdersEvent event);
 
-  Future<CatalogOrderEvent> requestOrdersByChef(final RequestAllOrderEvent event);
+  Future<ResponseOrdersEvent> requestOrdersByChef(final RequestOrdersEvent event);
 
-  Future<ResponseOrderEvent> requestOrder(final RequestAllOrderEvent event);
+  Future<ResponseOrderEvent> requestOrder(final RequestOrdersEvent event);
 
   Future<ResponseOrderEvent> createOrder(final ProcessOrderEvent event);
 
