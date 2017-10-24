@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.seed.domain.Order;
 
+import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.TimeZone;
 
@@ -19,6 +20,7 @@ import java.util.TimeZone;
 @XmlRootElement
 public class ProcessOrderEvent {
 
+  @Valid
   private Order order;
   private String idChef;
   private String idClient;
