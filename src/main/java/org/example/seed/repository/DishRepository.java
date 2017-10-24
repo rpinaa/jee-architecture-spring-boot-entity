@@ -14,6 +14,6 @@ import java.util.Optional;
 @Repository
 public interface DishRepository extends JpaRepository<DishEntity, String> {
 
-    @Query("SELECT de FROM DishEntity de JOIN de.chef AS ce WHERE ce.active = TRUE AND ce.id = ?1")
-    Optional<List<DishEntity>> findAllByChef(final String idChef);
+  @Query("SELECT de FROM DishEntity de JOIN de.chef AS ce WHERE ce.active = TRUE AND ce.id = ?1")
+  Optional<List<DishEntity>> findAllByChef(final String idChef);
 }

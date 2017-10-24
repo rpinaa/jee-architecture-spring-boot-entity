@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
  * Created by PINA on 25/06/2017.
  */
 @Repository
-public interface TelephoneRepository extends JpaRepository<TelephoneEntity, String> { }
+public interface TelephoneRepository extends JpaRepository<TelephoneEntity, String> {
+}

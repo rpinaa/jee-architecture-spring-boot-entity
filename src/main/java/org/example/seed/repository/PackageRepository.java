@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
  * Created by PINA on 01/07/2017.
  */
 @Repository
-public interface PackageRepository extends JpaRepository<PackageEntity, String> { }
+public interface PackageRepository extends JpaRepository<PackageEntity, String> {
+}

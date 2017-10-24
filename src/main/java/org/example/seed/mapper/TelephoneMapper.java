@@ -11,7 +11,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface TelephoneMapper extends GenericMapper<Telephone, TelephoneEntity> {
 
-    Telephone map(final TelephoneEntity telephoneEntity);
+  Telephone map(final TelephoneEntity telephoneEntity);
 
-    TelephoneEntity map(final Telephone telephone);
+  TelephoneEntity map(final Telephone telephone);
 }

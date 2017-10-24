@@ -11,7 +11,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface OrderMapper extends GenericMapper<Order, OrderEntity> {
 
-    Order map(final OrderEntity orderEntity);
+  Order map(final OrderEntity orderEntity);
 
-    OrderEntity map(final Order order);
+  OrderEntity map(final Order order);
 }
