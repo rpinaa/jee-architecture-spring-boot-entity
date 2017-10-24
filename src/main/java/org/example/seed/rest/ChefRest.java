@@ -30,12 +30,19 @@ public class ChefRest {
   @ResponseStatus(HttpStatus.OK)
   public Mono<CatalogChefEvent> getChefs(@RequestParam("page") final int page, @RequestParam("limit") final int limit)
     throws ExecutionException, InterruptedException {
-    return Mono.justOrEmpty(this.chefService.requestChefs(RequestAllChefEvent.builder().page(page).limit(limit).build()).get());
+    return Mono.justOrEmpty(this.chefService
+      .requestChefs(RequestAllChefEvent.builder()
+        .page(page)
+        .limit(limit)
+        .build())
+      .get());
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<ResponseChefEvent> createChef(@RequestBody @Validated(value = {ChefCreateGroup.class}) final CreateChefEvent event)
+  public Mono<ResponseChefEvent> createChef(
+    @RequestBody @Validated(value = {ChefCreateGroup.class}) final CreateChefEvent event
+  )
     throws ExecutionException, InterruptedException {
     return Mono.justOrEmpty(this.chefService.createChef(event).get());
   }
@@ -44,12 +51,15 @@ public class ChefRest {
   @ResponseStatus(HttpStatus.OK)
   public Mono<ResponseChefEvent> getChef(@PathVariable("id") final String id)
     throws ExecutionException, InterruptedException {
-    return Mono.justOrEmpty(this.chefService.requestChef(RequestChefEvent.builder().id(id).build()).get());
+    return Mono.justOrEmpty(this.chefService
+      .requestChef(RequestChefEvent.builder().id(id).build()).get());
   }
 
   @PutMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<ResponseChefEvent> updateChef(@RequestBody @Validated(value = {ChefUpdateGroup.class}) final UpdateChefEvent event)
+  public Mono<ResponseChefEvent> updateChef(
+    @RequestBody @Validated(value = {ChefUpdateGroup.class}) final UpdateChefEvent event
+  )
     throws ExecutionException, InterruptedException {
     return Mono.justOrEmpty(this.chefService.updateChef(event).get());
   }
@@ -58,6 +68,10 @@ public class ChefRest {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public Mono<ResponseChefEvent> deleteChef(@PathVariable("id") final String id)
     throws ExecutionException, InterruptedException {
-    return Mono.justOrEmpty(this.chefService.deleteChef(DeleteChefEvent.builder().id(id).build()).get());
+    return Mono.justOrEmpty(this.chefService
+      .deleteChef(DeleteChefEvent.builder()
+        .id(id)
+        .build())
+      .get());
   }
 }
