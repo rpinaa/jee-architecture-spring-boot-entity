@@ -43,12 +43,13 @@ public class ClientRest {
     @RequestParam("limit") final int limit
   )
     throws ExecutionException, InterruptedException {
-    return Mono.justOrEmpty(this.clientService
-      .requestClients(RequestClientsEvent.builder()
-        .page(page)
-        .limit(limit)
-        .build())
-      .get());
+
+    final RequestClientsEvent event = RequestClientsEvent.builder().page(page).limit(limit).build();
+
+    return Mono
+      .justOrEmpty(this.clientService
+        .requestClients(event)
+        .get());
   }
 
   @PostMapping
@@ -57,7 +58,10 @@ public class ClientRest {
     @RequestBody @Validated(value = {ClientCreateGroup.class}) final CreateClientEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono.justOrEmpty(this.clientService.createClient(event).get());
+    return Mono
+      .justOrEmpty(this.clientService
+        .createClient(event)
+        .get());
   }
 
   @PatchMapping
@@ -66,18 +70,23 @@ public class ClientRest {
     @RequestBody @Validated(value = {ClientRegisterGroup.class}) final RegisterClientEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono.justOrEmpty(this.clientService.registerClient(event).get());
+    return Mono
+      .justOrEmpty(this.clientService
+        .registerClient(event)
+        .get());
   }
 
   @GetMapping(value = "/{clientId}")
   @ResponseStatus(HttpStatus.OK)
   public Mono<ResponseClientEvent> getClient(@PathVariable("clientId") final String id)
     throws ExecutionException, InterruptedException {
-    return Mono.justOrEmpty(this.clientService
-      .requestClient(RequestClientEvent.builder()
-        .id(id)
-        .build())
-      .get());
+
+    final RequestClientEvent event = RequestClientEvent.builder().id(id).build();
+
+    return Mono
+      .justOrEmpty(this.clientService
+        .requestClient(event)
+        .get());
   }
 
   @PutMapping
@@ -86,18 +95,23 @@ public class ClientRest {
     @RequestBody @Validated(value = {ClientUpdateGroup.class}) final UpdateClientEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono.justOrEmpty(this.clientService.updateClient(event).get());
+    return Mono
+      .justOrEmpty(this.clientService
+        .updateClient(event)
+        .get());
   }
 
   @DeleteMapping(value = "/{clientId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public Mono<ResponseClientEvent> deleteClient(@PathVariable("clientId") final String id)
     throws ExecutionException, InterruptedException {
-    return Mono.justOrEmpty(this.clientService
-      .deleteClient(DeleteClientEvent.builder()
-        .id(id)
-        .build())
-      .get());
+
+    final DeleteClientEvent event = DeleteClientEvent.builder().id(id).build();
+
+    return Mono
+      .justOrEmpty(this.clientService
+        .deleteClient(event)
+        .get());
   }
 
   @GetMapping("/{clientId}/orders")
@@ -108,13 +122,13 @@ public class ClientRest {
     @PathVariable("clientId") final String clientId
   )
     throws ExecutionException, InterruptedException {
-    return Mono.justOrEmpty(this.orderService
-      .requestOrdersByClient(RequestOrdersEvent.builder()
-        .clientId(clientId)
-        .page(page)
-        .limit(limit)
-        .build())
-      .get());
+
+    final RequestOrdersEvent event = RequestOrdersEvent.builder().clientId(clientId).page(page).limit(limit).build();
+
+    return Mono
+      .justOrEmpty(this.orderService
+        .requestOrdersByClient(event)
+        .get());
   }
 
   @PostMapping("/{clientId}/orders")
@@ -123,7 +137,10 @@ public class ClientRest {
     @RequestBody @Validated(value = {OrderCreateGroup.class}) final ProcessOrderEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono.justOrEmpty(this.orderService.createOrder(event).get());
+    return Mono
+      .justOrEmpty(this.orderService
+        .createOrder(event)
+        .get());
   }
 
   @PatchMapping("/{clientId}/orders")
@@ -132,7 +149,10 @@ public class ClientRest {
     @RequestBody @Validated(value = {OrderRegisterGroup.class}) final ProcessOrderEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono.justOrEmpty(this.orderService.registerOrder(event).get());
+    return Mono
+      .justOrEmpty(this.orderService
+        .registerOrder(event)
+        .get());
   }
 
   @PutMapping("/{clientId}/orders")
@@ -141,6 +161,9 @@ public class ClientRest {
     @RequestBody @Validated(value = {OrderCreateGroup.class}) final ProcessOrderEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono.justOrEmpty(this.orderService.updateOrder(event).get());
+    return Mono
+      .justOrEmpty(this.orderService
+        .updateOrder(event)
+        .get());
   }
 }
