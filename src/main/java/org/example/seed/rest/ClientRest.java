@@ -63,9 +63,7 @@ public class ClientRest {
   @PatchMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public Mono<ResponseClientEvent> registerClient(
-    @RequestBody @Validated(value = {
-      ClientRegisterGroup.class, ClientCreateGroup.class
-    }) final RegisterClientEvent event
+    @RequestBody @Validated(value = {ClientRegisterGroup.class}) final RegisterClientEvent event
   )
     throws ExecutionException, InterruptedException {
     return Mono.justOrEmpty(this.clientService.registerClient(event).get());

@@ -21,7 +21,7 @@ public class DenominationImpl implements ConstraintValidator<Denomination, Strin
   @Override
   public boolean isValid(final String value, final ConstraintValidatorContext constraintValidatorContext) {
     return Optional.of(value)
-      .map(v -> v.matches("^([a-z]+[,.]?[ ]?|[a-z]+['-]?)+$"))
+      .map(v -> v.matches("^([a-z-ñÑáéíóúÁÉÍÓÚ]+[,.]?[ ]?|[a-z]+[´-]?)+$"))
       .orElse(true);
   }
 }
