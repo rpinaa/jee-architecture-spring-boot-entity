@@ -96,7 +96,7 @@ public class ClientServiceImpl implements ClientService {
 
             return clientEntity;
           })
-          .orElseThrow(RuntimeException::new)))
+          .orElseThrow(() -> new RuntimeException("ERROR-00002"))))
       .build());
   }
 
@@ -132,7 +132,7 @@ public class ClientServiceImpl implements ClientService {
 
             return clientEntity;
           })
-          .orElseThrow(RuntimeException::new)))
+          .orElseThrow(() -> new RuntimeException("ERROR-00002"))))
       .build());
   }
 
