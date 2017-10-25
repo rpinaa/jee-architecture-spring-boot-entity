@@ -34,26 +34,36 @@ import java.util.stream.Stream;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-  @Autowired
-  private ChefRepository chefRepository;
+  private final ChefRepository chefRepository;
+
+  private final ClientRepository clientRepository;
+
+  private final DishRepository dishRepository;
+
+  private final OrderRepository orderRepository;
+
+  private final PackageRepository packageRepository;
+
+  private final OrderMapper orderMapper;
+
+  private final PackageMapper packageMapper;
 
   @Autowired
-  private ClientRepository clientRepository;
+  public OrderServiceImpl(
+    final ChefRepository chefRepository, final ClientRepository clientRepository,
+    final DishRepository dishRepository, final OrderRepository orderRepository,
+    final PackageRepository packageRepository, final OrderMapper orderMapper,
+    final PackageMapper packageMapper
+  ) {
 
-  @Autowired
-  private DishRepository dishRepository;
-
-  @Autowired
-  private OrderRepository orderRepository;
-
-  @Autowired
-  private PackageRepository packageRepository;
-
-  @Autowired
-  private OrderMapper orderMapper;
-
-  @Autowired
-  private PackageMapper packageMapper;
+    this.chefRepository = chefRepository;
+    this.clientRepository = clientRepository;
+    this.dishRepository = dishRepository;
+    this.orderRepository = orderRepository;
+    this.packageRepository = packageRepository;
+    this.orderMapper = orderMapper;
+    this.packageMapper = packageMapper;
+  }
 
   @Override
   @Async
@@ -63,8 +73,7 @@ public class OrderServiceImpl implements OrderService {
     final Page<OrderEntity> orderEntities = this.orderRepository
       .findAllByClient(event.getClientId(), PageRequest.of(event.getPage() - 1, event.getLimit()));
 
-    return new AsyncResult<>(ResponseOrdersEvent
-      .builder()
+    return new AsyncResult<>(ResponseOrdersEvent.builder()
       .total(orderEntities.getTotalElements())
       .orders(this.orderMapper
         .mapListReverse(orderEntities.getContent()))
@@ -79,8 +88,7 @@ public class OrderServiceImpl implements OrderService {
     final Page<OrderEntity> orderEntities = this.orderRepository
       .findAllByChef(event.getClientId(), PageRequest.of(event.getPage() - 1, event.getLimit()));
 
-    return new AsyncResult<>(ResponseOrdersEvent
-      .builder()
+    return new AsyncResult<>(ResponseOrdersEvent.builder()
       .total(orderEntities.getTotalElements())
       .orders(this.orderMapper
         .mapListReverse(orderEntities.getContent()))
@@ -97,8 +105,7 @@ public class OrderServiceImpl implements OrderService {
   @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public Future<ResponseOrderEvent> createOrder(final ProcessOrderEvent event) {
-    return new AsyncResult(ResponseOrderEvent
-      .builder()
+    return new AsyncResult(ResponseOrderEvent.builder()
       .order(this.orderMapper
         .map(this.clientRepository
           .findById(event.getIdClient())
@@ -130,8 +137,7 @@ public class OrderServiceImpl implements OrderService {
   @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public Future<ResponseOrderEvent> registerOrder(final ProcessOrderEvent event) {
-    return new AsyncResult(ResponseOrderEvent
-      .builder()
+    return new AsyncResult(ResponseOrderEvent.builder()
       .order(this.orderMapper
         .map(this.orderRepository
           .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
@@ -157,8 +163,7 @@ public class OrderServiceImpl implements OrderService {
   @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public Future<ResponseOrderEvent> processOrder(final ProcessOrderEvent event) {
-    return new AsyncResult(ResponseOrderEvent
-      .builder()
+    return new AsyncResult(ResponseOrderEvent.builder()
       .order(this.orderMapper
         .map(this.orderRepository
           .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.PENDING_TO_ACCEPT)
@@ -181,8 +186,7 @@ public class OrderServiceImpl implements OrderService {
   @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public Future<ResponseOrderEvent> updateOrder(final ProcessOrderEvent event) {
-    return new AsyncResult(ResponseOrderEvent
-      .builder()
+    return new AsyncResult(ResponseOrderEvent.builder()
       .order(this.orderMapper
         .map(this.orderRepository
           .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
