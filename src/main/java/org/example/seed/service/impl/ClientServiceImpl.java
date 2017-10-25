@@ -6,6 +6,7 @@ import org.example.seed.event.client.*;
 import org.example.seed.mapper.ClientMapper;
 import org.example.seed.repository.ClientRepository;
 import org.example.seed.service.ClientService;
+import org.example.seed.util.KeyGenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -70,7 +71,7 @@ public class ClientServiceImpl implements ClientService {
       .save(this.clientMapper
         .map(event.getClient()));
 
-    // TODO: sending an activation email
+    // TODO: sending activation email
 
     return new AsyncResult<>(null);
   }
@@ -86,13 +87,16 @@ public class ClientServiceImpl implements ClientService {
           .findByIdAndStatus(event.getClient().getId(), ClientStatus.REGISTERED)
           .map(clientEntity -> {
 
+            // TODO: to implement keygen activation
+
             clientEntity.setRating(0F);
             clientEntity.setTelephone(null);
             clientEntity.setStatus(ClientStatus.ACTIVATED);
+            clientEntity.setSecret(KeyGenUtil.encode(event.getClient().getCredential()));
 
             this.clientRepository.save(clientEntity);
 
-            // TODO: sending welcomed email
+            // TODO: sending welcome email
 
             return clientEntity;
           })
