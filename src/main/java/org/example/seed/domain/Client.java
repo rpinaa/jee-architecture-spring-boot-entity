@@ -4,18 +4,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.seed.catalog.ClientStatus;
 import org.example.seed.constraint.Denomination;
-import org.example.seed.group.chef.ChefCreateGroup;
-import org.example.seed.group.chef.ChefUpdateGroup;
 import org.example.seed.group.client.ClientCreateGroup;
 import org.example.seed.group.client.ClientRegisterGroup;
 import org.example.seed.group.client.ClientUpdateGroup;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.UUID;
 
 /**
@@ -29,23 +24,29 @@ public class Client extends Dates {
   @NotNull(groups = {ClientRegisterGroup.class, ClientUpdateGroup.class})
   private String id;
 
-  @Email(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
-  @Size(max = 45, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  @Email(groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
+  @Size(max = 45, groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
   @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
   private String email;
 
-  @Denomination(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-  @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  @Denomination(groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
+  @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
   @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
   private String firstName;
 
-  @Denomination(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-  @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  @Denomination(groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
+  @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
   @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
   private String lastName;
 
-  @Min(value = 0, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
-  @Max(value = 5, groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  @Null(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  @NotNull(groups = {ClientRegisterGroup.class})
+  @Size(min = 8, max = 16, groups = {ClientRegisterGroup.class})
+  private String credential;
+
+  @Null(groups = {ClientCreateGroup.class})
+  @Min(value = 0, groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
+  @Max(value = 5, groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
   private Float rating;
 
   @NotNull(groups = {ClientRegisterGroup.class, ClientUpdateGroup.class})
