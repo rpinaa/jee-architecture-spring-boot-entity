@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface Denomination {
 
-  String message() default "NAMES";
+  String message() default "must match text pattern";
 
   Class<?>[] groups() default {};
 
