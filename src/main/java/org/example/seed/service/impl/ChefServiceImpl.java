@@ -8,6 +8,7 @@ import org.example.seed.mapper.TelephoneMapper;
 import org.example.seed.repository.ChefRepository;
 import org.example.seed.repository.TelephoneRepository;
 import org.example.seed.service.ChefService;
+import org.example.seed.util.KeyGenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -30,22 +31,21 @@ import java.util.stream.Collectors;
 public class ChefServiceImpl implements ChefService {
 
   private final ChefMapper chefMapper;
-
   private final ChefRepository chefRepository;
-
   private final TelephoneMapper telephoneMapper;
-
   private final TelephoneRepository telephoneRepository;
 
   @Autowired
   public ChefServiceImpl(
-    final ChefRepository chefRepository, final TelephoneRepository telephoneRepository,
-    final ChefMapper chefMapper, final TelephoneMapper telephoneMapper
+    final ChefMapper chefMapper,
+    final ChefRepository chefRepository,
+    final TelephoneMapper telephoneMapper,
+    final TelephoneRepository telephoneRepository
   ) {
-    this.chefRepository = chefRepository;
-    this.telephoneRepository = telephoneRepository;
     this.chefMapper = chefMapper;
+    this.chefRepository = chefRepository;
     this.telephoneMapper = telephoneMapper;
+    this.telephoneRepository = telephoneRepository;
   }
 
   @Override
@@ -71,16 +71,51 @@ public class ChefServiceImpl implements ChefService {
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public Future<ResponseChefEvent> createChef(final CreateChefEvent event) {
 
-    event.getChef().setStatus(ChefStatus.REGISTERED);
-    event.getChef().setRating(0F);
-    event.getChef().setTelephones(null);
+    event.getChef().setRating(null);
     event.getChef().setActive(false);
+    event.getChef().setTelephones(null);
+    event.getChef().setStatus(ChefStatus.REGISTERED);
+
+    if (this.chefRepository.existsByEmail(event.getChef().getAccount().getEmail())) {
+      throw new RuntimeException("ERROR-01001");
+    }
 
     this.chefRepository
       .save(this.chefMapper
         .map(event.getChef()));
 
+    // TODO: sending activation email
+
     return new AsyncResult<>(null);
+  }
+
+  @Async
+  @Override
+  @CacheEvict(value = "chefs", allEntries = true)
+  @Transactional(isolation = Isolation.READ_COMMITTED)
+  public Future<ResponseChefEvent> registerChef(final CreateChefEvent event) {
+    return new AsyncResult<>(ResponseChefEvent.builder()
+      .chef(this.chefMapper
+        .map(this.chefRepository
+          .findByIdAndStatus(event.getChef().getId(), ChefStatus.REGISTERED)
+          .map(chefEntity -> {
+
+            // TODO: to implement keygen activation
+
+            chefEntity.setRating(0F);
+            chefEntity.setActive(true);
+            chefEntity.setStatus(ChefStatus.ACTIVATED);
+            chefEntity.getAccount()
+              .setSecret(KeyGenUtil.encode(event.getChef().getAccount().getCredential()));
+
+            this.chefRepository.save(chefEntity);
+
+            // TODO: sending welcome email
+
+            return chefEntity;
+          })
+          .orElseThrow(() -> new RuntimeException("ERROR-01002"))))
+      .build());
   }
 
   @Override
@@ -102,32 +137,35 @@ public class ChefServiceImpl implements ChefService {
   @CacheEvict(value = "chefs", allEntries = true)
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public Future<ResponseChefEvent> updateChef(final UpdateChefEvent event) {
+    return new AsyncResult<>(ResponseChefEvent.builder()
+      .chef(this.chefMapper
+        .map(this.chefRepository
+          .findByIdAndStatus(event.getChef().getId(), ChefStatus.ACTIVATED)
+          .map(chefEntity -> {
 
-    this.chefRepository.findById(event.getChef().getId())
-      .ifPresent(chefEntity -> {
+            this.telephoneRepository.deleteInBatch(chefEntity.getTelephones());
 
-        this.telephoneRepository.deleteInBatch(chefEntity.getTelephones());
+            chefEntity.setStatus(ChefStatus.ACTIVATED);
+            chefEntity.setRfc(event.getChef().getRfc());
+            chefEntity.setCurp(event.getChef().getCurp());
+            chefEntity.setRating(event.getChef().getRating());
+            chefEntity.getAccount().setFirstName(event.getChef().getAccount().getFirstName());
+            chefEntity.getAccount().setLastName(event.getChef().getAccount().getLastName());
 
-        chefEntity.setRating(event.getChef().getRating());
-        chefEntity.setRfc(event.getChef().getRfc());
-        chefEntity.setCurp(event.getChef().getCurp());
-        chefEntity.setStatus(ChefStatus.ACTIVATED);
-        chefEntity.getAccount().setFirstName(event.getChef().getAccount().getFirstName());
-        chefEntity.getAccount().setLastName(event.getChef().getAccount().getLastName());
-        chefEntity.setTelephones(this.telephoneMapper
-          .mapList(event.getChef().getTelephones())
-          .parallelStream()
-          .peek(t -> {
-            t.setId(UUID.randomUUID().toString());
-            t.setChef(chefEntity);
+            chefEntity.setTelephones(this.telephoneMapper
+              .mapList(event.getChef().getTelephones())
+              .parallelStream()
+              .peek(t -> {
+                t.setId(UUID.randomUUID().toString());
+                t.setChef(chefEntity);
 
+              })
+              .collect(Collectors.toList()));
+
+            return this.chefRepository.save(chefEntity);
           })
-          .collect(Collectors.toList()));
-
-        this.chefRepository.save(chefEntity);
-      });
-
-    return new AsyncResult<>(null);
+          .orElseThrow(() -> new RuntimeException("ERROR-00002"))))
+      .build());
   }
 
   @Override

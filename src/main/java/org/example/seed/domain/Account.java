@@ -35,6 +35,8 @@ public class Account extends Dates {
   @NotNull(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
   private String email;
 
+  private String credential;
+
   public Account() {
     this.id = UUID.randomUUID().toString();
   }
