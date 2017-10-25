@@ -29,17 +29,24 @@ import java.util.stream.Collectors;
 @Service
 public class ChefServiceImpl implements ChefService {
 
-  @Autowired
-  private ChefMapper chefMapper;
+  private final ChefMapper chefMapper;
+
+  private final ChefRepository chefRepository;
+
+  private final TelephoneMapper telephoneMapper;
+
+  private final TelephoneRepository telephoneRepository;
 
   @Autowired
-  private ChefRepository chefRepository;
-
-  @Autowired
-  private TelephoneMapper telephoneMapper;
-
-  @Autowired
-  private TelephoneRepository telephoneRepository;
+  public ChefServiceImpl(
+    final ChefRepository chefRepository, final TelephoneRepository telephoneRepository,
+    final ChefMapper chefMapper, final TelephoneMapper telephoneMapper
+  ) {
+    this.chefRepository = chefRepository;
+    this.telephoneRepository = telephoneRepository;
+    this.chefMapper = chefMapper;
+    this.telephoneMapper = telephoneMapper;
+  }
 
   @Override
   @Async
