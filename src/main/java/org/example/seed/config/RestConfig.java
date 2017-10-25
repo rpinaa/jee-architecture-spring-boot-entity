@@ -2,6 +2,7 @@ package org.example.seed.config;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.reactive.config.EnableWebFlux;
@@ -14,6 +15,7 @@ import javax.servlet.Filter;
  */
 @Configuration
 @EnableWebFlux
+@ComponentScan(basePackages = {"org.example.seed.rest"})
 public class RestConfig extends WebFluxConfigurationSupport {
 
   @Bean
