@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface Text {
 
-  String message() default "TEXT";
+  String message() default "must match text pattern";
 
   Class<?>[] groups() default {};
 

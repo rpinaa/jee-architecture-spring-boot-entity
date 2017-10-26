@@ -4,7 +4,6 @@ import org.example.seed.constraint.impl.RfcImpl;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import javax.validation.constraints.Size;
 import java.lang.annotation.*;
 
 /**
@@ -14,10 +13,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = RfcImpl.class)
 @Documented
-@Size(min = 13, max = 13)
 public @interface Rfc {
 
-  String message() default "RFC";
+  String message() default "must match RFC pattern";
 
   Class<?>[] groups() default {};
 

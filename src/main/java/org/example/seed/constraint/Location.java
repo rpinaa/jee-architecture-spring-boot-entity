@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface Location {
 
-  String message() default "DENOMINATION";
+  String message() default "must match Location pattern";
 
   Class<?>[] groups() default {};
 
