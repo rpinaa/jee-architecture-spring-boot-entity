@@ -20,28 +20,28 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 public class Client extends Dates {
 
-  @Size(min = 36, max = 36, groups = {ClientRegisterGroup.class, ClientUpdateGroup.class})
   @NotNull(groups = {ClientRegisterGroup.class, ClientUpdateGroup.class})
+  @Size(min = 36, max = 36, groups = {ClientRegisterGroup.class, ClientUpdateGroup.class})
   private String id;
 
+  @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
   @Email(groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
   @Size(max = 45, groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
-  @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
   private String email;
 
+  @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
   @Denomination(groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
   @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
-  @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
   private String firstName;
 
   @Denomination(groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
-  @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
   @NotNull(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
+  @Size(min = 2, max = 80, groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
   private String lastName;
 
-  @Null(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
   @NotNull(groups = {ClientRegisterGroup.class})
   @Size(min = 8, max = 16, groups = {ClientRegisterGroup.class})
+  @Null(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
   private String credential;
 
   @Null(groups = {ClientCreateGroup.class})

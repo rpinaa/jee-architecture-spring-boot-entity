@@ -4,7 +4,6 @@ import org.example.seed.constraint.impl.CurpImpl;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import javax.validation.constraints.Size;
 import java.lang.annotation.*;
 
 /**
@@ -14,10 +13,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = CurpImpl.class)
 @Documented
-@Size(min = 18, max = 18)
 public @interface Curp {
 
-  String message() default "CURP";
+  String message() default "must match CURP pattern";
 
   Class<?>[] groups() default {};
 

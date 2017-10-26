@@ -4,6 +4,7 @@ import org.example.seed.event.chef.*;
 import org.example.seed.event.order.RequestOrdersEvent;
 import org.example.seed.event.order.ResponseOrdersEvent;
 import org.example.seed.group.chef.ChefCreateGroup;
+import org.example.seed.group.chef.ChefRegisterGroup;
 import org.example.seed.group.chef.ChefUpdateGroup;
 import org.example.seed.service.ChefService;
 import org.example.seed.service.OrderService;
@@ -70,6 +71,18 @@ public class ChefRest {
     return Mono
       .justOrEmpty(this.chefService
         .createChef(event)
+        .get());
+  }
+
+  @PatchMapping
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public Mono<ResponseChefEvent> registerClient(
+    @RequestBody @Validated(value = {ChefRegisterGroup.class}) final RegisterChefEvent event
+  )
+    throws ExecutionException, InterruptedException {
+    return Mono
+      .justOrEmpty(this.chefService
+        .registerChef(event)
         .get());
   }
 
