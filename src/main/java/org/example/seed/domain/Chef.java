@@ -6,14 +6,12 @@ import org.example.seed.catalog.ChefStatus;
 import org.example.seed.constraint.Curp;
 import org.example.seed.constraint.Rfc;
 import org.example.seed.group.chef.ChefCreateGroup;
+import org.example.seed.group.chef.ChefRegisterGroup;
 import org.example.seed.group.chef.ChefUpdateGroup;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,29 +22,33 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 public class Chef extends Dates {
 
-  @Size(min = 36, max = 36, groups = {ChefUpdateGroup.class})
-  @NotNull(groups = {ChefUpdateGroup.class})
+  @NotNull(groups = {ChefRegisterGroup.class, ChefUpdateGroup.class})
+  @Size(min = 36, max = 36, groups = {ChefRegisterGroup.class, ChefUpdateGroup.class})
   private String id;
 
-  @Rfc(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-  @NotNull(groups = {ChefUpdateGroup.class})
+  @Null(groups = {ChefCreateGroup.class})
+  @Rfc(groups = {ChefRegisterGroup.class, ChefUpdateGroup.class})
+  @NotNull(groups = {ChefRegisterGroup.class, ChefUpdateGroup.class})
+  @Size(min = 13, max = 13, groups = {ChefRegisterGroup.class, ChefUpdateGroup.class})
   private String rfc;
 
-  @Curp(groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-  @NotNull(groups = {ChefUpdateGroup.class})
+  @Null(groups = {ChefCreateGroup.class})
+  @Curp(groups = {ChefRegisterGroup.class, ChefUpdateGroup.class})
+  @NotNull(groups = {ChefRegisterGroup.class, ChefUpdateGroup.class})
+  @Size(min = 18, max = 18, groups = {ChefRegisterGroup.class, ChefUpdateGroup.class})
   private String curp;
 
-  @Min(value = 0, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-  @Max(value = 5, groups = {ChefCreateGroup.class, ChefUpdateGroup.class})
-  @NotNull(groups = {ChefUpdateGroup.class})
+  @Min(value = 0, groups = {ChefCreateGroup.class, ChefRegisterGroup.class, ChefUpdateGroup.class})
+  @Max(value = 5, groups = {ChefCreateGroup.class, ChefRegisterGroup.class, ChefUpdateGroup.class})
   private Float rating;
 
-  @NotNull(groups = {ChefUpdateGroup.class})
+  @NotNull(groups = {ChefRegisterGroup.class, ChefUpdateGroup.class})
   private ChefStatus status;
 
   private boolean active;
 
   @Valid
+  @NotNull(groups = {ChefCreateGroup.class, ChefRegisterGroup.class, ChefUpdateGroup.class})
   private Account account;
 
   @Valid
