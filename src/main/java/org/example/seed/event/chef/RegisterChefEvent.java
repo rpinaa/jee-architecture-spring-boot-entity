@@ -3,7 +3,7 @@ package org.example.seed.event.chef;
 import lombok.*;
 import org.example.seed.domain.Chef;
 import org.example.seed.event.CreateEvent;
-import org.example.seed.group.chef.ChefConfirmGroup;
+import org.example.seed.group.chef.ChefRegisterGroup;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -15,9 +15,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @AllArgsConstructor
 @XmlRootElement
 @EqualsAndHashCode(callSuper = true)
-public class RegisterEvent extends CreateEvent {
+public class RegisterChefEvent extends CreateEvent {
 
   @Valid
-  @NotNull(groups = {ChefConfirmGroup.class})
+  @NotNull(groups = {ChefRegisterGroup.class})
   private Chef chef;
 }
