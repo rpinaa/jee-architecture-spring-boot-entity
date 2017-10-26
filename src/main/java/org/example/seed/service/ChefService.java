@@ -13,7 +13,7 @@ public interface ChefService {
 
   Future<ResponseChefEvent> createChef(final CreateChefEvent event);
 
-  Future<ResponseChefEvent> registerChef(final CreateChefEvent event);
+  Future<ResponseChefEvent> registerChef(final RegisterChefEvent event);
 
   Future<ResponseChefEvent> requestChef(final RequestChefEvent event);
 

@@ -93,7 +93,7 @@ public class ChefServiceImpl implements ChefService {
   @Override
   @CacheEvict(value = "chefs", allEntries = true)
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseChefEvent> registerChef(final CreateChefEvent event) {
+  public Future<ResponseChefEvent> registerChef(final RegisterChefEvent event) {
     return new AsyncResult<>(ResponseChefEvent.builder()
       .chef(this.chefMapper
         .map(this.chefRepository
@@ -103,8 +103,10 @@ public class ChefServiceImpl implements ChefService {
             // TODO: to implement keygen activation
 
             chefEntity.setRating(0F);
-            chefEntity.setActive(true);
+            chefEntity.setActive(false);
             chefEntity.setStatus(ChefStatus.ACTIVATED);
+            chefEntity.setRfc(event.getChef().getRfc());
+            chefEntity.setCurp(event.getChef().getCurp());
             chefEntity.getAccount()
               .setSecret(KeyGenUtil.encode(event.getChef().getAccount().getCredential()));
 
@@ -145,12 +147,10 @@ public class ChefServiceImpl implements ChefService {
 
             this.telephoneRepository.deleteInBatch(chefEntity.getTelephones());
 
-            chefEntity.setStatus(ChefStatus.ACTIVATED);
             chefEntity.setRfc(event.getChef().getRfc());
             chefEntity.setCurp(event.getChef().getCurp());
-            chefEntity.setRating(event.getChef().getRating());
-            chefEntity.getAccount().setFirstName(event.getChef().getAccount().getFirstName());
             chefEntity.getAccount().setLastName(event.getChef().getAccount().getLastName());
+            chefEntity.getAccount().setFirstName(event.getChef().getAccount().getFirstName());
 
             chefEntity.setTelephones(this.telephoneMapper
               .mapList(event.getChef().getTelephones())
