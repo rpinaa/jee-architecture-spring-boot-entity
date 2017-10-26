@@ -52,13 +52,13 @@ public class ChefServiceImpl implements ChefService {
   @Async
   @Cacheable(value = "chefs")
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-  public Future<CatalogChefEvent> requestChefs(final RequestAllChefEvent event) {
+  public Future<ResponseChefsEvent> requestChefs(final RequestChefsEvent event) {
 
     final Page<ChefEntity> chefs = this.chefRepository
       .findAll(PageRequest
         .of(event.getPage() - 1, event.getLimit()));
 
-    return new AsyncResult<>(CatalogChefEvent.builder()
+    return new AsyncResult<>(ResponseChefsEvent.builder()
       .chefs(this.chefMapper
         .mapListReverse(chefs.getContent()))
       .total(chefs.getTotalElements())
