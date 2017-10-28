@@ -158,7 +158,6 @@ public class ChefServiceImpl implements ChefService {
               .peek(t -> {
                 t.setId(UUID.randomUUID().toString());
                 t.setChef(chefEntity);
-
               })
               .collect(Collectors.toList()));
 
