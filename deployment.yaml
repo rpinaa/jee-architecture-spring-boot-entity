@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jee-7-backend-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jee-7-backend-server
+    spec:
+      containers:
+        - name: jee-7-backend-server
+          image: gcr.io/GOOGLE_ID_PROJECT/app-server:ENVIRONMENT_ID
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /info
+              port: 8080
+            initialDelaySeconds: 90
+            timeoutSeconds: 1
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /info
+              port: 8080
+            initialDelaySeconds: 90
+            timeoutSeconds: 1
+            periodSeconds: 10
+          env:
+            - name: CLOUD_CONFIG_PROFILE
+              value: "development"
+          ports:
+            - name: jee-7-backend-port
+              containerPort: 8080
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 500Mi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: jee-7-backend-service
+spec:
+  ports:
+  - port: 32000
+    targetPort: jee-7-backend-port
+  selector:
+    app: jee-7-backend-server
