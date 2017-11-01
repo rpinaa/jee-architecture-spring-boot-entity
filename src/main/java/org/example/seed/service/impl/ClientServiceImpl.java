@@ -8,8 +8,6 @@ import org.example.seed.repository.ClientRepository;
 import org.example.seed.service.ClientService;
 import org.example.seed.util.KeyGenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
@@ -17,8 +15,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.concurrent.Future;
+import org.springframework.util.concurrent.ListenableFuture;
 
 
 /**
@@ -38,9 +35,8 @@ public class ClientServiceImpl implements ClientService {
 
   @Override
   @Async
-  @Cacheable(value = "client")
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-  public Future<ResponseClientsEvent> requestClients(final RequestClientsEvent event) {
+  public ListenableFuture<ResponseClientsEvent> requestClients(final RequestClientsEvent event) {
 
     final Page<ClientEntity> clients = this.clientRepository
       .findAll(PageRequest
@@ -55,9 +51,8 @@ public class ClientServiceImpl implements ClientService {
 
   @Override
   @Async
-  @CacheEvict(value = "client", allEntries = true)
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseClientEvent> createClient(final CreateClientEvent event) {
+  public ListenableFuture<ResponseClientEvent> createClient(final CreateClientEvent event) {
 
     event.getClient().setRating(null);
     event.getClient().setTelephone(null);
@@ -78,9 +73,8 @@ public class ClientServiceImpl implements ClientService {
 
   @Override
   @Async
-  @CacheEvict(value = "client", allEntries = true)
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseClientEvent> registerClient(final RegisterClientEvent event) {
+  public ListenableFuture<ResponseClientEvent> registerClient(final RegisterClientEvent event) {
     return new AsyncResult<>(ResponseClientEvent.builder()
       .client(this.clientMapper
         .map(this.clientRepository
@@ -106,9 +100,8 @@ public class ClientServiceImpl implements ClientService {
 
   @Override
   @Async
-  @Cacheable(value = "client")
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-  public Future<ResponseClientEvent> requestClient(final RequestClientEvent event) {
+  public ListenableFuture<ResponseClientEvent> requestClient(final RequestClientEvent event) {
     return new AsyncResult<>(ResponseClientEvent.builder()
       .client(this.clientMapper
         .map(this.clientRepository
@@ -119,9 +112,8 @@ public class ClientServiceImpl implements ClientService {
 
   @Override
   @Async
-  @CacheEvict(value = "client", allEntries = true)
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseClientEvent> updateClient(final UpdateClientEvent event) {
+  public ListenableFuture<ResponseClientEvent> updateClient(final UpdateClientEvent event) {
     return new AsyncResult<>(ResponseClientEvent.builder()
       .client(this.clientMapper
         .map(this.clientRepository
@@ -142,9 +134,8 @@ public class ClientServiceImpl implements ClientService {
 
   @Override
   @Async
-  @CacheEvict(value = "client", allEntries = true)
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseClientEvent> deleteClient(final DeleteClientEvent event) {
+  public ListenableFuture<ResponseClientEvent> deleteClient(final DeleteClientEvent event) {
 
     this.clientRepository.deleteById(event.getId());
 
