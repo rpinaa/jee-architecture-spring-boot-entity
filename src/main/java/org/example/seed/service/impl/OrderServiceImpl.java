@@ -18,12 +18,12 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-  public Future<ResponseOrdersEvent> requestOrdersByClient(final RequestOrdersEvent event) {
+  public ListenableFuture<ResponseOrdersEvent> requestOrdersByClient(final RequestOrdersEvent event) {
 
     final Page<OrderEntity> orderEntities = this.orderRepository
       .findAllByClient(event.getClientId(), PageRequest.of(event.getPage() - 1, event.getLimit()));
@@ -83,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-  public Future<ResponseOrdersEvent> requestOrdersByChef(final RequestOrdersEvent event) {
+  public ListenableFuture<ResponseOrdersEvent> requestOrdersByChef(final RequestOrdersEvent event) {
 
     final Page<OrderEntity> orderEntities = this.orderRepository
       .findAllByChef(event.getClientId(), PageRequest.of(event.getPage() - 1, event.getLimit()));
@@ -96,7 +96,7 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public Future<ResponseOrderEvent> requestOrder(final RequestOrdersEvent event) {
+  public ListenableFuture<ResponseOrderEvent> requestOrder(final RequestOrdersEvent event) {
     return null;
   }
 
@@ -104,7 +104,7 @@ public class OrderServiceImpl implements OrderService {
   @Async
   @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseOrderEvent> createOrder(final ProcessOrderEvent event) {
+  public ListenableFuture<ResponseOrderEvent> createOrder(final ProcessOrderEvent event) {
     return new AsyncResult(ResponseOrderEvent.builder()
       .order(this.orderMapper
         .map(this.clientRepository
@@ -136,7 +136,7 @@ public class OrderServiceImpl implements OrderService {
   @Async
   @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseOrderEvent> registerOrder(final ProcessOrderEvent event) {
+  public ListenableFuture<ResponseOrderEvent> registerOrder(final ProcessOrderEvent event) {
     return new AsyncResult(ResponseOrderEvent.builder()
       .order(this.orderMapper
         .map(this.orderRepository
@@ -162,7 +162,7 @@ public class OrderServiceImpl implements OrderService {
   @Async
   @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseOrderEvent> processOrder(final ProcessOrderEvent event) {
+  public ListenableFuture<ResponseOrderEvent> processOrder(final ProcessOrderEvent event) {
     return new AsyncResult(ResponseOrderEvent.builder()
       .order(this.orderMapper
         .map(this.orderRepository
@@ -185,7 +185,7 @@ public class OrderServiceImpl implements OrderService {
   @Async
   @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseOrderEvent> updateOrder(final ProcessOrderEvent event) {
+  public ListenableFuture<ResponseOrderEvent> updateOrder(final ProcessOrderEvent event) {
     return new AsyncResult(ResponseOrderEvent.builder()
       .order(this.orderMapper
         .map(this.orderRepository

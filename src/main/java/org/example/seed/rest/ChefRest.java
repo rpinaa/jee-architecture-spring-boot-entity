@@ -10,9 +10,10 @@ import org.example.seed.service.ChefService;
 import org.example.seed.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.concurrent.ExecutionException;
 
@@ -34,20 +35,22 @@ public class ChefRest {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public Mono<ResponseChefsEvent> getChefs(@RequestParam("page") final int page, @RequestParam("limit") final int limit)
-    throws ExecutionException, InterruptedException {
+  public DeferredResult<ResponseChefsEvent> getChefs(@RequestParam("page") final int page, @RequestParam("limit") final int limit) {
 
     final RequestChefsEvent event = RequestChefsEvent.builder().page(page).limit(limit).build();
+    final DeferredResult<ResponseChefsEvent> dResult = new DeferredResult<>();
 
-    return Mono
-      .justOrEmpty(this.chefService
-        .requestChefs(event)
-        .get());
+    this.chefService.requestChefs(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @GetMapping("/{chefId}/orders")
   @ResponseStatus(HttpStatus.OK)
-  public Mono<ResponseOrdersEvent> getOrdersByClient(
+  public DeferredResult<ResponseOrdersEvent> getOrdersByClient(
     @RequestParam("page") final int page,
     @RequestParam("limit") final int limit,
     @PathVariable("chefId") final String chefId
@@ -55,72 +58,96 @@ public class ChefRest {
     throws ExecutionException, InterruptedException {
 
     final RequestOrdersEvent event = RequestOrdersEvent.builder().chefId(chefId).page(page).limit(limit).build();
+    final DeferredResult<ResponseOrdersEvent> dResult = new DeferredResult<>();
 
-    return Mono
-      .justOrEmpty(this.orderService
-        .requestOrdersByChef(event)
-        .get());
+    this.orderService.requestOrdersByChef(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<ResponseChefEvent> createChef(
+  public DeferredResult<ResponseChefEvent> createChef(
     @RequestBody @Validated(value = {ChefCreateGroup.class}) final CreateChefEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono
-      .justOrEmpty(this.chefService
-        .createChef(event)
-        .get());
+
+    final DeferredResult<ResponseChefEvent> dResult = new DeferredResult<>();
+
+    this.chefService.createChef(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @PatchMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<ResponseChefEvent> registerClient(
+  public DeferredResult<ResponseChefEvent> registerClient(
     @RequestBody @Validated(value = {ChefRegisterGroup.class}) final RegisterChefEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono
-      .justOrEmpty(this.chefService
-        .registerChef(event)
-        .get());
+
+    final DeferredResult<ResponseChefEvent> dResult = new DeferredResult<>();
+
+    this.chefService.registerChef(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @GetMapping(value = "/{chefId}")
   @ResponseStatus(HttpStatus.OK)
-  public Mono<ResponseChefEvent> getChef(@PathVariable("chefId") final String id)
+  public DeferredResult<ResponseChefEvent> getChef(@PathVariable("chefId") final String id)
     throws ExecutionException, InterruptedException {
 
     final RequestChefEvent event = RequestChefEvent.builder().id(id).build();
+    final DeferredResult<ResponseChefEvent> dResult = new DeferredResult<>();
 
-    return Mono
-      .justOrEmpty(this.chefService
-        .requestChef(event)
-        .get());
+    this.chefService.requestChef(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @PutMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<ResponseChefEvent> updateChef(
+  public DeferredResult<ResponseChefEvent> updateChef(
     @RequestBody @Validated(value = {ChefUpdateGroup.class}) final UpdateChefEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono
-      .justOrEmpty(this.chefService
-        .updateChef(event)
-        .get());
+
+    final DeferredResult<ResponseChefEvent> dResult = new DeferredResult<>();
+
+    this.chefService.updateChef(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @DeleteMapping(value = "/{chefId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<ResponseChefEvent> deleteChef(@PathVariable("chefId") final String id)
+  public DeferredResult<ResponseChefEvent> deleteChef(@PathVariable("chefId") final String id)
     throws ExecutionException, InterruptedException {
 
     final DeleteChefEvent event = DeleteChefEvent.builder().id(id).build();
+    final DeferredResult<ResponseChefEvent> dResult = new DeferredResult<>();
 
-    return Mono
-      .justOrEmpty(this.chefService
-        .deleteChef(event)
-        .get());
+    this.chefService.deleteChef(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 }

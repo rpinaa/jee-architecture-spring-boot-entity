@@ -14,9 +14,10 @@ import org.example.seed.service.ClientService;
 import org.example.seed.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.concurrent.ExecutionException;
 
@@ -38,85 +39,109 @@ public class ClientRest {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public Mono<ResponseClientsEvent> getClients(
+  public DeferredResult<ResponseClientsEvent> getClients(
     @RequestParam("page") final int page,
     @RequestParam("limit") final int limit
   )
     throws ExecutionException, InterruptedException {
 
     final RequestClientsEvent event = RequestClientsEvent.builder().page(page).limit(limit).build();
+    final DeferredResult<ResponseClientsEvent> dResult = new DeferredResult<>();
 
-    return Mono
-      .justOrEmpty(this.clientService
-        .requestClients(event)
-        .get());
+    this.clientService.requestClients(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<ResponseClientEvent> createClient(
+  public DeferredResult<ResponseClientEvent> createClient(
     @RequestBody @Validated(value = {ClientCreateGroup.class}) final CreateClientEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono
-      .justOrEmpty(this.clientService
-        .createClient(event)
-        .get());
+
+    final DeferredResult<ResponseClientEvent> dResult = new DeferredResult<>();
+
+    this.clientService.createClient(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @PatchMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<ResponseClientEvent> registerClient(
+  public DeferredResult<ResponseClientEvent> registerClient(
     @RequestBody @Validated(value = {ClientRegisterGroup.class}) final RegisterClientEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono
-      .justOrEmpty(this.clientService
-        .registerClient(event)
-        .get());
+
+    final DeferredResult<ResponseClientEvent> dResult = new DeferredResult<>();
+
+    this.clientService.registerClient(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @GetMapping(value = "/{clientId}")
   @ResponseStatus(HttpStatus.OK)
-  public Mono<ResponseClientEvent> getClient(@PathVariable("clientId") final String id)
+  public DeferredResult<ResponseClientEvent> getClient(@PathVariable("clientId") final String id)
     throws ExecutionException, InterruptedException {
 
     final RequestClientEvent event = RequestClientEvent.builder().id(id).build();
+    final DeferredResult<ResponseClientEvent> dResult = new DeferredResult<>();
 
-    return Mono
-      .justOrEmpty(this.clientService
-        .requestClient(event)
-        .get());
+    this.clientService.requestClient(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @PutMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<ResponseClientEvent> updateClient(
+  public DeferredResult<ResponseClientEvent> updateClient(
     @RequestBody @Validated(value = {ClientUpdateGroup.class}) final UpdateClientEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono
-      .justOrEmpty(this.clientService
-        .updateClient(event)
-        .get());
+
+    final DeferredResult<ResponseClientEvent> dResult = new DeferredResult<>();
+
+    this.clientService.updateClient(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @DeleteMapping(value = "/{clientId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<ResponseClientEvent> deleteClient(@PathVariable("clientId") final String id)
+  public DeferredResult<ResponseClientEvent> deleteClient(@PathVariable("clientId") final String id)
     throws ExecutionException, InterruptedException {
 
     final DeleteClientEvent event = DeleteClientEvent.builder().id(id).build();
+    final DeferredResult<ResponseClientEvent> dResult = new DeferredResult<>();
 
-    return Mono
-      .justOrEmpty(this.clientService
-        .deleteClient(event)
-        .get());
+    this.clientService.deleteClient(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @GetMapping("/{clientId}/orders")
   @ResponseStatus(HttpStatus.OK)
-  public Mono<ResponseOrdersEvent> getOrdersByClient(
+  public DeferredResult<ResponseOrdersEvent> getOrdersByClient(
     @RequestParam("page") final int page,
     @RequestParam("limit") final int limit,
     @PathVariable("clientId") final String clientId
@@ -124,46 +149,64 @@ public class ClientRest {
     throws ExecutionException, InterruptedException {
 
     final RequestOrdersEvent event = RequestOrdersEvent.builder().clientId(clientId).page(page).limit(limit).build();
+    final DeferredResult<ResponseOrdersEvent> dResult = new DeferredResult<>();
 
-    return Mono
-      .justOrEmpty(this.orderService
-        .requestOrdersByClient(event)
-        .get());
+    this.orderService.requestOrdersByClient(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @PostMapping("/{clientId}/orders")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<ResponseOrderEvent> createOrder(
+  public DeferredResult<ResponseOrderEvent> createOrder(
     @RequestBody @Validated(value = {OrderCreateGroup.class}) final ProcessOrderEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono
-      .justOrEmpty(this.orderService
-        .createOrder(event)
-        .get());
+
+    final DeferredResult<ResponseOrderEvent> dResult = new DeferredResult<>();
+
+    this.orderService.createOrder(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @PatchMapping("/{clientId}/orders")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<ResponseOrderEvent> registerOrder(
+  public DeferredResult<ResponseOrderEvent> registerOrder(
     @RequestBody @Validated(value = {OrderRegisterGroup.class}) final ProcessOrderEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono
-      .justOrEmpty(this.orderService
-        .registerOrder(event)
-        .get());
+
+    final DeferredResult<ResponseOrderEvent> dResult = new DeferredResult<>();
+
+    this.orderService.registerOrder(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 
   @PutMapping("/{clientId}/orders")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<ResponseOrderEvent> updateOrder(
+  public DeferredResult<ResponseOrderEvent> updateOrder(
     @RequestBody @Validated(value = {OrderCreateGroup.class}) final ProcessOrderEvent event
   )
     throws ExecutionException, InterruptedException {
-    return Mono
-      .justOrEmpty(this.orderService
-        .updateOrder(event)
-        .get());
+
+    final DeferredResult<ResponseOrderEvent> dResult = new DeferredResult<>();
+
+    this.orderService.updateOrder(event)
+      .addCallback(
+        dResult::setResult,
+        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+
+    return dResult;
   }
 }

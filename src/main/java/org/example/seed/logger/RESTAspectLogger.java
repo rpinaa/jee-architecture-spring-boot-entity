@@ -9,9 +9,9 @@ import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.Arrays;
-import java.util.concurrent.Callable;
 
 /**
  * Created by Ricardo Pina Arellano on 21/01/2017.
@@ -41,19 +41,20 @@ public class RESTAspectLogger {
     log.warn("Arguments :  " + this.objectMapper.writeValueAsString(joinPoint.getArgs()));
   }
 
-  @AfterReturning(pointcut = "rest() && allMethod()", returning = "callable")
-  public void logAfter(JoinPoint joinPoint, Object callable) throws Exception {
+  @AfterReturning(pointcut = "rest() && allMethod()", returning = "deferred")
+  public void logAfter(JoinPoint joinPoint, Object deferred) throws Exception {
 
-    final Callable<Object> response = (Callable<Object>) callable;
+    final DeferredResult<Object> response = (DeferredResult<Object>) deferred;
 
-    log.warn("Method Return value : " + this.objectMapper.writeValueAsString(response.call()));
+    log.warn("Method Return value : " + this.objectMapper.writeValueAsString(response.getResult()));
   }
 
   @AfterThrowing(pointcut = "rest() && allMethod()", throwing = "exception")
   public void logAfterThrowing(JoinPoint joinPoint, Throwable exception) {
 
+
     log.error("An exception has been thrown in " + joinPoint.getSignature().getName() + " ()");
-    log.error("Cause : " + exception.getCause());
+    log.error("Cause : " + Arrays.toString(exception.getStackTrace()));
   }
 
   @Around("rest() && allMethod()")

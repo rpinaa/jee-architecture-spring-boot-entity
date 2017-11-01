@@ -10,8 +10,6 @@ import org.example.seed.repository.TelephoneRepository;
 import org.example.seed.service.ChefService;
 import org.example.seed.util.KeyGenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
@@ -19,9 +17,9 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import java.util.UUID;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -50,9 +48,8 @@ public class ChefServiceImpl implements ChefService {
 
   @Override
   @Async
-  @Cacheable(value = "chefs")
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-  public Future<ResponseChefsEvent> requestChefs(final RequestChefsEvent event) {
+  public ListenableFuture<ResponseChefsEvent> requestChefs(final RequestChefsEvent event) {
 
     final Page<ChefEntity> chefs = this.chefRepository
       .findAll(PageRequest
@@ -67,9 +64,8 @@ public class ChefServiceImpl implements ChefService {
 
   @Override
   @Async
-  @CacheEvict(value = "chefs", allEntries = true)
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseChefEvent> createChef(final CreateChefEvent event) {
+  public ListenableFuture<ResponseChefEvent> createChef(final CreateChefEvent event) {
 
     event.getChef().setRating(null);
     event.getChef().setActive(false);
@@ -91,9 +87,8 @@ public class ChefServiceImpl implements ChefService {
 
   @Async
   @Override
-  @CacheEvict(value = "chefs", allEntries = true)
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseChefEvent> registerChef(final RegisterChefEvent event) {
+  public ListenableFuture<ResponseChefEvent> registerChef(final RegisterChefEvent event) {
     return new AsyncResult<>(ResponseChefEvent.builder()
       .chef(this.chefMapper
         .map(this.chefRepository
@@ -122,9 +117,8 @@ public class ChefServiceImpl implements ChefService {
 
   @Override
   @Async
-  @Cacheable(value = "chefs")
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-  public Future<ResponseChefEvent> requestChef(final RequestChefEvent event) {
+  public ListenableFuture<ResponseChefEvent> requestChef(final RequestChefEvent event) {
     return new AsyncResult<>(ResponseChefEvent.builder()
       .chef(this.chefMapper
         .map(this.chefRepository
@@ -136,9 +130,8 @@ public class ChefServiceImpl implements ChefService {
 
   @Override
   @Async
-  @CacheEvict(value = "chefs", allEntries = true)
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseChefEvent> updateChef(final UpdateChefEvent event) {
+  public ListenableFuture<ResponseChefEvent> updateChef(final UpdateChefEvent event) {
     return new AsyncResult<>(ResponseChefEvent.builder()
       .chef(this.chefMapper
         .map(this.chefRepository
@@ -169,9 +162,8 @@ public class ChefServiceImpl implements ChefService {
 
   @Override
   @Async
-  @CacheEvict(value = "chefs", allEntries = true)
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public Future<ResponseChefEvent> deleteChef(final DeleteChefEvent event) {
+  public ListenableFuture<ResponseChefEvent> deleteChef(final DeleteChefEvent event) {
 
     this.chefRepository.deleteById(event.getId());
 
