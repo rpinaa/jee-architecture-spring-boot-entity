@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.reactive.config.WebFluxConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @Configuration
 @EnableSwagger2
 @Profile("local")
-public class SwaggerConfig extends WebFluxConfigurationSupport {
+public class SwaggerConfig extends WebMvcConfigurationSupport {
 
   @Bean
   public Docket configuration() {

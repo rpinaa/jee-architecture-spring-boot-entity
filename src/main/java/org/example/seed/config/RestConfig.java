@@ -4,19 +4,30 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-import org.springframework.web.reactive.config.EnableWebFlux;
-import org.springframework.web.reactive.config.WebFluxConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import javax.servlet.Filter;
 
 /**
  * Created by Ricardo Pina Arellano on 25/11/2016.
  */
+@EnableWebMvc
 @Configuration
-@EnableWebFlux
 @ComponentScan(basePackages = {"org.example.seed.rest"})
-public class RestConfig extends WebFluxConfigurationSupport {
+public class RestConfig extends WebMvcConfigurationSupport {
+
+  @Override
+  public void configureContentNegotiation(final ContentNegotiationConfigurer configurer) {
+    configurer
+      .favorParameter(false)
+      .favorPathExtension(false)
+      .ignoreAcceptHeader(false)
+      .defaultContentType(MediaType.APPLICATION_JSON);
+  }
 
   @Bean
   public FilterRegistrationBean<Filter> filterRegistrationBean() {
