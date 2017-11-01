@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 public final class PhoneGenUtil {
 
   private static final PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
@@ -26,6 +28,8 @@ public final class PhoneGenUtil {
       throw new RuntimeException("ERROR-10000");
     }
   }
+
+  public static void parse(final List<String> phoneNumbers) { }
 
   @Data
   @Builder
