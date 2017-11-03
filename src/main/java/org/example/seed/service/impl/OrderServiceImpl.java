@@ -111,14 +111,6 @@ public class OrderServiceImpl implements OrderService {
           .findById(event.getIdClient())
           .map(clientEntity -> {
 
-            event.getOrder().setComment(null);
-            event.getOrder().setAddress(null);
-            event.getOrder().setLatitude(null);
-            event.getOrder().setLongitude(null);
-            event.getOrder().setRejectedDate(null);
-            event.getOrder().setFinishedDate(null);
-            event.getOrder().setScheduledDate(null);
-            event.getOrder().setRegisteredDate(null);
             event.getOrder().setStatus(OrderStatus.CREATED);
 
             final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED);
@@ -145,8 +137,6 @@ public class OrderServiceImpl implements OrderService {
 
             final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED);
 
-            currentOrder.setRejectedDate(null);
-            currentOrder.setFinishedDate(null);
             currentOrder.setRegisteredDate(new Date());
             currentOrder.setTimeZone(event.getTimeZone());
             currentOrder.setStatus(OrderStatus.PENDING_TO_ACCEPT);
@@ -171,7 +161,6 @@ public class OrderServiceImpl implements OrderService {
 
             final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.PENDING_TO_ACCEPT);
 
-            currentOrder.setScheduledDate(new Date().toString());
             currentOrder.setStatus(OrderStatus.ACCEPTED);
 
             this.orderRepository.save(currentOrder);

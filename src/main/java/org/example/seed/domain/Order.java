@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
@@ -25,32 +26,38 @@ public class Order extends Dates {
   @NotEmpty(groups = {OrderRegisterGroup.class})
   private String id;
 
-  @NotNull(groups = {OrderCreateGroup.class})
+  @Null(groups = {OrderCreateGroup.class})
   private Double latitude;
 
-  @NotNull(groups = {OrderCreateGroup.class})
+  @Null(groups = {OrderCreateGroup.class})
   private Double longitude;
 
-  @Size(max = 50, groups = {OrderRegisterGroup.class})
+  @Null(groups = {OrderCreateGroup.class})
   @NotEmpty(groups = {OrderRegisterGroup.class})
+  @Size(max = 50, groups = {OrderRegisterGroup.class})
   private String comment;
 
+  @Null(groups = {OrderCreateGroup.class})
   @NotEmpty(groups = {OrderRegisterGroup.class})
   private String scheduledDate;
 
   @NotNull(groups = {OrderRegisterGroup.class})
   private Float total;
 
+  @Null(groups = {OrderCreateGroup.class})
   private Date registeredDate;
 
+  @Null(groups = {OrderCreateGroup.class, OrderRegisterGroup.class})
   private Date rejectedDate;
 
+  @Null(groups = {OrderCreateGroup.class, OrderRegisterGroup.class})
   private Date finishedDate;
 
   @NotNull(groups = {OrderRegisterGroup.class})
   private OrderStatus status;
 
   @Valid
+  @Null(groups = {OrderCreateGroup.class})
   private Address address;
 
   @Valid
