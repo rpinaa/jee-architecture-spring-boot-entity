@@ -9,12 +9,16 @@ JEE 7 non-blocking I/O Architecture, using Spring Boot and Entity Layer
 ## Stack
 
 - JSE 8
-- AspectJ
+- GeoIP2 2.x
+- AspectJ 1.x
+- MapStruct 1.x
+- LibPhoneNumber 8.x
 - Spring Boot 2.x
+- Spring Boot Test 2.x
 - Spring Boot Security 2.x
 - Spring Boot Actuator 2.x
 - Spring Boot Undertow 2.x
-- Spring Boot Data 2.x
+- Spring Boot Data JPA 2.x
 - Spring Fox Swagger 2.x
 
 ## Plugins
