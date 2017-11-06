@@ -22,8 +22,8 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 public class Order extends Dates {
 
-  @Size(min = 36, max = 36, groups = {OrderRegisterGroup.class})
   @NotEmpty(groups = {OrderRegisterGroup.class})
+  @Size(min = 36, max = 36, groups = {OrderRegisterGroup.class})
   private String id;
 
   @Null(groups = {OrderCreateGroup.class})

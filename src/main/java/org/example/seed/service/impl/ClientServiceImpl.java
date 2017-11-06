@@ -4,6 +4,7 @@ import org.example.seed.catalog.ClientStatus;
 import org.example.seed.entity.ClientEntity;
 import org.example.seed.event.client.*;
 import org.example.seed.mapper.ClientMapper;
+import org.example.seed.mapper.TelephoneMapper;
 import org.example.seed.repository.ClientRepository;
 import org.example.seed.service.ClientService;
 import org.example.seed.util.KeyGenUtil;
@@ -25,11 +26,17 @@ import org.springframework.util.concurrent.ListenableFuture;
 public class ClientServiceImpl implements ClientService {
 
   private final ClientMapper clientMapper;
+  private final TelephoneMapper telephoneMapper;
   private final ClientRepository clientRepository;
 
   @Autowired
-  public ClientServiceImpl(final ClientMapper clientMapper, final ClientRepository clientRepository) {
+  public ClientServiceImpl(
+    final ClientMapper clientMapper,
+    final TelephoneMapper telephoneMapper,
+    final ClientRepository clientRepository
+  ) {
     this.clientMapper = clientMapper;
+    this.telephoneMapper = telephoneMapper;
     this.clientRepository = clientRepository;
   }
 
@@ -54,8 +61,6 @@ public class ClientServiceImpl implements ClientService {
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public ListenableFuture<ResponseClientEvent> createClient(final CreateClientEvent event) {
 
-    event.getClient().setRating(null);
-    event.getClient().setTelephone(null);
     event.getClient().setStatus(ClientStatus.REGISTERED);
 
     if (this.clientRepository.existsByEmail(event.getClient().getEmail())) {
@@ -84,7 +89,6 @@ public class ClientServiceImpl implements ClientService {
             // TODO: to implement keygen activation
 
             clientEntity.setRating(0F);
-            clientEntity.setTelephone(null);
             clientEntity.setStatus(ClientStatus.ACTIVATED);
             clientEntity.setSecret(KeyGenUtil.encode(event.getClient().getCredential()));
 
@@ -123,6 +127,7 @@ public class ClientServiceImpl implements ClientService {
             clientEntity.setRating(event.getClient().getRating());
             clientEntity.setLastName(event.getClient().getLastName());
             clientEntity.setFirstName(event.getClient().getFirstName());
+            clientEntity.setTelephone(this.telephoneMapper.map(event.getClient().getTelephone()));
 
             this.clientRepository.save(clientEntity);
 

@@ -16,23 +16,23 @@ import java.util.UUID;
 @Data
 public class Telephone {
 
-  @Size(min = 36, max = 36, groups = {ClientUpdateGroup.class, ChefUpdateGroup.class})
   @NotNull(groups = {ClientUpdateGroup.class, ChefUpdateGroup.class})
+  @Size(min = 36, max = 36, groups = {ClientUpdateGroup.class, ChefUpdateGroup.class})
   private String id;
 
+  @NotNull(groups = {ChefUpdateGroup.class})
   @Size(min = 2, max = 15, groups = {ClientCreateGroup.class, ChefUpdateGroup.class})
-  @NotNull(groups = {ClientCreateGroup.class, ChefUpdateGroup.class})
   private String name;
 
+  @NotNull(groups = {ChefUpdateGroup.class})
   @Size(min = 5, max = 12, groups = {ClientCreateGroup.class, ChefUpdateGroup.class})
-  @NotNull(groups = {ClientCreateGroup.class, ChefUpdateGroup.class})
   private String number;
 
+  @NotNull(groups = {ChefUpdateGroup.class})
   @Size(min = 2, max = 10, groups = {ClientCreateGroup.class, ChefUpdateGroup.class})
-  @NotNull(groups = {ClientCreateGroup.class, ChefUpdateGroup.class})
   private String lada;
 
-  @NotNull(groups = {ClientCreateGroup.class, ChefUpdateGroup.class})
+  @NotNull(groups = {ChefUpdateGroup.class})
   private TelephoneType type;
 
   public Telephone() {
