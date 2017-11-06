@@ -13,9 +13,9 @@ import java.util.UUID;
 public class Package extends Dates {
 
   private String id;
+  private Dish dish;
   private Float price;
   private Integer quantity;
-  private Dish dish;
 
   public Package() {
     this.id = UUID.randomUUID().toString();

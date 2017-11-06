@@ -53,6 +53,8 @@ public class Client extends Dates {
   private ClientStatus status;
 
   @Valid
+  @Null(groups = {ClientCreateGroup.class, ClientRegisterGroup.class})
+  @NotNull(groups = {ClientUpdateGroup.class})
   private Telephone telephone;
 
   public Client() {
