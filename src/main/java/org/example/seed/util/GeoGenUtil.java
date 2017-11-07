@@ -24,7 +24,7 @@ public final class GeoGenUtil {
 
   private GeoGenUtil() { }
 
-  public static String parse(final String ip) {
+  public static String map(final String ip) {
     try {
       return databaseReader.enterprise(InetAddress.getByName(ip)).getCountry().getIsoCode();
     } catch (final IOException | GeoIp2Exception e) {

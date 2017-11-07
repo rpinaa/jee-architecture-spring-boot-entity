@@ -2,12 +2,13 @@ package org.example.seed.service.impl;
 
 import org.example.seed.catalog.ClientStatus;
 import org.example.seed.entity.ClientEntity;
+import org.example.seed.entity.TelephoneEntity;
 import org.example.seed.event.client.*;
 import org.example.seed.mapper.ClientMapper;
-import org.example.seed.mapper.TelephoneMapper;
 import org.example.seed.repository.ClientRepository;
 import org.example.seed.service.ClientService;
 import org.example.seed.util.KeyGenUtil;
+import org.example.seed.util.PhoneGenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.concurrent.ListenableFuture;
 
+import java.util.UUID;
+
 
 /**
  * Created by PINA on 25/06/2017.
@@ -26,17 +29,11 @@ import org.springframework.util.concurrent.ListenableFuture;
 public class ClientServiceImpl implements ClientService {
 
   private final ClientMapper clientMapper;
-  private final TelephoneMapper telephoneMapper;
   private final ClientRepository clientRepository;
 
   @Autowired
-  public ClientServiceImpl(
-    final ClientMapper clientMapper,
-    final TelephoneMapper telephoneMapper,
-    final ClientRepository clientRepository
-  ) {
+  public ClientServiceImpl(final ClientMapper clientMapper, final ClientRepository clientRepository) {
     this.clientMapper = clientMapper;
-    this.telephoneMapper = telephoneMapper;
     this.clientRepository = clientRepository;
   }
 
@@ -127,7 +124,14 @@ public class ClientServiceImpl implements ClientService {
             clientEntity.setRating(event.getClient().getRating());
             clientEntity.setLastName(event.getClient().getLastName());
             clientEntity.setFirstName(event.getClient().getFirstName());
-            clientEntity.setTelephone(this.telephoneMapper.map(event.getClient().getTelephone()));
+            clientEntity.setTelephone(PhoneGenUtil
+              .map(event.getClient().getTelephone().getNumber(), event.getIp())
+              .map(phoneDto -> TelephoneEntity.builder()
+                .lada(phoneDto.getLada())
+                .id(UUID.randomUUID().toString())
+                .number(phoneDto.getPhoneNumber())
+                .build())
+              .orElseThrow(() -> new RuntimeException("ERROR-00003")));
 
             this.clientRepository.save(clientEntity);
 

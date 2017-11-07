@@ -26,4 +26,6 @@ public class UpdateClientEvent extends UpdateEvent {
   @Valid
   @NotNull(groups = {ClientUpdateGroup.class})
   private Client client;
+
+  private String ip;
 }

@@ -1,8 +1,6 @@
 package org.example.seed.entity;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 import org.example.seed.catalog.TelephoneType;
 
 import javax.persistence.*;
@@ -13,6 +11,9 @@ import java.io.Serializable;
  */
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "t_telephone")
 public class TelephoneEntity implements Serializable {
 
@@ -31,7 +32,7 @@ public class TelephoneEntity implements Serializable {
   @Column(name = "lada", length = 5)
   private String lada;
 
-  @Column(name = "number", length = 15)
+  @Column(name = "number", length = 12)
   private String number;
 
   @Column(name = "type", length = 10)

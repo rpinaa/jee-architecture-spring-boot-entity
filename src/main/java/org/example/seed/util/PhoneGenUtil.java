@@ -8,22 +8,24 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 public final class PhoneGenUtil {
 
   private static final PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
 
-  private PhoneGenUtil() {}
+  private PhoneGenUtil() { }
 
-  public static PhoneDto parse(final String phoneNumber) {
+  public static Optional<PhoneDto> map(final String phoneNumber, final String ip) {
     try {
-      Phonenumber.PhoneNumber rawPhoneNumber = phoneNumberUtil.parse(phoneNumber, "CH");
+      final Phonenumber.PhoneNumber rawPhoneNumber = phoneNumberUtil.parse(phoneNumber, GeoGenUtil.map(ip));
 
-      return PhoneDto.builder()
+      return Optional.of(PhoneDto.builder()
         .lada(Integer.toString(rawPhoneNumber.getCountryCode()))
         .phoneNumber(Long.toString(rawPhoneNumber.getNationalNumber()))
-        .build();
+        .build());
     } catch (final NumberParseException e) {
-      throw new RuntimeException("ERROR-10000");
+      return Optional.empty();
     }
   }
 
@@ -31,7 +33,7 @@ public final class PhoneGenUtil {
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
-  static class PhoneDto {
+  public static class PhoneDto {
     private String lada;
     private String phoneNumber;
   }
