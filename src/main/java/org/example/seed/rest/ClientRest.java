@@ -19,7 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -110,14 +109,11 @@ public class ClientRest {
   @PutMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseClientEvent> updateClient(
-    @RequestBody @Validated(value = {ClientUpdateGroup.class}) final UpdateClientEvent event,
-    final HttpServletRequest request
+    @RequestBody @Validated(value = {ClientUpdateGroup.class}) final UpdateClientEvent event
   )
     throws ExecutionException, InterruptedException {
 
     final DeferredResult<ResponseClientEvent> dResult = new DeferredResult<>();
-
-    event.setIp(request.getRemoteAddr());
 
     this.clientService.updateClient(event)
       .addCallback(
