@@ -41,6 +41,9 @@ public class ClientEntity extends DatesEntity {
   @Column(name = "email", length = 45)
   private String email;
 
+  @Column(name = "country", length = 2)
+  private String country;
+
   @Column(name = "rating")
   private Float rating;
 
