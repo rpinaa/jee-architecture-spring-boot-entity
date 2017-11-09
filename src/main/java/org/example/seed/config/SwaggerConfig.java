@@ -3,7 +3,9 @@ package org.example.seed.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import springfox.documentation.builders.PathSelectors;
@@ -21,6 +23,11 @@ import java.time.LocalDate;
 @EnableSwagger2
 @Profile("local")
 public class SwaggerConfig extends WebMvcConfigurerAdapter {
+
+  @Override
+  public void configureContentNegotiation(final ContentNegotiationConfigurer configurer) {
+    configurer.defaultContentType(MediaType.APPLICATION_JSON);
+  }
 
   @Override
   public void addResourceHandlers(final ResourceHandlerRegistry registry) {

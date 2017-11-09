@@ -16,9 +16,9 @@ import java.util.List;
 
 @Data
 @Builder
+@XmlRootElement
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement
 public class ResponseClientsEvent {
 
   private long total;

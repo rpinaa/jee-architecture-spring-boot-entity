@@ -1,6 +1,7 @@
 package org.example.seed.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.example.seed.catalog.TelephoneType;
 import org.example.seed.group.chef.ChefUpdateGroup;
 import org.example.seed.group.client.ClientUpdateGroup;
@@ -13,6 +14,7 @@ import java.util.UUID;
  * Created by PINA on 26/06/2017.
  */
 @Data
+@EqualsAndHashCode
 public class Telephone {
 
   @NotNull(groups = {ClientUpdateGroup.class, ChefUpdateGroup.class})

@@ -1,4 +1,4 @@
-package org.example.seed.logger;
+package org.example.seed.aspect;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,12 +18,12 @@ import java.util.Arrays;
  */
 @Aspect
 @Component
-public class RESTAspectLogger {
+public class RESTLoggerAspect {
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
   private final ObjectMapper objectMapper = new ObjectMapper();
 
-  public RESTAspectLogger() {
+  public RESTLoggerAspect() {
     this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
   }
 
@@ -34,7 +34,7 @@ public class RESTAspectLogger {
   protected void allMethod() { }
 
   @Before("rest() && allMethod()")
-  public void logBefore(JoinPoint joinPoint) throws JsonProcessingException {
+  public void logBefore(final JoinPoint joinPoint) throws JsonProcessingException {
 
     log.warn("Entering in Method :  " + joinPoint.getSignature().getName());
     log.warn("Class Name :  " + joinPoint.getSignature().getDeclaringTypeName());
@@ -42,7 +42,7 @@ public class RESTAspectLogger {
   }
 
   @AfterReturning(pointcut = "rest() && allMethod()", returning = "deferred")
-  public void logAfter(JoinPoint joinPoint, Object deferred) throws Exception {
+  public void logAfter(final JoinPoint joinPoint, final Object deferred) throws Exception {
 
     final DeferredResult<Object> response = (DeferredResult<Object>) deferred;
 
@@ -50,7 +50,7 @@ public class RESTAspectLogger {
   }
 
   @AfterThrowing(pointcut = "rest() && allMethod()", throwing = "exception")
-  public void logAfterThrowing(JoinPoint joinPoint, Throwable exception) {
+  public void logAfterThrowing(final JoinPoint joinPoint, final Throwable exception) {
 
 
     log.error("An exception has been thrown in " + joinPoint.getSignature().getName() + " ()");
@@ -58,7 +58,7 @@ public class RESTAspectLogger {
   }
 
   @Around("rest() && allMethod()")
-  public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
+  public Object logAround(final ProceedingJoinPoint joinPoint) throws Throwable {
 
     final long start = System.currentTimeMillis();
 

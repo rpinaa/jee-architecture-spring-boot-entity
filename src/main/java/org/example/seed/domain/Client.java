@@ -44,6 +44,11 @@ public class Client extends Dates {
   @Null(groups = {ClientCreateGroup.class, ClientUpdateGroup.class})
   private String credential;
 
+  @NotNull(groups = {ClientUpdateGroup.class})
+  @Size(min = 2, max = 2, groups = {ClientUpdateGroup.class})
+  @Null(groups = {ClientCreateGroup.class, ClientRegisterGroup.class})
+  private String country;
+
   @Null(groups = {ClientCreateGroup.class})
   @Min(value = 0, groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})
   @Max(value = 5, groups = {ClientCreateGroup.class, ClientRegisterGroup.class, ClientUpdateGroup.class})

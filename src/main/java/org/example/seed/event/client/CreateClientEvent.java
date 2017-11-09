@@ -15,10 +15,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @Data
 @Builder
+@XmlRootElement
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@XmlRootElement
 public class CreateClientEvent extends CreateEvent {
 
   @Valid
