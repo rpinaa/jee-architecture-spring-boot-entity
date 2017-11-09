@@ -28,7 +28,7 @@ public final class GeoGenUtil {
     try {
       return databaseReader.enterprise(InetAddress.getByName(ip)).getCountry().getIsoCode();
     } catch (final IOException | GeoIp2Exception e) {
-      throw new RuntimeException("ERROR-10000");
+      return null;
     }
   }
 }

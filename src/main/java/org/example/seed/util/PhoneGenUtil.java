@@ -16,9 +16,9 @@ public final class PhoneGenUtil {
 
   private PhoneGenUtil() { }
 
-  public static Optional<PhoneDto> map(final String phoneNumber, final String ip) {
+  public static Optional<PhoneDto> map(final String phoneNumber, final String country) {
     try {
-      final Phonenumber.PhoneNumber rawPhoneNumber = phoneNumberUtil.parse(phoneNumber, GeoGenUtil.map(ip));
+      final Phonenumber.PhoneNumber rawPhoneNumber = phoneNumberUtil.parse(phoneNumber, country);
 
       return Optional.of(PhoneDto.builder()
         .lada(Integer.toString(rawPhoneNumber.getCountryCode()))
