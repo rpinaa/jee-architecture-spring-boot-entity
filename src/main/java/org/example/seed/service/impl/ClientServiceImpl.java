@@ -1,6 +1,7 @@
 package org.example.seed.service.impl;
 
 import org.example.seed.catalog.ClientStatus;
+import org.example.seed.domain.Client;
 import org.example.seed.entity.ClientEntity;
 import org.example.seed.entity.TelephoneEntity;
 import org.example.seed.event.client.*;
@@ -20,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.concurrent.ListenableFuture;
 
 import java.util.UUID;
-
 
 /**
  * Created by PINA on 25/06/2017.
@@ -77,26 +77,27 @@ public class ClientServiceImpl implements ClientService {
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public ListenableFuture<ResponseClientEvent> registerClient(final RegisterClientEvent event) {
-    return new AsyncResult<>(ResponseClientEvent.builder()
-      .client(this.clientMapper
-        .map(this.clientRepository
-          .findByIdAndStatus(event.getClient().getId(), ClientStatus.REGISTERED)
-          .map(clientEntity -> {
 
-            // TODO: to implement keygen activation
+    final Client client = this.clientMapper
+      .map(this.clientRepository
+        .findByIdAndStatus(event.getClient().getId(), ClientStatus.REGISTERED)
+        .map(clientEntity -> {
 
-            clientEntity.setRating(0F);
-            clientEntity.setStatus(ClientStatus.ACTIVATED);
-            clientEntity.setSecret(KeyGenUtil.encode(event.getClient().getCredential()));
+          // TODO: to implement keygen activation
 
-            this.clientRepository.save(clientEntity);
+          clientEntity.setRating(0F);
+          clientEntity.setStatus(ClientStatus.ACTIVATED);
+          clientEntity.setSecret(KeyGenUtil.encode(event.getClient().getCredential()));
 
-            // TODO: sending welcome email
+          this.clientRepository.save(clientEntity);
 
-            return clientEntity;
-          })
-          .orElseThrow(() -> new RuntimeException("ERROR-00002"))))
-      .build());
+          // TODO: sending welcome email
+
+          return clientEntity;
+        })
+        .orElseThrow(() -> new RuntimeException("ERROR-00002")));
+
+    return new AsyncResult<>(ResponseClientEvent.builder().client(client).build());
   }
 
   @Override
@@ -115,30 +116,33 @@ public class ClientServiceImpl implements ClientService {
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public ListenableFuture<ResponseClientEvent> updateClient(final UpdateClientEvent event) {
-    return new AsyncResult<>(ResponseClientEvent.builder()
-      .client(this.clientMapper
-        .map(this.clientRepository
-          .findByIdAndStatus(event.getClient().getId(), ClientStatus.ACTIVATED)
-          .map(clientEntity -> {
 
-            clientEntity.setRating(event.getClient().getRating());
-            clientEntity.setLastName(event.getClient().getLastName());
-            clientEntity.setFirstName(event.getClient().getFirstName());
-            clientEntity.setTelephone(PhoneGenUtil
-              .map(event.getClient().getTelephone().getNumber(), event.getIp())
-              .map(phoneDto -> TelephoneEntity.builder()
-                .lada(phoneDto.getLada())
-                .id(UUID.randomUUID().toString())
-                .number(phoneDto.getPhoneNumber())
-                .build())
-              .orElseThrow(() -> new RuntimeException("ERROR-00003")));
+    final Client client = this.clientMapper
+      .map(this.clientRepository
+        .findByIdAndStatus(event.getClient().getId(), ClientStatus.ACTIVATED)
+        .map(clientEntity -> {
 
-            this.clientRepository.save(clientEntity);
+          clientEntity.setRating(event.getClient().getRating());
+          clientEntity.setLastName(event.getClient().getLastName());
+          clientEntity.setFirstName(event.getClient().getFirstName());
+          clientEntity.setTelephone(PhoneGenUtil
+            .map(event.getClient().getTelephone().getNumber(), event.getClient().getCountry())
+            .map(phoneDto -> TelephoneEntity.builder()
+              .lada(phoneDto.getLada())
+              .id(UUID.randomUUID().toString())
+              .number(phoneDto.getPhoneNumber())
+              .type(event.getClient().getTelephone().getType())
+              .name(event.getClient().getTelephone().getName())
+              .build())
+            .orElseThrow(() -> new RuntimeException("ERROR-00003")));
 
-            return clientEntity;
-          })
-          .orElseThrow(() -> new RuntimeException("ERROR-00002"))))
-      .build());
+          this.clientRepository.save(clientEntity);
+
+          return clientEntity;
+        })
+        .orElseThrow(() -> new RuntimeException("ERROR-00002")));
+
+    return new AsyncResult<>(ResponseClientEvent.builder().client(client).build());
   }
 
   @Override
