@@ -12,9 +12,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Data
 @Builder
+@XmlRootElement
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement
 public class RequestClientsEvent {
 
   private int page;

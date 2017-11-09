@@ -14,9 +14,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @Data
 @Builder
+@XmlRootElement
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement
 public class ResponseClientEvent {
   private Client client;
 }
