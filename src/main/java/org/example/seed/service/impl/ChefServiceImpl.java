@@ -149,14 +149,19 @@ public class ChefServiceImpl implements ChefService {
           chefEntity.setTelephones(this.telephoneMapper
             .mapList(event.getChef().getTelephones())
             .parallelStream()
-            .peek(t -> PhoneGenUtil
+            .peek(t -> {
+              t.setChef(chefEntity);
+              t.setId(UUID.randomUUID().toString());
+            })
+            .map(t -> PhoneGenUtil
               .map(t.getNumber(), chefEntity.getCountry())
-              .ifPresent(p -> {
-                t.setChef(chefEntity);
+              .map(p -> {
                 t.setLada(p.getLada());
                 t.setNumber(p.getPhoneNumber());
-                t.setId(UUID.randomUUID().toString());
-              }))
+
+                return t;
+              })
+              .orElseThrow(() -> new RuntimeException("ERROR-00003")))
             .collect(Collectors.toList()));
 
           return this.chefRepository.save(chefEntity);
