@@ -38,6 +38,7 @@ public class Chef extends Dates {
   @Size(min = 18, max = 18, groups = {ChefRegisterGroup.class, ChefUpdateGroup.class})
   private String curp;
 
+  @Null(groups = {ChefCreateGroup.class, ChefRegisterGroup.class})
   @Min(value = 0, groups = {ChefCreateGroup.class, ChefRegisterGroup.class, ChefUpdateGroup.class})
   @Max(value = 5, groups = {ChefCreateGroup.class, ChefRegisterGroup.class, ChefUpdateGroup.class})
   private Float rating;
@@ -53,6 +54,7 @@ public class Chef extends Dates {
 
   @Valid
   @NotEmpty(groups = {ChefUpdateGroup.class})
+  @Null(groups = {ChefCreateGroup.class, ChefRegisterGroup.class})
   private List<Telephone> telephones;
 
   public Chef() {
