@@ -68,9 +68,7 @@ public class ChefServiceImpl implements ChefService {
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public ListenableFuture<ResponseChefEvent> createChef(final CreateChefEvent event) {
 
-    event.getChef().setRating(null);
     event.getChef().setActive(false);
-    event.getChef().setTelephones(null);
     event.getChef().setStatus(ChefStatus.REGISTERED);
 
     if (this.chefRepository.existsByEmail(event.getChef().getAccount().getEmail())) {
