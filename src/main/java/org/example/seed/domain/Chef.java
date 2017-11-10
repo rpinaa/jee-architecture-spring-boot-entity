@@ -38,6 +38,11 @@ public class Chef extends Dates {
   @Size(min = 18, max = 18, groups = {ChefRegisterGroup.class, ChefUpdateGroup.class})
   private String curp;
 
+  @NotNull(groups = {ChefUpdateGroup.class})
+  @Size(min = 2, max = 2, groups = {ChefUpdateGroup.class})
+  @Null(groups = {ChefCreateGroup.class, ChefRegisterGroup.class})
+  private String country;
+
   @Null(groups = {ChefCreateGroup.class, ChefRegisterGroup.class})
   @Min(value = 0, groups = {ChefCreateGroup.class, ChefRegisterGroup.class, ChefUpdateGroup.class})
   @Max(value = 5, groups = {ChefCreateGroup.class, ChefRegisterGroup.class, ChefUpdateGroup.class})
