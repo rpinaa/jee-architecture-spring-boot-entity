@@ -10,6 +10,7 @@ import org.example.seed.repository.ChefRepository;
 import org.example.seed.repository.TelephoneRepository;
 import org.example.seed.service.ChefService;
 import org.example.seed.util.KeyGenUtil;
+import org.example.seed.util.PhoneGenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -148,10 +149,14 @@ public class ChefServiceImpl implements ChefService {
           chefEntity.setTelephones(this.telephoneMapper
             .mapList(event.getChef().getTelephones())
             .parallelStream()
-            .peek(t -> {
-              t.setId(UUID.randomUUID().toString());
-              t.setChef(chefEntity);
-            })
+            .peek(t -> PhoneGenUtil
+              .map(t.getNumber(), chefEntity.getCountry())
+              .ifPresent(p -> {
+                t.setChef(chefEntity);
+                t.setLada(p.getLada());
+                t.setNumber(p.getPhoneNumber());
+                t.setId(UUID.randomUUID().toString());
+              }))
             .collect(Collectors.toList()));
 
           return this.chefRepository.save(chefEntity);
