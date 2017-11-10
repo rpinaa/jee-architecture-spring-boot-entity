@@ -49,6 +49,9 @@ public class ChefEntity extends DatesEntity {
   @Column(name = "rfc", length = 13)
   private String rfc;
 
+  @Column(name = "country", length = 2)
+  private String country;
+
   @Column(name = "rating")
   private Float rating;
 
