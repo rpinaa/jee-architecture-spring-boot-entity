@@ -2,7 +2,6 @@ package org.example.seed.config;
 
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -18,7 +17,6 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 @Configuration
 @EnableAsync
-@EnableCaching
 @ComponentScan(basePackages = {"org.example.seed.service"})
 public class ServiceConfig implements AsyncConfigurer {
 
@@ -26,9 +24,9 @@ public class ServiceConfig implements AsyncConfigurer {
   public Executor getAsyncExecutor() {
     final ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
 
-    taskExecutor.setMaxPoolSize(100000);
-    taskExecutor.setCorePoolSize(1000);
-    taskExecutor.setQueueCapacity(100000);
+    taskExecutor.setMaxPoolSize(100);
+    taskExecutor.setCorePoolSize(10);
+    taskExecutor.setQueueCapacity(1000);
     taskExecutor.setWaitForTasksToCompleteOnShutdown(true);
     taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 
