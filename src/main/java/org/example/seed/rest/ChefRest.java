@@ -21,8 +21,12 @@ import java.util.concurrent.ExecutionException;
  * Created by PINA on 25/06/2017.
  */
 @RestController
-@RequestMapping(path = "/chefs")
+@RequestMapping(path = ChefRest.CHEF_ROOT_PATH)
 public class ChefRest {
+
+  public static final String CHEF_ROOT_PATH =  "/chefs";
+  public static final String CHEF_CRUD_PATH =  "/{chefId}";
+  public static final String ORDER_CRUD_PATH =  "/{chefId}/orders";
 
   private final ChefService chefService;
   private final OrderService orderService;
@@ -48,7 +52,7 @@ public class ChefRest {
     return dResult;
   }
 
-  @GetMapping("/{chefId}/orders")
+  @GetMapping(ChefRest.ORDER_CRUD_PATH)
   @ResponseStatus(HttpStatus.OK)
   public DeferredResult<ResponseOrdersEvent> getOrdersByClient(
     @RequestParam("page") final int page,
@@ -102,7 +106,7 @@ public class ChefRest {
     return dResult;
   }
 
-  @GetMapping(value = "/{chefId}")
+  @GetMapping(ChefRest.CHEF_CRUD_PATH)
   @ResponseStatus(HttpStatus.OK)
   public DeferredResult<ResponseChefEvent> getChef(@PathVariable("chefId") final String id)
     throws ExecutionException, InterruptedException {
@@ -135,7 +139,7 @@ public class ChefRest {
     return dResult;
   }
 
-  @DeleteMapping(value = "/{chefId}")
+  @DeleteMapping(ChefRest.CHEF_CRUD_PATH)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseChefEvent> deleteChef(@PathVariable("chefId") final String id)
     throws ExecutionException, InterruptedException {
