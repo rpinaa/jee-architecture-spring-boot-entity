@@ -25,8 +25,12 @@ import java.util.concurrent.ExecutionException;
  * Created by PINA on 25/06/2017.
  */
 @RestController
-@RequestMapping(path = "/clients")
+@RequestMapping(path = ClientRest.CLIENT_ROOT_PATH)
 public class ClientRest {
+
+  public static final String CLIENT_ROOT_PATH =  "/clients";
+  public static final String CLIENT_CRUD_PATH =  "/{clientId}";
+  public static final String ORDER_CRUD_PATH =  "/{clientId}/orders";
 
   private final ClientService clientService;
   private final OrderService orderService;
@@ -90,7 +94,7 @@ public class ClientRest {
     return dResult;
   }
 
-  @GetMapping(value = "/{clientId}")
+  @GetMapping(ClientRest.CLIENT_CRUD_PATH)
   @ResponseStatus(HttpStatus.OK)
   public DeferredResult<ResponseClientEvent> getClient(@PathVariable("clientId") final String id)
     throws ExecutionException, InterruptedException {
@@ -123,7 +127,7 @@ public class ClientRest {
     return dResult;
   }
 
-  @DeleteMapping(value = "/{clientId}")
+  @DeleteMapping(ClientRest.CLIENT_CRUD_PATH)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseClientEvent> deleteClient(@PathVariable("clientId") final String id)
     throws ExecutionException, InterruptedException {
@@ -139,7 +143,7 @@ public class ClientRest {
     return dResult;
   }
 
-  @GetMapping("/{clientId}/orders")
+  @GetMapping(ClientRest.ORDER_CRUD_PATH)
   @ResponseStatus(HttpStatus.OK)
   public DeferredResult<ResponseOrdersEvent> getOrdersByClient(
     @RequestParam("page") final int page,
@@ -159,7 +163,7 @@ public class ClientRest {
     return dResult;
   }
 
-  @PostMapping("/{clientId}/orders")
+  @PostMapping(ClientRest.ORDER_CRUD_PATH)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseOrderEvent> createOrder(
     @RequestBody @Validated(value = {OrderCreateGroup.class}) final ProcessOrderEvent event
@@ -176,7 +180,7 @@ public class ClientRest {
     return dResult;
   }
 
-  @PatchMapping("/{clientId}/orders")
+  @PatchMapping(ClientRest.ORDER_CRUD_PATH)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseOrderEvent> registerOrder(
     @RequestBody @Validated(value = {OrderRegisterGroup.class}) final ProcessOrderEvent event
@@ -193,7 +197,7 @@ public class ClientRest {
     return dResult;
   }
 
-  @PutMapping("/{clientId}/orders")
+  @PutMapping(ClientRest.ORDER_CRUD_PATH)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseOrderEvent> updateOrder(
     @RequestBody @Validated(value = {OrderCreateGroup.class}) final ProcessOrderEvent event
