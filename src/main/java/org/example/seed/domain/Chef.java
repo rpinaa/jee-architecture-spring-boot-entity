@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.seed.catalog.ChefStatus;
 import org.example.seed.constraint.Curp;
+import org.example.seed.constraint.One;
 import org.example.seed.constraint.Rfc;
 import org.example.seed.group.chef.ChefCreateGroup;
 import org.example.seed.group.chef.ChefRegisterGroup;
@@ -58,8 +59,9 @@ public class Chef extends Dates {
   private Account account;
 
   @Valid
+  @Null(groups = {ChefCreateGroup.class})
+  @One(groups = {ChefRegisterGroup.class})
   @NotEmpty(groups = {ChefUpdateGroup.class})
-  @Null(groups = {ChefCreateGroup.class, ChefRegisterGroup.class})
   private List<Telephone> telephones;
 
   public Chef() {
