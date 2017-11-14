@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -48,6 +48,6 @@ public class SwaggerConfig extends WebMvcConfigurerAdapter {
       .paths(PathSelectors.any())
       .build()
       .directModelSubstitute(LocalDate.class, String.class)
-      .genericModelSubstitutes(ResponseEntity.class);
+      .genericModelSubstitutes(DeferredResult.class);
   }
 }
