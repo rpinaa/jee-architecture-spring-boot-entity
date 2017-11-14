@@ -143,30 +143,30 @@ public class ChefServiceImpl implements ChefService {
 
           chefEntity.setRfc(event.getChef().getRfc());
           chefEntity.setCurp(event.getChef().getCurp());
+          chefEntity.setCountry(event.getChef().getCountry());
           chefEntity.getAccount().setLastName(event.getChef().getAccount().getLastName());
           chefEntity.getAccount().setFirstName(event.getChef().getAccount().getFirstName());
-
           chefEntity.setTelephones(this.telephoneMapper
             .mapList(event.getChef().getTelephones())
             .parallelStream()
-            .peek(t -> {
-              t.setChef(chefEntity);
-              t.setId(UUID.randomUUID().toString());
+            .peek(telephoneEntity -> {
+              telephoneEntity.setChef(chefEntity);
+              telephoneEntity.setId(UUID.randomUUID().toString());
             })
-            .map(t -> PhoneGenUtil
-              .map(t.getNumber(), chefEntity.getCountry())
-              .map(p -> {
-                t.setLada(p.getLada());
-                t.setNumber(p.getPhoneNumber());
+            .map(telephoneEntity -> PhoneGenUtil
+              .map(telephoneEntity.getNumber(), chefEntity.getCountry())
+              .map(phoneDto -> {
+                telephoneEntity.setLada(phoneDto.getLada());
+                telephoneEntity.setNumber(phoneDto.getPhoneNumber());
 
-                return t;
+                return telephoneEntity;
               })
-              .orElseThrow(() -> new RuntimeException("ERROR-00003")))
+              .orElseThrow(() -> new RuntimeException("ERROR-01003")))
             .collect(Collectors.toList()));
 
           return this.chefRepository.save(chefEntity);
         })
-        .orElseThrow(() -> new RuntimeException("ERROR-00002")));
+        .orElseThrow(() -> new RuntimeException("ERROR-01002")));
 
     return new AsyncResult<>(ResponseChefEvent.builder().chef(chef).build());
   }
