@@ -1,7 +1,7 @@
 # jee-architecture-spring-boot-entity
-A JEE 7 non-blocking I/O Architecture using Spring Boot Stack. It exposes a REST API with level 2 of maturity (https://martinfowler.com/articles/richardsonMaturityModel.html) in a Bottom-Up approach.
+A JEE 7 non-blocking I/O Architecture using Spring Boot Stack in Web Profile. It exposes a REST API with level 2 of maturity (https://martinfowler.com/articles/richardsonMaturityModel.html) in a Bottom-Up approach.
 
-It uses repository, business and integration layers to comply the JEE 7 flow. A mapper pattern to avoid coupling between entity objects and domain.
+It uses repository, service and integration layers to comply the JEE 7 flow. A mapper pattern to avoid coupling between entity objects and domain.
 
 It also has bean validation, transaction, CDI and security as cross cutting concerns. It provides Swagger UI to document and interact with the REST API exposed.
 
