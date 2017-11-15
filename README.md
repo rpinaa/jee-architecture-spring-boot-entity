@@ -13,9 +13,9 @@ It also has bean validation, transaction, CDI and security as cross cutting conc
 ## Stack
 
 - JSE 8
-- GeoIP2 2.x
 - AspectJ 1.x
 - MapStruct 1.x
+- GeoIP2 2.x
 - LibPhoneNumber 8.x
 - Spring Boot 2.x
 - Spring Boot Test 2.x
