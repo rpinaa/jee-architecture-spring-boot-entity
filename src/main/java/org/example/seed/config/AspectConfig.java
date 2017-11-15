@@ -5,4 +5,4 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan(basePackages = {"org.example.seed.aspect"})
-public class AOPConfig { }
+public class AspectConfig { }
