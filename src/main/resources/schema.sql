@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `t_account` (
   `last_name` varchar(80) DEFAULT NULL,
   `secret` longblob,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+) ENGINE=InnoDB CHARSET=UTF8;
 
 -- --------------------------------------------------------
 
