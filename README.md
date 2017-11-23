@@ -3,10 +3,9 @@ A **Java EE 7** non-blocking I/O Architecture using **REST** architectural patte
 
 > **It uses the following layers:**
 
-> - Database Layer     (RDBMS)
-> - Data Access Layer  (Spring)
+> - Repository Layer   (Spring)
 > - Mapper Layer       (MapStruct)
-> - Business Layer     (Spring)
+> - Service Layer      (Spring)
 > - Integration Layer  (Spring)
 > - Presentation Layer (Swagger)
 
@@ -14,7 +13,7 @@ A **Java EE 7** non-blocking I/O Architecture using **REST** architectural patte
 
 > - CDI          (Spring)
 > - Security     (Spring)
-> - Validations  (BV)
+> - Validations  (Spring)
 > - Transactions (Spring)
 
 ## Requirements
