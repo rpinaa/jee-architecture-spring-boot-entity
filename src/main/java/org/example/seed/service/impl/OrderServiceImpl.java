@@ -103,7 +103,6 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Async
-  @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public ListenableFuture<ResponseOrderEvent> createOrder(final ProcessOrderEvent event) {
 
@@ -124,12 +123,11 @@ public class OrderServiceImpl implements OrderService {
         })
         .orElseThrow(RuntimeException::new));
 
-    return new AsyncResult(ResponseOrderEvent.builder().order(order).build());
+    return new AsyncResult<>(ResponseOrderEvent.builder().order(order).build());
   }
 
   @Override
   @Async
-  @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public ListenableFuture<ResponseOrderEvent> registerOrder(final ProcessOrderEvent event) {
 
@@ -150,12 +148,11 @@ public class OrderServiceImpl implements OrderService {
         })
         .orElseThrow(RuntimeException::new));
 
-    return new AsyncResult(ResponseOrderEvent.builder().order(order).build());
+    return new AsyncResult<>(ResponseOrderEvent.builder().order(order).build());
   }
 
   @Override
   @Async
-  @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public ListenableFuture<ResponseOrderEvent> processOrder(final ProcessOrderEvent event) {
 
@@ -174,12 +171,11 @@ public class OrderServiceImpl implements OrderService {
         })
         .orElseThrow(RuntimeException::new));
 
-    return new AsyncResult(ResponseOrderEvent.builder().order(order).build());
+    return new AsyncResult<>(ResponseOrderEvent.builder().order(order).build());
   }
 
   @Override
   @Async
-  @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public ListenableFuture<ResponseOrderEvent> updateOrder(final ProcessOrderEvent event) {
 
@@ -189,7 +185,7 @@ public class OrderServiceImpl implements OrderService {
         .map(orderEntity -> this.orderRepository.save(this.mergePackages(event, OrderStatus.CREATED)))
         .orElseThrow(RuntimeException::new));
 
-    return new AsyncResult(ResponseOrderEvent.builder().order(order).build());
+    return new AsyncResult<>(ResponseOrderEvent.builder().order(order).build());
   }
 
   @Override
