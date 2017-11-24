@@ -1,6 +1,7 @@
 package org.example.seed.service.impl;
 
 import org.example.seed.catalog.OrderStatus;
+import org.example.seed.domain.Order;
 import org.example.seed.entity.ChefEntity;
 import org.example.seed.entity.DishEntity;
 import org.example.seed.entity.OrderEntity;
@@ -105,23 +106,25 @@ public class OrderServiceImpl implements OrderService {
   @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public ListenableFuture<ResponseOrderEvent> createOrder(final ProcessOrderEvent event) {
-    return new AsyncResult(ResponseOrderEvent.builder()
-      .order(this.orderMapper
-        .map(this.clientRepository
-          .findById(event.getIdClient())
-          .map(clientEntity -> {
 
-            event.getOrder().setStatus(OrderStatus.CREATED);
+    final Order order = this.orderMapper
+      .map(this.clientRepository
+        .findById(event.getIdClient())
+        .map(clientEntity -> {
 
-            final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED);
+          event.getOrder().setStatus(OrderStatus.CREATED);
 
-            currentOrder.setClient(clientEntity);
+          final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED);
 
-            this.orderRepository.save(currentOrder);
+          currentOrder.setClient(clientEntity);
 
-            return currentOrder;
-          })
-          .orElseThrow(RuntimeException::new))));
+          this.orderRepository.save(currentOrder);
+
+          return currentOrder;
+        })
+        .orElseThrow(RuntimeException::new));
+
+    return new AsyncResult(ResponseOrderEvent.builder().order(order).build());
   }
 
   @Override
@@ -129,23 +132,25 @@ public class OrderServiceImpl implements OrderService {
   @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public ListenableFuture<ResponseOrderEvent> registerOrder(final ProcessOrderEvent event) {
-    return new AsyncResult(ResponseOrderEvent.builder()
-      .order(this.orderMapper
-        .map(this.orderRepository
-          .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
-          .map(orderEntity -> {
 
-            final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED);
+    final Order order = this.orderMapper
+      .map(this.orderRepository
+        .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
+        .map(orderEntity -> {
 
-            currentOrder.setRegisteredDate(new Date());
-            currentOrder.setTimeZone(event.getTimeZone());
-            currentOrder.setStatus(OrderStatus.PENDING_TO_ACCEPT);
+          final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED);
 
-            this.orderRepository.save(currentOrder);
+          currentOrder.setRegisteredDate(new Date());
+          currentOrder.setTimeZone(event.getTimeZone());
+          currentOrder.setStatus(OrderStatus.PENDING_TO_ACCEPT);
 
-            return currentOrder;
-          })
-          .orElseThrow(RuntimeException::new))));
+          this.orderRepository.save(currentOrder);
+
+          return currentOrder;
+        })
+        .orElseThrow(RuntimeException::new));
+
+    return new AsyncResult(ResponseOrderEvent.builder().order(order).build());
   }
 
   @Override
@@ -153,21 +158,23 @@ public class OrderServiceImpl implements OrderService {
   @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public ListenableFuture<ResponseOrderEvent> processOrder(final ProcessOrderEvent event) {
-    return new AsyncResult(ResponseOrderEvent.builder()
-      .order(this.orderMapper
-        .map(this.orderRepository
-          .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.PENDING_TO_ACCEPT)
-          .map(orderEntity -> {
 
-            final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.PENDING_TO_ACCEPT);
+    final Order order = this.orderMapper
+      .map(this.orderRepository
+        .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.PENDING_TO_ACCEPT)
+        .map(orderEntity -> {
 
-            currentOrder.setStatus(OrderStatus.ACCEPTED);
+          final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.PENDING_TO_ACCEPT);
 
-            this.orderRepository.save(currentOrder);
+          currentOrder.setStatus(OrderStatus.ACCEPTED);
 
-            return currentOrder;
-          })
-          .orElseThrow(RuntimeException::new))));
+          this.orderRepository.save(currentOrder);
+
+          return currentOrder;
+        })
+        .orElseThrow(RuntimeException::new));
+
+    return new AsyncResult(ResponseOrderEvent.builder().order(order).build());
   }
 
   @Override
@@ -175,12 +182,14 @@ public class OrderServiceImpl implements OrderService {
   @SuppressWarnings({"unchecked"})
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public ListenableFuture<ResponseOrderEvent> updateOrder(final ProcessOrderEvent event) {
-    return new AsyncResult(ResponseOrderEvent.builder()
-      .order(this.orderMapper
-        .map(this.orderRepository
-          .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
-          .map(orderEntity -> this.orderRepository.save(this.mergePackages(event, OrderStatus.CREATED)))
-          .orElseThrow(RuntimeException::new))));
+
+    final Order order = this.orderMapper
+      .map(this.orderRepository
+        .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
+        .map(orderEntity -> this.orderRepository.save(this.mergePackages(event, OrderStatus.CREATED)))
+        .orElseThrow(RuntimeException::new));
+
+    return new AsyncResult(ResponseOrderEvent.builder().order(order).build());
   }
 
   @Override
