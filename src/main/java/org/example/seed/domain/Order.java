@@ -53,6 +53,7 @@ public class Order extends Dates {
   @Null(groups = {OrderCreateGroup.class, OrderRegisterGroup.class})
   private Date finishedDate;
 
+  @Null(groups = {OrderCreateGroup.class})
   @NotNull(groups = {OrderRegisterGroup.class})
   private OrderStatus status;
 
