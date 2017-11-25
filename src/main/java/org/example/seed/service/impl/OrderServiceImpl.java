@@ -69,10 +69,10 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-  public ListenableFuture<ResponseOrdersEvent> requestOrdersByClient(final RequestOrdersEvent event) {
+  public ListenableFuture<ResponseOrdersEvent> requestOrdersByClient(final String clientId, final RequestOrdersEvent event) {
 
     final Page<OrderEntity> orderEntities = this.orderRepository
-      .findAllByClient(event.getClientId(), PageRequest.of(event.getPage() - 1, event.getLimit()));
+      .findAllByClient(clientId, PageRequest.of(event.getPage() - 1, event.getLimit()));
 
     return new AsyncResult<>(ResponseOrdersEvent.builder()
       .total(orderEntities.getTotalElements())
@@ -84,10 +84,10 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-  public ListenableFuture<ResponseOrdersEvent> requestOrdersByChef(final RequestOrdersEvent event) {
+  public ListenableFuture<ResponseOrdersEvent> requestOrdersByChef(final String chefId, final RequestOrdersEvent event) {
 
     final Page<OrderEntity> orderEntities = this.orderRepository
-      .findAllByChef(event.getClientId(), PageRequest.of(event.getPage() - 1, event.getLimit()));
+      .findAllByChef(chefId, PageRequest.of(event.getPage() - 1, event.getLimit()));
 
     return new AsyncResult<>(ResponseOrdersEvent.builder()
       .total(orderEntities.getTotalElements())
@@ -104,16 +104,16 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public ListenableFuture<ResponseOrderEvent> createOrder(final ProcessOrderEvent event) {
+  public ListenableFuture<ResponseOrderEvent> createOrder(final String clientId, final ProcessOrderEvent event) {
 
     final Order order = this.orderMapper
       .map(this.clientRepository
-        .findById(event.getIdClient())
+        .findById(clientId)
         .map(clientEntity -> {
 
           event.getOrder().setStatus(OrderStatus.CREATED);
 
-          final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED);
+          final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED, clientId);
 
           currentOrder.setClient(clientEntity);
 
@@ -129,14 +129,14 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public ListenableFuture<ResponseOrderEvent> registerOrder(final ProcessOrderEvent event) {
+  public ListenableFuture<ResponseOrderEvent> registerOrder(final String clientId, final ProcessOrderEvent event) {
 
     final Order order = this.orderMapper
       .map(this.orderRepository
-        .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
+        .findByClientAndOrder(clientId, event.getOrder().getId(), OrderStatus.CREATED)
         .map(orderEntity -> {
 
-          final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED);
+          final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.CREATED, clientId);
 
           currentOrder.setRegisteredDate(new Date());
           currentOrder.setTimeZone(event.getTimeZone());
@@ -154,14 +154,14 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public ListenableFuture<ResponseOrderEvent> processOrder(final ProcessOrderEvent event) {
+  public ListenableFuture<ResponseOrderEvent> processOrder(final String clientId, final ProcessOrderEvent event) {
 
     final Order order = this.orderMapper
       .map(this.orderRepository
-        .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.PENDING_TO_ACCEPT)
+        .findByClientAndOrder(clientId, event.getOrder().getId(), OrderStatus.PENDING_TO_ACCEPT)
         .map(orderEntity -> {
 
-          final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.PENDING_TO_ACCEPT);
+          final OrderEntity currentOrder = this.mergePackages(event, OrderStatus.PENDING_TO_ACCEPT, clientId);
 
           currentOrder.setStatus(OrderStatus.ACCEPTED);
 
@@ -177,12 +177,12 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public ListenableFuture<ResponseOrderEvent> updateOrder(final ProcessOrderEvent event) {
+  public ListenableFuture<ResponseOrderEvent> updateOrder(final String clientId, final ProcessOrderEvent event) {
 
     final Order order = this.orderMapper
       .map(this.orderRepository
-        .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), OrderStatus.CREATED)
-        .map(orderEntity -> this.orderRepository.save(this.mergePackages(event, OrderStatus.CREATED)))
+        .findByClientAndOrder(clientId, event.getOrder().getId(), OrderStatus.CREATED)
+        .map(orderEntity -> this.orderRepository.save(this.mergePackages(event, OrderStatus.CREATED, clientId)))
         .orElseThrow(RuntimeException::new));
 
     return new AsyncResult<>(ResponseOrderEvent.builder().order(order).build());
@@ -202,7 +202,7 @@ public class OrderServiceImpl implements OrderService {
       });
   }
 
-  private OrderEntity mergePackages(final ProcessOrderEvent event, final OrderStatus status) {
+  private OrderEntity mergePackages(final ProcessOrderEvent event, final OrderStatus status, final String clientId) {
 
     final Stream<PackageEntity> packageEntities = this.packageMapper
       .mapList(event.getOrder().getPackages())
@@ -226,7 +226,7 @@ public class OrderServiceImpl implements OrderService {
       });
 
     final OrderEntity orderEntity = this.orderRepository
-      .findByClientAndOrder(event.getIdClient(), event.getOrder().getId(), status)
+      .findByClientAndOrder(clientId, event.getOrder().getId(), status)
       .map(oe -> {
         this.packageRepository.deleteInBatch(oe.getPackages());
 
