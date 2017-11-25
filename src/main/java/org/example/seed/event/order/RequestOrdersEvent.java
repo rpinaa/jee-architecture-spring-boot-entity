@@ -20,5 +20,4 @@ public class RequestOrdersEvent {
   private int page;
   private int limit;
   private String chefId;
-  private String clientId;
 }
