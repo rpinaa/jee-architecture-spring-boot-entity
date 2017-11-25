@@ -61,10 +61,10 @@ public class ChefRest {
   )
     throws ExecutionException, InterruptedException {
 
-    final RequestOrdersEvent event = RequestOrdersEvent.builder().chefId(chefId).page(page).limit(limit).build();
+    final RequestOrdersEvent event = RequestOrdersEvent.builder().page(page).limit(limit).build();
     final DeferredResult<ResponseOrdersEvent> dResult = new DeferredResult<>();
 
-    this.orderService.requestOrdersByChef(event)
+    this.orderService.requestOrdersByChef(chefId, event)
       .addCallback(
         dResult::setResult,
         e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
