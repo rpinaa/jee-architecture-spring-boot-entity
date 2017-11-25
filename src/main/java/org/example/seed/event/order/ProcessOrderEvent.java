@@ -22,6 +22,5 @@ public class ProcessOrderEvent {
 
   @Valid
   private Order order;
-  private String chefId;
   private TimeZone timeZone;
 }
