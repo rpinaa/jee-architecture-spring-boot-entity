@@ -152,10 +152,10 @@ public class ClientRest {
   )
     throws ExecutionException, InterruptedException {
 
-    final RequestOrdersEvent event = RequestOrdersEvent.builder().clientId(clientId).page(page).limit(limit).build();
+    final RequestOrdersEvent event = RequestOrdersEvent.builder().page(page).limit(limit).build();
     final DeferredResult<ResponseOrdersEvent> dResult = new DeferredResult<>();
 
-    this.orderService.requestOrdersByClient(event)
+    this.orderService.requestOrdersByClient(clientId, event)
       .addCallback(
         dResult::setResult,
         e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
@@ -166,13 +166,14 @@ public class ClientRest {
   @PostMapping(ClientRest.ORDER_CRUD_PATH)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseOrderEvent> createOrder(
+    @RequestParam("clientId") final String clientId,
     @RequestBody @Validated(value = {OrderCreateGroup.class}) final ProcessOrderEvent event
   )
     throws ExecutionException, InterruptedException {
 
     final DeferredResult<ResponseOrderEvent> dResult = new DeferredResult<>();
 
-    this.orderService.createOrder(event)
+    this.orderService.createOrder(clientId, event)
       .addCallback(
         dResult::setResult,
         e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
@@ -183,13 +184,14 @@ public class ClientRest {
   @PatchMapping(ClientRest.ORDER_CRUD_PATH)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseOrderEvent> registerOrder(
+    @RequestParam("clientId") final String clientId,
     @RequestBody @Validated(value = {OrderRegisterGroup.class}) final ProcessOrderEvent event
   )
     throws ExecutionException, InterruptedException {
 
     final DeferredResult<ResponseOrderEvent> dResult = new DeferredResult<>();
 
-    this.orderService.registerOrder(event)
+    this.orderService.registerOrder(clientId, event)
       .addCallback(
         dResult::setResult,
         e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
@@ -200,13 +202,14 @@ public class ClientRest {
   @PutMapping(ClientRest.ORDER_CRUD_PATH)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseOrderEvent> updateOrder(
+    @RequestParam("clientId") final String clientId,
     @RequestBody @Validated(value = {OrderCreateGroup.class}) final ProcessOrderEvent event
   )
     throws ExecutionException, InterruptedException {
 
     final DeferredResult<ResponseOrderEvent> dResult = new DeferredResult<>();
 
-    this.orderService.updateOrder(event)
+    this.orderService.updateOrder(clientId, event)
       .addCallback(
         dResult::setResult,
         e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
