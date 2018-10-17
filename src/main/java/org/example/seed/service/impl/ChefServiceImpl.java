@@ -1,5 +1,6 @@
 package org.example.seed.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.example.seed.catalog.ChefStatus;
 import org.example.seed.domain.Chef;
 import org.example.seed.entity.ChefEntity;
@@ -11,7 +12,6 @@ import org.example.seed.repository.TelephoneRepository;
 import org.example.seed.service.ChefService;
 import org.example.seed.util.KeyGenUtil;
 import org.example.seed.util.PhoneGenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
@@ -27,26 +27,15 @@ import java.util.stream.Collectors;
 /**
  * Created by PINA on 25/06/2017.
  */
+
 @Service
+@RequiredArgsConstructor
 public class ChefServiceImpl implements ChefService {
 
   private final ChefMapper chefMapper;
   private final ChefRepository chefRepository;
   private final TelephoneMapper telephoneMapper;
   private final TelephoneRepository telephoneRepository;
-
-  @Autowired
-  public ChefServiceImpl(
-    final ChefMapper chefMapper,
-    final ChefRepository chefRepository,
-    final TelephoneMapper telephoneMapper,
-    final TelephoneRepository telephoneRepository
-  ) {
-    this.chefMapper = chefMapper;
-    this.chefRepository = chefRepository;
-    this.telephoneMapper = telephoneMapper;
-    this.telephoneRepository = telephoneRepository;
-  }
 
   @Override
   @Async
@@ -57,7 +46,8 @@ public class ChefServiceImpl implements ChefService {
       .findAll(PageRequest
         .of(event.getPage() - 1, event.getLimit()));
 
-    return new AsyncResult<>(ResponseChefsEvent.builder()
+    return new AsyncResult<>(ResponseChefsEvent
+      .builder()
       .chefs(this.chefMapper
         .mapListReverse(chefs.getContent()))
       .total(chefs.getTotalElements())
@@ -120,7 +110,9 @@ public class ChefServiceImpl implements ChefService {
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
   public ListenableFuture<ResponseChefEvent> requestChef(final RequestChefEvent event) {
-    return new AsyncResult<>(ResponseChefEvent.builder()
+
+    return new AsyncResult<>(ResponseChefEvent
+      .builder()
       .chef(this.chefMapper
         .map(this.chefRepository
           .findById(event.getId())
@@ -146,6 +138,7 @@ public class ChefServiceImpl implements ChefService {
           chefEntity.setCountry(event.getChef().getCountry());
           chefEntity.getAccount().setLastName(event.getChef().getAccount().getLastName());
           chefEntity.getAccount().setFirstName(event.getChef().getAccount().getFirstName());
+
           chefEntity.setTelephones(this.telephoneMapper
             .mapList(event.getChef().getTelephones())
             .parallelStream()

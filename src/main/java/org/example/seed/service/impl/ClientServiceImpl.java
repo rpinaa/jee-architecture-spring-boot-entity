@@ -1,5 +1,6 @@
 package org.example.seed.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.example.seed.catalog.ClientStatus;
 import org.example.seed.domain.Client;
 import org.example.seed.entity.ClientEntity;
@@ -10,7 +11,6 @@ import org.example.seed.repository.ClientRepository;
 import org.example.seed.service.ClientService;
 import org.example.seed.util.KeyGenUtil;
 import org.example.seed.util.PhoneGenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
@@ -25,17 +25,13 @@ import java.util.UUID;
 /**
  * Created by PINA on 25/06/2017.
  */
+
 @Service
+@RequiredArgsConstructor
 public class ClientServiceImpl implements ClientService {
 
   private final ClientMapper clientMapper;
   private final ClientRepository clientRepository;
-
-  @Autowired
-  public ClientServiceImpl(final ClientMapper clientMapper, final ClientRepository clientRepository) {
-    this.clientMapper = clientMapper;
-    this.clientRepository = clientRepository;
-  }
 
   @Override
   @Async
@@ -46,7 +42,8 @@ public class ClientServiceImpl implements ClientService {
       .findAll(PageRequest
         .of(event.getPage() - 1, event.getLimit()));
 
-    return new AsyncResult<>(ResponseClientsEvent.builder()
+    return new AsyncResult<>(ResponseClientsEvent
+      .builder()
       .clients(this.clientMapper
         .mapListReverse(clients.getContent()))
       .total(clients.getTotalElements())
@@ -104,6 +101,7 @@ public class ClientServiceImpl implements ClientService {
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
   public ListenableFuture<ResponseClientEvent> requestClient(final RequestClientEvent event) {
+
     return new AsyncResult<>(ResponseClientEvent.builder()
       .client(this.clientMapper
         .map(this.clientRepository

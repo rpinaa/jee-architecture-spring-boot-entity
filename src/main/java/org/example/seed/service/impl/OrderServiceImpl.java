@@ -1,5 +1,6 @@
 package org.example.seed.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.example.seed.catalog.OrderStatus;
 import org.example.seed.domain.Order;
 import org.example.seed.entity.ChefEntity;
@@ -11,7 +12,6 @@ import org.example.seed.mapper.OrderMapper;
 import org.example.seed.mapper.PackageMapper;
 import org.example.seed.repository.*;
 import org.example.seed.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
@@ -32,44 +32,25 @@ import java.util.stream.Stream;
 /**
  * Created by PINA on 30/06/2017.
  */
+
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
   private final ChefRepository chefRepository;
-
   private final ClientRepository clientRepository;
-
   private final DishRepository dishRepository;
-
   private final OrderRepository orderRepository;
-
   private final PackageRepository packageRepository;
-
   private final OrderMapper orderMapper;
-
   private final PackageMapper packageMapper;
-
-  @Autowired
-  public OrderServiceImpl(
-    final ChefRepository chefRepository, final ClientRepository clientRepository,
-    final DishRepository dishRepository, final OrderRepository orderRepository,
-    final PackageRepository packageRepository, final OrderMapper orderMapper,
-    final PackageMapper packageMapper
-  ) {
-
-    this.chefRepository = chefRepository;
-    this.clientRepository = clientRepository;
-    this.dishRepository = dishRepository;
-    this.orderRepository = orderRepository;
-    this.packageRepository = packageRepository;
-    this.orderMapper = orderMapper;
-    this.packageMapper = packageMapper;
-  }
 
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-  public ListenableFuture<ResponseOrdersEvent> requestOrdersByClient(final String clientId, final RequestOrdersEvent event) {
+  public ListenableFuture<ResponseOrdersEvent> requestOrdersByClient(
+    final String clientId, final RequestOrdersEvent event
+  ) {
 
     final Page<OrderEntity> orderEntities = this.orderRepository
       .findAllByClient(clientId, PageRequest.of(event.getPage() - 1, event.getLimit()));
@@ -89,7 +70,8 @@ public class OrderServiceImpl implements OrderService {
     final Page<OrderEntity> orderEntities = this.orderRepository
       .findAllByChef(chefId, PageRequest.of(event.getPage() - 1, event.getLimit()));
 
-    return new AsyncResult<>(ResponseOrdersEvent.builder()
+    return new AsyncResult<>(ResponseOrdersEvent
+      .builder()
       .total(orderEntities.getTotalElements())
       .orders(this.orderMapper
         .mapListReverse(orderEntities.getContent()))
@@ -98,13 +80,16 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   public ListenableFuture<ResponseOrderEvent> requestOrder(final RequestOrdersEvent event) {
+
     return null;
   }
 
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public ListenableFuture<ResponseOrderEvent> createOrder(final String clientId, final ProcessOrderEvent event) {
+  public ListenableFuture<ResponseOrderEvent> createOrder(
+    final String clientId, final ProcessOrderEvent event
+  ) {
 
     final Order order = this.orderMapper
       .map(this.clientRepository
@@ -129,7 +114,9 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public ListenableFuture<ResponseOrderEvent> registerOrder(final String clientId, final ProcessOrderEvent event) {
+  public ListenableFuture<ResponseOrderEvent> registerOrder(
+    final String clientId, final ProcessOrderEvent event
+  ) {
 
     final Order order = this.orderMapper
       .map(this.orderRepository
@@ -154,7 +141,9 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public ListenableFuture<ResponseOrderEvent> processOrder(final String clientId, final ProcessOrderEvent event) {
+  public ListenableFuture<ResponseOrderEvent> processOrder(
+    final String clientId, final ProcessOrderEvent event
+  ) {
 
     final Order order = this.orderMapper
       .map(this.orderRepository
@@ -177,7 +166,9 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Async
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public ListenableFuture<ResponseOrderEvent> updateOrder(final String clientId, final ProcessOrderEvent event) {
+  public ListenableFuture<ResponseOrderEvent> updateOrder(
+    final String clientId, final ProcessOrderEvent event
+  ) {
 
     final Order order = this.orderMapper
       .map(this.orderRepository
@@ -202,7 +193,9 @@ public class OrderServiceImpl implements OrderService {
       });
   }
 
-  private OrderEntity mergePackages(final ProcessOrderEvent event, final OrderStatus status, final String clientId) {
+  private OrderEntity mergePackages(
+    final ProcessOrderEvent event, final OrderStatus status, final String clientId
+  ) {
 
     final Stream<PackageEntity> packageEntities = this.packageMapper
       .mapList(event.getOrder().getPackages())

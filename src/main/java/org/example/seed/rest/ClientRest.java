@@ -1,5 +1,6 @@
 package org.example.seed.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.example.seed.event.client.*;
 import org.example.seed.event.order.ProcessOrderEvent;
 import org.example.seed.event.order.RequestOrdersEvent;
@@ -12,42 +13,34 @@ import org.example.seed.group.order.OrderCreateGroup;
 import org.example.seed.group.order.OrderRegisterGroup;
 import org.example.seed.service.ClientService;
 import org.example.seed.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.util.concurrent.ExecutionException;
-
 /**
  * Created by PINA on 25/06/2017.
  */
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = ClientRest.CLIENT_ROOT_PATH)
 public class ClientRest {
 
-  public static final String CLIENT_ROOT_PATH =  "/clients";
-  public static final String CLIENT_CRUD_PATH =  "/{clientId}";
-  public static final String ORDER_CRUD_PATH =  "/{clientId}/orders";
+  public static final String CLIENT_ROOT_PATH = "/clients";
+  public static final String CLIENT_CRUD_PATH = "/{clientId}";
+  public static final String ORDER_CRUD_PATH = "/{clientId}/orders";
 
   private final ClientService clientService;
   private final OrderService orderService;
-
-  @Autowired
-  public ClientRest(final ClientService clientService, final OrderService orderService) {
-    this.clientService = clientService;
-    this.orderService = orderService;
-  }
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   public DeferredResult<ResponseClientsEvent> getClients(
     @RequestParam("page") final int page,
     @RequestParam("limit") final int limit
-  )
-    throws ExecutionException, InterruptedException {
+  ) {
 
     final RequestClientsEvent event = RequestClientsEvent.builder().page(page).limit(limit).build();
     final DeferredResult<ResponseClientsEvent> dResult = new DeferredResult<>();
@@ -64,8 +57,7 @@ public class ClientRest {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseClientEvent> createClient(
     @RequestBody @Validated(value = {ClientCreateGroup.class}) final CreateClientEvent event
-  )
-    throws ExecutionException, InterruptedException {
+  ) {
 
     final DeferredResult<ResponseClientEvent> dResult = new DeferredResult<>();
 
@@ -81,8 +73,7 @@ public class ClientRest {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseClientEvent> registerClient(
     @RequestBody @Validated(value = {ClientRegisterGroup.class}) final RegisterClientEvent event
-  )
-    throws ExecutionException, InterruptedException {
+  ) {
 
     final DeferredResult<ResponseClientEvent> dResult = new DeferredResult<>();
 
@@ -96,8 +87,7 @@ public class ClientRest {
 
   @GetMapping(ClientRest.CLIENT_CRUD_PATH)
   @ResponseStatus(HttpStatus.OK)
-  public DeferredResult<ResponseClientEvent> getClient(@PathVariable("clientId") final String id)
-    throws ExecutionException, InterruptedException {
+  public DeferredResult<ResponseClientEvent> getClient(@PathVariable("clientId") final String id) {
 
     final RequestClientEvent event = RequestClientEvent.builder().id(id).build();
     final DeferredResult<ResponseClientEvent> dResult = new DeferredResult<>();
@@ -114,8 +104,7 @@ public class ClientRest {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseClientEvent> updateClient(
     @RequestBody @Validated(value = {ClientUpdateGroup.class}) final UpdateClientEvent event
-  )
-    throws ExecutionException, InterruptedException {
+  ) {
 
     final DeferredResult<ResponseClientEvent> dResult = new DeferredResult<>();
 
@@ -129,8 +118,7 @@ public class ClientRest {
 
   @DeleteMapping(ClientRest.CLIENT_CRUD_PATH)
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public DeferredResult<ResponseClientEvent> deleteClient(@PathVariable("clientId") final String id)
-    throws ExecutionException, InterruptedException {
+  public DeferredResult<ResponseClientEvent> deleteClient(@PathVariable("clientId") final String id) {
 
     final DeleteClientEvent event = DeleteClientEvent.builder().id(id).build();
     final DeferredResult<ResponseClientEvent> dResult = new DeferredResult<>();
@@ -149,8 +137,7 @@ public class ClientRest {
     @RequestParam("page") final int page,
     @RequestParam("limit") final int limit,
     @PathVariable("clientId") final String clientId
-  )
-    throws ExecutionException, InterruptedException {
+  ) {
 
     final RequestOrdersEvent event = RequestOrdersEvent.builder().page(page).limit(limit).build();
     final DeferredResult<ResponseOrdersEvent> dResult = new DeferredResult<>();
@@ -168,8 +155,7 @@ public class ClientRest {
   public DeferredResult<ResponseOrderEvent> createOrder(
     @RequestParam("clientId") final String clientId,
     @RequestBody @Validated(value = {OrderCreateGroup.class}) final ProcessOrderEvent event
-  )
-    throws ExecutionException, InterruptedException {
+  ) {
 
     final DeferredResult<ResponseOrderEvent> dResult = new DeferredResult<>();
 
@@ -186,8 +172,7 @@ public class ClientRest {
   public DeferredResult<ResponseOrderEvent> registerOrder(
     @RequestParam("clientId") final String clientId,
     @RequestBody @Validated(value = {OrderRegisterGroup.class}) final ProcessOrderEvent event
-  )
-    throws ExecutionException, InterruptedException {
+  ) {
 
     final DeferredResult<ResponseOrderEvent> dResult = new DeferredResult<>();
 
@@ -204,8 +189,7 @@ public class ClientRest {
   public DeferredResult<ResponseOrderEvent> updateOrder(
     @RequestParam("clientId") final String clientId,
     @RequestBody @Validated(value = {OrderCreateGroup.class}) final ProcessOrderEvent event
-  )
-    throws ExecutionException, InterruptedException {
+  ) {
 
     final DeferredResult<ResponseOrderEvent> dResult = new DeferredResult<>();
 

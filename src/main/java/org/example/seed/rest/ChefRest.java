@@ -1,5 +1,6 @@
 package org.example.seed.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.example.seed.event.chef.*;
 import org.example.seed.event.order.RequestOrdersEvent;
 import org.example.seed.event.order.ResponseOrdersEvent;
@@ -8,38 +9,35 @@ import org.example.seed.group.chef.ChefRegisterGroup;
 import org.example.seed.group.chef.ChefUpdateGroup;
 import org.example.seed.service.ChefService;
 import org.example.seed.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.util.concurrent.ExecutionException;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 /**
  * Created by PINA on 25/06/2017.
  */
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = ChefRest.CHEF_ROOT_PATH)
 public class ChefRest {
 
-  public static final String CHEF_ROOT_PATH =  "/chefs";
-  public static final String CHEF_CRUD_PATH =  "/{chefId}";
-  public static final String ORDER_CRUD_PATH =  "/{chefId}/orders";
+  public static final String CHEF_ROOT_PATH = "/chefs";
+  public static final String CHEF_CRUD_PATH = "/{chefId}";
+  public static final String ORDER_CRUD_PATH = "/{chefId}/orders";
 
   private final ChefService chefService;
   private final OrderService orderService;
 
-  @Autowired
-  public ChefRest(final ChefService chefService, final OrderService orderService) {
-    this.chefService = chefService;
-    this.orderService = orderService;
-  }
-
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public DeferredResult<ResponseChefsEvent> getChefs(@RequestParam("page") final int page, @RequestParam("limit") final int limit) {
+  public DeferredResult<ResponseChefsEvent> getChefs(
+    @RequestParam("page") final int page, @RequestParam("limit") final int limit
+  ) {
 
     final RequestChefsEvent event = RequestChefsEvent.builder().page(page).limit(limit).build();
     final DeferredResult<ResponseChefsEvent> dResult = new DeferredResult<>();
@@ -47,7 +45,7 @@ public class ChefRest {
     this.chefService.requestChefs(event)
       .addCallback(
         dResult::setResult,
-        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+        e -> dResult.setErrorResult(ResponseEntity.status(INTERNAL_SERVER_ERROR).body(e)));
 
     return dResult;
   }
@@ -58,8 +56,7 @@ public class ChefRest {
     @RequestParam("page") final int page,
     @RequestParam("limit") final int limit,
     @PathVariable("chefId") final String chefId
-  )
-    throws ExecutionException, InterruptedException {
+  ) {
 
     final RequestOrdersEvent event = RequestOrdersEvent.builder().page(page).limit(limit).build();
     final DeferredResult<ResponseOrdersEvent> dResult = new DeferredResult<>();
@@ -67,7 +64,7 @@ public class ChefRest {
     this.orderService.requestOrdersByChef(chefId, event)
       .addCallback(
         dResult::setResult,
-        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+        e -> dResult.setErrorResult(ResponseEntity.status(INTERNAL_SERVER_ERROR).body(e)));
 
     return dResult;
   }
@@ -76,15 +73,14 @@ public class ChefRest {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseChefEvent> createChef(
     @RequestBody @Validated(value = {ChefCreateGroup.class}) final CreateChefEvent event
-  )
-    throws ExecutionException, InterruptedException {
+  ) {
 
     final DeferredResult<ResponseChefEvent> dResult = new DeferredResult<>();
 
     this.chefService.createChef(event)
       .addCallback(
         dResult::setResult,
-        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+        e -> dResult.setErrorResult(ResponseEntity.status(INTERNAL_SERVER_ERROR).body(e)));
 
     return dResult;
   }
@@ -93,23 +89,21 @@ public class ChefRest {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseChefEvent> registerClient(
     @RequestBody @Validated(value = {ChefRegisterGroup.class}) final RegisterChefEvent event
-  )
-    throws ExecutionException, InterruptedException {
+  ) {
 
     final DeferredResult<ResponseChefEvent> dResult = new DeferredResult<>();
 
     this.chefService.registerChef(event)
       .addCallback(
         dResult::setResult,
-        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+        e -> dResult.setErrorResult(ResponseEntity.status(INTERNAL_SERVER_ERROR).body(e)));
 
     return dResult;
   }
 
   @GetMapping(ChefRest.CHEF_CRUD_PATH)
   @ResponseStatus(HttpStatus.OK)
-  public DeferredResult<ResponseChefEvent> getChef(@PathVariable("chefId") final String id)
-    throws ExecutionException, InterruptedException {
+  public DeferredResult<ResponseChefEvent> getChef(@PathVariable("chefId") final String id) {
 
     final RequestChefEvent event = RequestChefEvent.builder().id(id).build();
     final DeferredResult<ResponseChefEvent> dResult = new DeferredResult<>();
@@ -117,7 +111,7 @@ public class ChefRest {
     this.chefService.requestChef(event)
       .addCallback(
         dResult::setResult,
-        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+        e -> dResult.setErrorResult(ResponseEntity.status(INTERNAL_SERVER_ERROR).body(e)));
 
     return dResult;
   }
@@ -126,23 +120,21 @@ public class ChefRest {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public DeferredResult<ResponseChefEvent> updateChef(
     @RequestBody @Validated(value = {ChefUpdateGroup.class}) final UpdateChefEvent event
-  )
-    throws ExecutionException, InterruptedException {
+  ) {
 
     final DeferredResult<ResponseChefEvent> dResult = new DeferredResult<>();
 
     this.chefService.updateChef(event)
       .addCallback(
         dResult::setResult,
-        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+        e -> dResult.setErrorResult(ResponseEntity.status(INTERNAL_SERVER_ERROR).body(e)));
 
     return dResult;
   }
 
   @DeleteMapping(ChefRest.CHEF_CRUD_PATH)
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public DeferredResult<ResponseChefEvent> deleteChef(@PathVariable("chefId") final String id)
-    throws ExecutionException, InterruptedException {
+  public DeferredResult<ResponseChefEvent> deleteChef(@PathVariable("chefId") final String id) {
 
     final DeleteChefEvent event = DeleteChefEvent.builder().id(id).build();
     final DeferredResult<ResponseChefEvent> dResult = new DeferredResult<>();
@@ -150,7 +142,7 @@ public class ChefRest {
     this.chefService.deleteChef(event)
       .addCallback(
         dResult::setResult,
-        e -> dResult.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e)));
+        e -> dResult.setErrorResult(ResponseEntity.status(INTERNAL_SERVER_ERROR).body(e)));
 
     return dResult;
   }
