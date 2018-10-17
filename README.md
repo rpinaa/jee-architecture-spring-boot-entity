@@ -1,15 +1,14 @@
 # jee-architecture-spring-boot-entity
-A **Java EE 7** non-blocking I/O Architecture using **REST** architectural pattern with a level 2 of maturity as the **Richardson Maturity Model** has described; developing in a **bottom-up** approach.
+A **Java EE 7** non-blocking I/O Architecture using **REST** architectural pattern as Integration Layer, developing in a **bottom-up** approach.
 
-> **It uses the following layers:**
+> **JEE 7 Architecture**
 
-> - Repository Layer   (Spring)
-> - Mapper Layer       (MapStruct)
-> - Service Layer      (Spring)
-> - Integration Layer  (Spring)
 > - Presentation Layer (Swagger)
+> - Integration Layer (Spring)
+> - Business Layer (Spring)
+> - Data Access Layer (Spring)
 
-> **It has the following cross cutting concerns:**
+> **Cross Cutting Concerns:**
 
 > - CDI          (Spring)
 > - Security     (Spring)
