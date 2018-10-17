@@ -9,12 +9,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlRootElement
-@EqualsAndHashCode(callSuper = true)
 public class RegisterChefEvent extends CreateEvent {
 
   @Valid

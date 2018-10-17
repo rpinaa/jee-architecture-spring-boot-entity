@@ -1,7 +1,7 @@
 package org.example.seed.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.seed.constraint.Denomination;
 import org.example.seed.group.chef.ChefCreateGroup;
 import org.example.seed.group.chef.ChefRegisterGroup;
@@ -16,8 +16,9 @@ import java.util.UUID;
 /**
  * Created by PINA on 26/06/2017.
  */
-@Data
-@EqualsAndHashCode
+
+@Setter
+@Getter
 public class Account {
 
   private String id;
@@ -43,6 +44,7 @@ public class Account {
   private String credential;
 
   public Account() {
+
     this.id = UUID.randomUUID().toString();
   }
 }

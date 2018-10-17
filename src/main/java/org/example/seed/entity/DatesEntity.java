@@ -1,6 +1,7 @@
 package org.example.seed.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,7 +13,9 @@ import java.util.Date;
 /**
  * Created by Ricardo Pina Arellano on 24/11/2016.
  */
-@Data
+
+@Getter
+@Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class DatesEntity implements Serializable {

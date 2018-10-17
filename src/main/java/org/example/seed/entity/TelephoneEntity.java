@@ -9,7 +9,9 @@ import java.io.Serializable;
 /**
  * Created by PINA on 28/05/2017.
  */
-@Data
+
+@Getter
+@Setter
 @Entity
 @Builder
 @NoArgsConstructor

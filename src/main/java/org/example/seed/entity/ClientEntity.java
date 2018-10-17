@@ -1,6 +1,9 @@
 package org.example.seed.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.seed.catalog.ClientStatus;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -11,7 +14,9 @@ import java.util.List;
 /**
  * Created by PINA on 28/05/2017.
  */
-@Data
+
+@Getter
+@Setter
 @Entity
 @Table(name = "t_client")
 @Where(clause = "deleted <> 1")

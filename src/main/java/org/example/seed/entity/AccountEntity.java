@@ -1,7 +1,7 @@
 package org.example.seed.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -10,12 +10,12 @@ import javax.persistence.*;
 /**
  * Created by PINA on 25/05/2017.
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "t_account")
 @SQLDelete(sql = "UPDATE t_account SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted <> 1")
-@EqualsAndHashCode(callSuper = true)
 public class AccountEntity extends DatesEntity {
 
   @Id

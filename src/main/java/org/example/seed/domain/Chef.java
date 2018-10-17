@@ -1,7 +1,7 @@
 package org.example.seed.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.seed.catalog.ChefStatus;
 import org.example.seed.constraint.Curp;
 import org.example.seed.constraint.One;
@@ -19,8 +19,9 @@ import java.util.UUID;
 /**
  * Created by PINA on 26/06/2017.
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
+
+@Getter
+@Setter
 public class Chef extends Dates {
 
   @NotNull(groups = {ChefRegisterGroup.class, ChefUpdateGroup.class})
@@ -65,6 +66,7 @@ public class Chef extends Dates {
   private List<Telephone> telephones;
 
   public Chef() {
+
     this.id = UUID.randomUUID().toString();
   }
 }

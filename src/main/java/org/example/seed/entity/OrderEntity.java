@@ -1,9 +1,8 @@
 package org.example.seed.entity;
 
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import org.example.seed.catalog.OrderStatus;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -18,12 +17,13 @@ import java.util.TimeZone;
 /**
  * Created by PINA on 29/06/2017.
  */
-@Data
+
+@Getter
+@Setter
 @Entity
 @Table(name = "t_order")
 @SQLDelete(sql = "UPDATE t_order SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted <> 1")
-@EqualsAndHashCode(callSuper = true)
 public class OrderEntity extends DatesEntity {
 
   @Id

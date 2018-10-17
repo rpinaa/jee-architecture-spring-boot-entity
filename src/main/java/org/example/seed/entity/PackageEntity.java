@@ -1,8 +1,8 @@
 package org.example.seed.entity;
 
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -11,7 +11,9 @@ import javax.persistence.*;
 /**
  * Created by PINA on 01/07/2017.
  */
-@Data
+
+@Getter
+@Setter
 @Entity
 @Table(name = "t_package")
 @SQLDelete(sql = "UPDATE t_package SET deleted = 1 WHERE id = ?")

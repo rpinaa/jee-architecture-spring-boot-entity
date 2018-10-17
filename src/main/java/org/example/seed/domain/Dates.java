@@ -1,13 +1,16 @@
 package org.example.seed.domain;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
 /**
  * Created by PINA on 26/06/2017.
  */
-@Data
+
+@Getter
+@Setter
 public class Dates {
 
   private Date createdDate;

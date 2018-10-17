@@ -1,9 +1,6 @@
 package org.example.seed.event.order;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.example.seed.domain.Order;
 
 import javax.validation.Valid;
@@ -13,7 +10,8 @@ import java.util.TimeZone;
 /**
  * Created by PINA on 30/06/2017.
  */
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

@@ -1,7 +1,7 @@
 package org.example.seed.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.seed.catalog.OrderStatus;
 import org.example.seed.group.order.OrderCreateGroup;
 import org.example.seed.group.order.OrderRegisterGroup;
@@ -18,8 +18,9 @@ import java.util.UUID;
 /**
  * Created by PINA on 30/06/2017.
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
+
+@Getter
+@Setter
 public class Order extends Dates {
 
   @NotEmpty(groups = {OrderRegisterGroup.class})
@@ -65,6 +66,7 @@ public class Order extends Dates {
   private List<Package> packages;
 
   public Order() {
+
     this.id = UUID.randomUUID().toString();
   }
 }

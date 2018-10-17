@@ -1,7 +1,7 @@
 package org.example.seed.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.seed.constraint.Location;
 import org.example.seed.group.address.AddressCreateGroup;
 import org.example.seed.group.address.AddressUpdateGroup;
@@ -13,8 +13,9 @@ import java.util.UUID;
 /**
  * Created by PINA on 30/06/2017.
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
+
+@Getter
+@Setter
 public class Address extends Dates {
 
   @NotEmpty(groups = {AddressUpdateGroup.class})
@@ -67,6 +68,7 @@ public class Address extends Dates {
   private String country;
 
   public Address() {
+
     this.id = UUID.randomUUID().toString();
   }
 }

@@ -1,9 +1,8 @@
 package org.example.seed.entity;
 
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import org.example.seed.catalog.DishType;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -13,12 +12,13 @@ import javax.persistence.*;
 /**
  * Created by PINA on 01/07/2017.
  */
-@Data
+
+@Getter
+@Setter
 @Entity
 @Table(name = "t_dish")
 @SQLDelete(sql = "UPDATE t_dish SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted <> 1")
-@EqualsAndHashCode(callSuper = true)
 public class DishEntity extends DatesEntity {
 
   @Id

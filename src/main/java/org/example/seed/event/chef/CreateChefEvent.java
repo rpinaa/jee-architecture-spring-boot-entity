@@ -13,12 +13,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Created by PINA on 22/05/2017.
  */
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlRootElement
-@EqualsAndHashCode(callSuper = true)
 public class CreateChefEvent extends CreateEvent {
 
   @Valid

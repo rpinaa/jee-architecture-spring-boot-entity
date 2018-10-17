@@ -1,6 +1,8 @@
 package org.example.seed.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.seed.catalog.ChefStatus;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -13,12 +15,13 @@ import java.util.List;
 /**
  * Created by PINA on 24/06/2017.
  */
-@Data
+
+@Getter
+@Setter
 @Entity
 @Table(name = "t_chef")
 @SQLDelete(sql = "UPDATE t_chef SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted <> 1")
-@EqualsAndHashCode(callSuper = true)
 public class ChefEntity extends DatesEntity {
 
   @Id

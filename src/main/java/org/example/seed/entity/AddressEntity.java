@@ -1,6 +1,7 @@
 package org.example.seed.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -12,7 +13,8 @@ import javax.persistence.Table;
 /**
  * Created by PINA on 30/06/2017.
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "t_address")
 @SQLDelete(sql = "UPDATE t_address SET deleted = 1 WHERE id = ?")

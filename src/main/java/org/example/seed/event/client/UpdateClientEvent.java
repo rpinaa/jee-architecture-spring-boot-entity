@@ -13,12 +13,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Created by PINA on 22/05/2017.
  */
 
-@Data
+@Getter
+@Setter
 @Builder
 @XmlRootElement
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class UpdateClientEvent extends UpdateEvent {
 
   @Valid

@@ -1,7 +1,7 @@
 package org.example.seed.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.seed.catalog.DishType;
 
 import java.util.UUID;
@@ -9,8 +9,9 @@ import java.util.UUID;
 /**
  * Created by PINA on 01/07/2017.
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
+
+@Getter
+@Setter
 public class Dish extends Dates {
 
   private String id;
@@ -24,6 +25,7 @@ public class Dish extends Dates {
   private boolean active;
 
   public Dish() {
+
     this.id = UUID.randomUUID().toString();
   }
 }

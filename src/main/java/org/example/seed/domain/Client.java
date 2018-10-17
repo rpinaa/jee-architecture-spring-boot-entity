@@ -1,7 +1,7 @@
 package org.example.seed.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.seed.catalog.ClientStatus;
 import org.example.seed.constraint.Denomination;
 import org.example.seed.group.client.ClientCreateGroup;
@@ -16,8 +16,9 @@ import java.util.UUID;
 /**
  * Created by PINA on 26/06/2017.
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
+
+@Getter
+@Setter
 public class Client extends Dates {
 
   @NotNull(groups = {ClientRegisterGroup.class, ClientUpdateGroup.class})
@@ -63,6 +64,7 @@ public class Client extends Dates {
   private Telephone telephone;
 
   public Client() {
+
     this.id = UUID.randomUUID().toString();
   }
 }

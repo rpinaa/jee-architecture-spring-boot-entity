@@ -1,15 +1,16 @@
 package org.example.seed.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
 /**
  * Created by PINA on 01/07/2017.
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
+
+@Getter
+@Setter
 public class Package extends Dates {
 
   private String id;
@@ -18,6 +19,7 @@ public class Package extends Dates {
   private Integer quantity;
 
   public Package() {
+
     this.id = UUID.randomUUID().toString();
   }
 }
