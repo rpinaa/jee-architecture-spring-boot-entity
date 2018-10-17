@@ -19,13 +19,18 @@ import java.time.LocalDate;
 /**
  * Created by PINA on 27/06/2017.
  */
+
+// TODO: See how to add a new adapter instead of WebMvcConfigurerAdapter with Spring Fox Swagger
+
 @Configuration
 @EnableSwagger2
 @Profile("local")
+@SuppressWarnings("deprecation")
 public class SwaggerConfig extends WebMvcConfigurerAdapter {
 
   @Override
   public void configureContentNegotiation(final ContentNegotiationConfigurer configurer) {
+
     configurer.defaultContentType(MediaType.APPLICATION_JSON);
   }
 
@@ -41,6 +46,7 @@ public class SwaggerConfig extends WebMvcConfigurerAdapter {
 
   @Bean
   public Docket configuration() {
+
     return new Docket(DocumentationType.SWAGGER_2)
       .select()
       .apis(RequestHandlerSelectors
