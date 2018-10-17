@@ -42,12 +42,30 @@ public class ChefRestITest {
   private final TestRestTemplate restTemplate = new TestRestTemplate();
 
   @Test
-  public void getChefsShouldReturnAPageOfChefsUsingAPageAndALimitDifferentThanZero() throws JSONException {
+  public void getChefsShouldReturnAPageOfChefsUsingAPageAs1AndALimitAs1() throws JSONException {
 
     final HttpEntity<String> entity = new HttpEntity<>(null, headers);
 
     final ResponseEntity<String> response = restTemplate.exchange(
-      createURLWithPort(CHEF_ROOT_PATH +"?page=1&limit=1"), HttpMethod.GET, entity, String.class
+      createURLWithPort(CHEF_ROOT_PATH + "?page=1&limit=1"), HttpMethod.GET, entity, String.class
+    );
+
+    final String jsonExpected = new BufferedReader(
+      new InputStreamReader(TypeReference.class.getResourceAsStream("/chef/getChefs.json"))
+    )
+      .lines()
+      .collect(Collectors.joining("\n"));
+
+    assertEquals(jsonExpected, response.getBody(), false);
+  }
+
+  @Test(expected = AssertionError.class)
+  public void getChefsShouldReturnAPageOfChefsUsingAPageAs0AndALimitAs1() throws JSONException {
+
+    final HttpEntity<String> entity = new HttpEntity<>(null, headers);
+
+    final ResponseEntity<String> response = restTemplate.exchange(
+      createURLWithPort(CHEF_ROOT_PATH + "?page=0&limit=1"), HttpMethod.GET, entity, String.class
     );
 
     final String jsonExpected = new BufferedReader(

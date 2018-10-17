@@ -15,6 +15,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import javax.validation.constraints.Min;
+
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 /**
@@ -53,8 +55,8 @@ public class ChefRest {
   @GetMapping(ChefRest.ORDER_CRUD_PATH)
   @ResponseStatus(HttpStatus.OK)
   public DeferredResult<ResponseOrdersEvent> getOrdersByClient(
-    @RequestParam("page") final int page,
-    @RequestParam("limit") final int limit,
+    @RequestParam("page") @Min(value = 1) final int page,
+    @RequestParam("limit") @Min(value = 1) final int limit,
     @PathVariable("chefId") final String chefId
   ) {
 
