@@ -1,0 +1,39 @@
+{
+  "total": 2,
+  "chefs": [
+    {
+      "createdDate": 1510704479000,
+      "updatedDate": 1510704822000,
+      "id": "934bc9fa-1473-43ee-ae4a-938c3ccdb43b",
+      "rfc": "PIAR900114D76",
+      "curp": "PIAR900114HDFXRC08",
+      "country": "MX",
+      "rating": 0,
+      "status": "ACTIVATED",
+      "active": false,
+      "account": {
+        "id": "c4d5b14a-706e-4959-8d20-12d6d06aec39",
+        "firstName": "ricardo pina",
+        "lastName": "arellano",
+        "email": "ricardo.pina@gmail.com",
+        "credential": null
+      },
+      "telephones": [
+        {
+          "id": "d7097d9d-0a0e-4b77-9b47-ce1413a0f46f",
+          "name": "Celular",
+          "number": "5537314411",
+          "lada": "52",
+          "type": "HOME"
+        },
+        {
+          "id": "d02446ff-5ae3-4b66-a89a-fcd598a71578",
+          "name": "Mobile",
+          "number": "5539304411",
+          "lada": "52",
+          "type": "HOME"
+        }
+      ]
+    }
+  ]
+}
