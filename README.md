@@ -1,19 +1,19 @@
 # jee-architecture-spring-boot-entity
-A **Java EE 7** non-blocking I/O Architecture using **REST** architectural pattern as Integration Layer, developing in a **bottom-up** approach.
+A Java EE 7 non-blocking I/O Architecture using REST architectural pattern as Integration Layer, developing in a **bottom-up** approach.
 
-> **JEE 7 Architecture**
+**JEE 7 Architecture Layers**
 
-> - Presentation Layer (Swagger)
-> - Integration Layer (Spring)
-> - Business Layer (Spring)
-> - Data Access Layer (Spring)
+- *Presentation Layer (Swagger)* 
+- *Integration Layer (Spring)*
+- *Business Layer (Spring)*
+- *Data Access Layer (Spring)*
 
-> **Cross Cutting Concerns:**
+**Cross Cutting Concerns**
 
-> - CDI          (Spring)
-> - Security     (Spring)
-> - Validations  (Spring)
-> - Transactions (Spring)
+- CDI          (Spring)
+- Security     (Spring)
+- Validations  (Spring)
+- Transactions (Spring)
 
 ## Requirements
 
