@@ -59,7 +59,7 @@
 
         <start-class>org.example.seed.Application</start-class>
 
-        <swagger.version>2.7.0</swagger.version>
+        <swagger.version>2.10.0</swagger.version>
         <org.googlecode.version>8.8.4</org.googlecode.version>
         <org.geoip2.version>2.9.0</org.geoip2.version>
         <org.mapstruct.version>1.2.0.Beta3</org.mapstruct.version>
